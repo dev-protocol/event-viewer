@@ -44,7 +44,6 @@ async function main() {
 
 main()
 
-
-//TODO
+// TODO
 // DB接奥情報をconfigで持ちたい
 // testモードを作成

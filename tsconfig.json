@@ -9,8 +9,8 @@
 		"strict": true,
 		"types": ["node"],
 		"baseUrl": "./",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true
 	},
 	"typeRoots": ["./node_modules/@types"]
 }

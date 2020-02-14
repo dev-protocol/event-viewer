@@ -34,7 +34,7 @@ export abstract class EventSaver {
 			// eslint-disable-next-line no-await-in-loop
 			await transaction.save(saveData)
 		}
-		// for (var i = 0; i < events.length; i++) {
+		// For (var i = 0; i < events.length; i++) {
 		// 	const event = events[i]
 		// 	console.log(event)
 		// 	const saveData = this.getSaveData(event)
