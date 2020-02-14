@@ -1,7 +1,7 @@
 {
-	"name": "template-repos-ts",
+	"name": "event_explorer",
 	"version": "1.0.0",
-	"description": "Template repository for using TypeScript",
+	"description": "event explorer",
 	"main": "index.js",
 	"scripts": {
 		"test": "",
@@ -30,13 +30,22 @@
 			"pre-commit": "npm run lint"
 		}
 	},
-	"dependencies": {},
+	"dependencies": {
+		"web3": "latest",
+		"@types/node": "latest",
+		"ts-node": "latest",
+		"tsconfig-paths": "latest",
+		"typeorm": "latest",
+		"pg": "latest",
+		"reflect-metadata": "latest",
+		"@types/pg": "latest"
+	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/dev-protocol/template-repos-ts.git"
+		"url": "git+https://github.com/dev-protocol/event_explorer.git"
 	},
 	"bugs": {
-		"url": "https://github.com/dev-protocol/template-repos-ts/issues"
+		"url": "https://github.com/dev-protocol/event_explorer/issues"
 	},
-	"homepage": "https://github.com/dev-protocol/template-repos-ts#readme"
+	"homepage": "https://github.com/dev-protocol/event_explorer#readme"
 }
