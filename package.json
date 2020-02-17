@@ -31,14 +31,15 @@
 		}
 	},
 	"dependencies": {
-		"web3": "latest",
 		"@types/node": "latest",
+		"@types/pg": "latest",
+		"discord-webhook-ts": "latest",
+		"pg": "latest",
+		"reflect-metadata": "latest",
 		"ts-node": "latest",
 		"tsconfig-paths": "latest",
 		"typeorm": "latest",
-		"pg": "latest",
-		"reflect-metadata": "latest",
-		"@types/pg": "latest"
+		"web3": "latest"
 	},
 	"repository": {
 		"type": "git",

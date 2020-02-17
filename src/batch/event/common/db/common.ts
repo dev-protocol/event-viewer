@@ -1,10 +1,6 @@
-import {
-	getConnectionOptions,
-	createConnection,
-	BaseEntity,
-	Connection,
-	QueryRunner
-} from 'typeorm'
+import * as fs from 'fs'
+import * as path from 'path'
+import { createConnection, BaseEntity, Connection, QueryRunner } from 'typeorm'
 
 export class DbConnection {
 	private _connection!: Connection
@@ -14,13 +10,28 @@ export class DbConnection {
 	}
 
 	public async connect(): Promise<void> {
-		const connectionOptions = await getConnectionOptions()
-		this._connection = await createConnection(connectionOptions)
+		const config = this._getConfig()
+		this._connection = await createConnection(config)
 		BaseEntity.useConnection(this._connection)
 	}
 
 	public async quit(): Promise<void> {
-		await this._connection.close()
+		try {
+			await this._connection.close()
+		} catch (err) {
+			console.error(err)
+		}
+	}
+
+	private _getConfig(): any {
+		const abiFilePath = path.join(__dirname, 'config.json')
+		const baseSettings = JSON.parse(fs.readFileSync(abiFilePath, 'utf8'))
+		baseSettings.host = process.env.DB_HOST!
+		baseSettings.port = process.env.DB_PORT!
+		baseSettings.username = process.env.DB_USERNAME!
+		baseSettings.password = process.env.DB_PASSWORD!
+		baseSettings.database = process.env.DB_DATABASE!
+		return baseSettings
 	}
 }
 
@@ -32,21 +43,8 @@ export class Transaction {
 	}
 
 	public async start(): Promise<void> {
-		console.log(1)
-		try {
-			console.log(2)
-			await this._runner.connect()
-			console.log(3)
-		} catch (err) {
-			console.log(4)
-			console.log(err)
-		} finally {
-			console.log(5)
-		}
-
-		console.log(6)
+		await this._runner.connect()
 		await this._runner.startTransaction()
-		console.log(7)
 	}
 
 	public async save<Entity>(entity: Entity): Promise<void> {

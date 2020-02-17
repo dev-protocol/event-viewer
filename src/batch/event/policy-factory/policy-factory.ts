@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import config from './config.json'
-import { PropertyFactoryCreate } from 'src/entities/PropertyFactoryCreate'
-import { EventSaver } from 'src/batch/event/common/base'
 import { ObjectType } from 'typeorm'
+import { EventSaver } from 'src/batch/event/common/base'
+import { PropertyFactoryCreate } from 'src/entities/PropertyFactoryCreate'
 
 class PropertyFactoryCreateSaver extends EventSaver {
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
@@ -17,6 +17,10 @@ class PropertyFactoryCreateSaver extends EventSaver {
 		propertyFactoryCreate.inner_policy = event.returnValues._innerPolicy
 		propertyFactoryCreate.raw = event
 		return propertyFactoryCreate
+	}
+
+	getBatchName(): string {
+		return PropertyFactoryCreateSaver.name
 	}
 
 	getModelObject<Entity>(): ObjectType<Entity> {
@@ -43,7 +47,3 @@ async function main() {
 }
 
 main()
-
-// TODO
-// DB接奥情報をconfigで持ちたい
-// testモードを作成

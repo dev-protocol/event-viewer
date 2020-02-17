@@ -4,17 +4,37 @@ import { DbConnection, Transaction } from 'src/batch/event/common/db/common'
 import { getMaxBlockNumber } from 'src/batch/event/common/db/utils'
 import { getApprovalBlockNumber } from 'src/batch/event/common/ethereum/utils'
 import { Event } from 'src/batch/event/common/ethereum/event'
+import { DiscordNotification } from 'src/batch/event/common/notification/discord'
 
 export abstract class EventSaver {
 	private _db!: DbConnection
 
 	public async execute(): Promise<void> {
-		await this._setup()
+		const notification = new DiscordNotification()
 		try {
+			await this._setup()
 			const events = await this._getEvents()
-			this._saveEvents(events)
+			await this._saveEvents(events)
+
+			await notification.sendInfo(
+				'save event batch',
+				this.getBatchName(),
+				'message',
+				'completed successfully'
+			)
 		} catch (err) {
 			console.error(err)
+			let desctiption = (err as Error).stack
+			if (typeof desctiption === 'undefined') {
+				desctiption = (err as Error).message
+			}
+
+			await notification.sendError(
+				'save event batch',
+				this.getBatchName(),
+				'message',
+				desctiption
+			)
 			throw err
 		} finally {
 			await this._db.quit()
@@ -34,14 +54,6 @@ export abstract class EventSaver {
 			// eslint-disable-next-line no-await-in-loop
 			await transaction.save(saveData)
 		}
-		// For (var i = 0; i < events.length; i++) {
-		// 	const event = events[i]
-		// 	console.log(event)
-		// 	const saveData = this.getSaveData(event)
-		// 	console.log(saveData)
-		// 	// eslint-disable-next-line no-await-in-loop
-		// 	await transaction.save(saveData)
-		// }
 
 		await transaction.finish()
 	}
@@ -64,6 +76,7 @@ export abstract class EventSaver {
 	abstract getContractAddress(): string
 	abstract getEventName(): string
 	abstract getDirPath(): string
+	abstract getBatchName(): string
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	abstract getSaveData(event: any): any
 }
