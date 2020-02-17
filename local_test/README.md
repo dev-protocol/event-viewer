@@ -5,7 +5,7 @@ cd local_test
 docker-compose up -d
 ```
 
-でpostgresが構築される
+で postgres が構築される
 
 ```
 docker-compose exec db psql -U testuser testdb
@@ -22,7 +22,6 @@ sh env.sh
 実行コマンドは
 ./node_modules/.bin/ts-node -r tsconfig-paths/register src/batch/event/policy-factory/test.ts
 と言うイメージ
-
 
 参考
 https://daichan.club/container/78908
