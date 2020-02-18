@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { ObjectType } from 'typeorm'
 import { getAbi } from 'src/batch/event/common/abi'
 import { DbConnection, Transaction } from 'src/batch/event/common/db/common'
@@ -50,7 +51,14 @@ export abstract class EventSaver {
 		const transaction = new Transaction(this._db.connection)
 		await transaction.start()
 		for (let event of events) {
-			const saveData = this.getSaveData(event)
+			const eventMap = new Map(Object.entries(event))
+			const saveData = this.getSaveData(eventMap)
+			saveData.event_id = eventMap.get('id')
+			saveData.block_number = eventMap.get('blockNumber')
+			saveData.log_index = eventMap.get('logIndex')
+			saveData.transaction_index = eventMap.get('transactionIndex')
+			saveData.raw = JSON.stringify(event)
+
 			// eslint-disable-next-line no-await-in-loop
 			await transaction.save(saveData)
 		}

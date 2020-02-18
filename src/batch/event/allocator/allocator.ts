@@ -1,27 +1,31 @@
 import config from './config.json'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from 'src/batch/event/common/base'
-import { PropertyFactoryCreate } from 'src/entities/PropertyFactoryCreate'
+import { BeforeAllocation } from 'src/entities/BeforeAllocation'
 
-class PropertyFactoryCreateSaver extends EventSaver {
+class AllocatorBeforeAllocationSaver extends EventSaver {
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
-		const propertyFactoryCreate = new PropertyFactoryCreate()
+		const beforeAllocation = new BeforeAllocation()
 		const values = event.get('returnValues')
+		beforeAllocation.blocks = values._blocks
+		beforeAllocation.mint = values._mint
+		beforeAllocation.value = values._value
 		// eslint-disable-next-line @typescript-eslint/camelcase
-		propertyFactoryCreate.from_address = values._from
-		propertyFactoryCreate.policy = values._policy
+		beforeAllocation.market_value = values._marketValue
+		beforeAllocation.assets = values._assets
 		// eslint-disable-next-line @typescript-eslint/camelcase
-		propertyFactoryCreate.inner_policy = values._innerPolicy
-		return propertyFactoryCreate
+		beforeAllocation.total_assets = values._totalAssets
+
+		return beforeAllocation
 	}
 
 	getBatchName(): string {
-		return PropertyFactoryCreateSaver.name
+		return AllocatorBeforeAllocationSaver.name
 	}
 
 	getModelObject<Entity>(): ObjectType<Entity> {
-		return PropertyFactoryCreate
+		return BeforeAllocation
 	}
 
 	getContractAddress(): string {
@@ -29,7 +33,7 @@ class PropertyFactoryCreateSaver extends EventSaver {
 	}
 
 	getEventName(): string {
-		return 'Create'
+		return 'BeforeAllocation'
 	}
 
 	getDirPath(): string {
@@ -38,7 +42,7 @@ class PropertyFactoryCreateSaver extends EventSaver {
 }
 
 async function main(): Promise<void> {
-	const saver = new PropertyFactoryCreateSaver()
+	const saver = new AllocatorBeforeAllocationSaver()
 	await saver.execute()
 }
 

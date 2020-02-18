@@ -13,7 +13,6 @@ docker-compose exec db psql -U testuser testdb
 
 で接続確認ができる
 
-
 ```
 # notification discord
 DISCORD_WEBHOOK_URL_INFO
@@ -33,8 +32,6 @@ APPROVAL=30
 ```
 
 上記環境変数が必要なため、設定する
-
-
 
 実行コマンドは
 ./node_modules/.bin/ts-node -r tsconfig-paths/register src/batch/event/policy-factory/test.ts
