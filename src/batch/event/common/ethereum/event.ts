@@ -22,7 +22,7 @@ export class Event {
 		eventName: string,
 		firstBlock: number,
 		lastBlock: number | string
-	): Promise<any[]> {
+	): Promise<Array<Map<string, any>>> {
 		const events = await this._contract.getPastEvents(eventName, {
 			fromBlock: firstBlock,
 			toBlock: lastBlock

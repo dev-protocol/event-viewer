@@ -6,16 +6,21 @@ import { PropertyFactoryCreate } from 'src/entities/PropertyFactoryCreate'
 
 class PropertyFactoryCreateSaver extends EventSaver {
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
-	getSaveData(event: any): any {
+	getSaveData(event: Map<string, any>): any {
 		const propertyFactoryCreate = new PropertyFactoryCreate()
-		propertyFactoryCreate.event_id = event.id
-		propertyFactoryCreate.block_number = event.blockNumber
-		propertyFactoryCreate.log_index = event.logIndex
-		propertyFactoryCreate.transaction_index = event.transactionIndex
-		propertyFactoryCreate.from_address = event.returnValues._from
-		propertyFactoryCreate.policy = event.returnValues._policy
-		propertyFactoryCreate.inner_policy = event.returnValues._innerPolicy
-		propertyFactoryCreate.raw = event
+		const createEvent = new Map(Object.entries(event))
+		propertyFactoryCreate.event_id = createEvent.get('id')
+		propertyFactoryCreate.block_number = createEvent.get('blockNumber')
+		propertyFactoryCreate.log_index = createEvent.get('logIndex')
+		propertyFactoryCreate.transaction_index = createEvent.get(
+			'transactionIndex'
+		)
+		propertyFactoryCreate.from_address = createEvent.get('returnValues')._from
+		propertyFactoryCreate.policy = createEvent.get('returnValues')._policy
+		propertyFactoryCreate.inner_policy = createEvent.get(
+			'returnValues'
+		)._innerPolicy
+		propertyFactoryCreate.raw = JSON.stringify(event)
 		return propertyFactoryCreate
 	}
 
@@ -40,8 +45,7 @@ class PropertyFactoryCreateSaver extends EventSaver {
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-async function main() {
+async function main(): Promise<void> {
 	const saver = new PropertyFactoryCreateSaver()
 	await saver.execute()
 }

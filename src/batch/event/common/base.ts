@@ -46,7 +46,7 @@ export abstract class EventSaver {
 		await this._db.connect()
 	}
 
-	private async _saveEvents(events: any[]): Promise<void> {
+	private async _saveEvents(events: Array<Map<string, any>>): Promise<void> {
 		const transaction = new Transaction(this._db.connection)
 		await transaction.start()
 		for (let event of events) {
@@ -58,7 +58,7 @@ export abstract class EventSaver {
 		await transaction.finish()
 	}
 
-	private async _getEvents(): Promise<any[]> {
+	private async _getEvents(): Promise<Array<Map<string, any>>> {
 		const maxBlockNumber = await getMaxBlockNumber(this.getModelObject())
 		const contractJson = getAbi(this.getDirPath())
 		const approvalBlockNumber = await getApprovalBlockNumber()
@@ -78,5 +78,5 @@ export abstract class EventSaver {
 	abstract getDirPath(): string
 	abstract getBatchName(): string
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
-	abstract getSaveData(event: any): any
+	abstract getSaveData(event: Map<string, any>): any
 }
