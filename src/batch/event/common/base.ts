@@ -40,6 +40,8 @@ export abstract class EventSaver {
 		} finally {
 			await this._db.quit()
 		}
+
+		console.log('finish')
 	}
 
 	private async _setup(): Promise<void> {
@@ -57,7 +59,7 @@ export abstract class EventSaver {
 			saveData.block_number = eventMap.get('blockNumber')
 			saveData.log_index = eventMap.get('logIndex')
 			saveData.transaction_index = eventMap.get('transactionIndex')
-			saveData.raw = JSON.stringify(event)
+			saveData.raw_data = JSON.stringify(event)
 
 			// eslint-disable-next-line no-await-in-loop
 			await transaction.save(saveData)

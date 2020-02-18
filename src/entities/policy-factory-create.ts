@@ -3,7 +3,7 @@
 import { Entity, PrimaryColumn, Column, BaseEntity } from 'typeorm'
 
 @Entity()
-export class BeforeAllocation extends BaseEntity {
+export class PolicyFactoryCreate extends BaseEntity {
 	@PrimaryColumn()
 	public event_id!: string
 
@@ -17,23 +17,14 @@ export class BeforeAllocation extends BaseEntity {
 	public transaction_index!: number
 
 	@Column()
-	public blocks!: number
+	public from_address!: string
 
 	@Column()
-	public mint!: number
+	public policy!: string
 
 	@Column()
-	public value!: number
+	public inner_policy!: string
 
 	@Column()
-	public market_value!: number
-
-	@Column()
-	public assets!: number
-
-	@Column()
-	public total_assets!: number
-
-	@Column()
-	public raw!: string
+	public raw_data!: string
 }
