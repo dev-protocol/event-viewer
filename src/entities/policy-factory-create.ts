@@ -20,7 +20,7 @@ export class PolicyFactoryCreate extends BaseEntity {
 	public from_address!: string
 
 	@Column()
-	public policy!: string
+	public policy_address!: string
 
 	@Column()
 	public inner_policy!: string

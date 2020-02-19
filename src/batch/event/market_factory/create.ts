@@ -14,8 +14,8 @@ class CreateSaver extends EventSaver {
 		return marketFactoryCreate
 	}
 
-	getBatchName(): string {
-		return 'market factory create'
+	getTableName(): string {
+		return 'market_factory_create'
 	}
 
 	getModelObject<Entity>(): ObjectType<Entity> {

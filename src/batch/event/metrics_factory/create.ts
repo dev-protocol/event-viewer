@@ -14,8 +14,8 @@ class CreateSaver extends EventSaver {
 		return metricsFactoryCreate
 	}
 
-	getBatchName(): string {
-		return 'metrics factory create'
+	getTableName(): string {
+		return 'metrics_factory_create'
 	}
 
 	getModelObject<Entity>(): ObjectType<Entity> {

@@ -19,7 +19,7 @@ export abstract class EventSaver {
 
 			await notification.sendInfo(
 				'save event batch',
-				this.getBatchName(),
+				this.getTableName(),
 				'message',
 				'completed successfully'
 			)
@@ -32,7 +32,7 @@ export abstract class EventSaver {
 
 			await notification.sendError(
 				'save event batch',
-				this.getBatchName(),
+				this.getTableName(),
 				'message',
 				desctiption
 			)
@@ -54,6 +54,13 @@ export abstract class EventSaver {
 		await transaction.start()
 		for (let event of events) {
 			const eventMap = new Map(Object.entries(event))
+
+			// eslint-disable-next-line no-await-in-loop
+			const hasData = await this._hasData(eventMap.get('id'))
+			if (hasData) {
+				throw Error('Data already exists.')
+			}
+
 			const saveData = this.getSaveData(eventMap)
 			saveData.event_id = eventMap.get('id')
 			saveData.block_number = eventMap.get('blockNumber')
@@ -66,6 +73,15 @@ export abstract class EventSaver {
 		}
 
 		await transaction.finish()
+	}
+
+	private async _hasData(eventId: string): Promise<boolean> {
+		const firstUser = await this._db.connection
+			.getRepository(this.getModelObject())
+			.createQueryBuilder('tmp')
+			.where('tmp.event_id = :id', { id: eventId })
+			.getOne()
+		return typeof firstUser !== 'undefined'
 	}
 
 	private async _getEvents(): Promise<Array<Map<string, any>>> {
@@ -86,7 +102,7 @@ export abstract class EventSaver {
 	abstract getContractAddress(): string
 	abstract getEventName(): string
 	abstract getDirPath(): string
-	abstract getBatchName(): string
+	abstract getTableName(): string
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	abstract getSaveData(event: Map<string, any>): any
 }

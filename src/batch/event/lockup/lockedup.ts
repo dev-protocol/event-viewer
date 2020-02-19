@@ -16,8 +16,8 @@ class LockedupSaver extends EventSaver {
 		return lockupLockedup
 	}
 
-	getBatchName(): string {
-		return 'lockup lockeup'
+	getTableName(): string {
+		return 'lockup_lockedup'
 	}
 
 	getModelObject<Entity>(): ObjectType<Entity> {

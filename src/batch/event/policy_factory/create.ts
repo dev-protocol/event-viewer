@@ -17,8 +17,8 @@ class CreateSaver extends EventSaver {
 		return policyFactoryCreate
 	}
 
-	getBatchName(): string {
-		return 'policy factory create'
+	getTableName(): string {
+		return 'policy_factory_create'
 	}
 
 	getModelObject<Entity>(): ObjectType<Entity> {

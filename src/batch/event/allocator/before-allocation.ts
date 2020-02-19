@@ -21,8 +21,8 @@ class BeforeAllocationSaver extends EventSaver {
 		return beforeAllocation
 	}
 
-	getBatchName(): string {
-		return 'allocator before allocation'
+	getTableName(): string {
+		return 'allocator_before_allocation'
 	}
 
 	getModelObject<Entity>(): ObjectType<Entity> {
