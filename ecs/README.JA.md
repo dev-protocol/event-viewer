@@ -1,4 +1,3 @@
-
 docker build -t event-batch:1.0 .
 
 でイメージ作成

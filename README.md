@@ -15,11 +15,5 @@ TODO
 
 ./node_modules/.bin/ts-node -r tsconfig-paths/register src/batch/event/policy-factory/policy-factory.ts
 
-
-
-
-
-Azure functions開発手順(mac)
+Azure functions 開発手順(mac)
 https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-run-local?tabs=macos#v2
-
-
