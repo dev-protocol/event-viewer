@@ -31,15 +31,15 @@
 		}
 	},
 	"dependencies": {
-		"@types/node": "latest",
-		"@types/pg": "latest",
-		"discord-webhook-ts": "latest",
-		"pg": "latest",
-		"reflect-metadata": "latest",
-		"ts-node": "latest",
-		"tsconfig-paths": "latest",
-		"typeorm": "latest",
-		"web3": "latest"
+		"@types/node": "13.7.4",
+		"@types/pg": "7.14.1",
+		"discord-webhook-ts": "3.0.3",
+		"pg": "7.18.1",
+		"reflect-metadata": "0.1.13",
+		"ts-node": "8.6.2",
+		"tsconfig-paths": "3.9.0",
+		"typeorm": "0.2.22",
+		"web3": "1.2.6"
 	},
 	"repository": {
 		"type": "git",

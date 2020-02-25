@@ -14,3 +14,12 @@ TODO
 新しくイベントを追加する時にやるどうさを設定する
 
 ./node_modules/.bin/ts-node -r tsconfig-paths/register src/batch/event/policy-factory/policy-factory.ts
+
+
+
+
+
+Azure functions開発手順(mac)
+https://docs.microsoft.com/ja-jp/azure/azure-functions/functions-run-local?tabs=macos#v2
+
+
