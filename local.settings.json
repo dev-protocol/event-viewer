@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
+		"DB_END_POINT": "",
+		"DB_KEY": "",
+		"GO_BACK_BLOCK_NUMBER" : 6000,
+		"DISCORD_WEBHOOK_URL_INFO": "",
+		"DISCORD_WEBHOOK_URL_WARNING": "",
+		"DISCORD_WEBHOOK_URL_ERROR": ""
+  }
+}
