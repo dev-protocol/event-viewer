@@ -1,7 +1,9 @@
 {
-  "IsEncrypted": false,
-  "Values": {
-    "FUNCTIONS_WORKER_RUNTIME": "node",
+	"IsEncrypted": false,
+	"Values": {
+		"FUNCTIONS_WORKER_RUNTIME": "node",
+		"WEB3_URL": "",
+		"APPROVAL": "30",
 		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
 		"DB_END_POINT": "",
 		"DB_KEY": "",
@@ -9,5 +11,5 @@
 		"DISCORD_WEBHOOK_URL_INFO": "",
 		"DISCORD_WEBHOOK_URL_WARNING": "",
 		"DISCORD_WEBHOOK_URL_ERROR": ""
-  }
+	}
 }

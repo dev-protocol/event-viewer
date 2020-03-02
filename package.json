@@ -13,8 +13,8 @@
   "description": "",
   "dependencies": {
     "@azure/cosmos": "3.6.2",
-		"discord-webhook-ts": "3.0.3",
-		"web3": "1.2.6"
+    "discord-webhook-ts": "3.0.3",
+    "web3": "^1.2.6"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.1-beta1",

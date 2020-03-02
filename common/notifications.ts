@@ -113,7 +113,7 @@ export class EventSaverLogging {
 	public async info(message: string): Promise<void> {
 		let timeStamp = new Date().toISOString()
 		this._logger.info(timeStamp, 'info', this._batchName + ':' + message)
-		await this._discord.sendWarning('EventSaver', this._batchName, 'message', message)
+		await this._discord.sendInfo('EventSaver', this._batchName, 'message', message)
 	}
 
 	public async error(message: string): Promise<void> {

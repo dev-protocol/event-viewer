@@ -15,7 +15,6 @@ export class Event {
 		)
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	public async generateContract(
 		abi: any,
 		contractAddress: string
