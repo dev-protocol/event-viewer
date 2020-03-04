@@ -8,6 +8,8 @@
     "sourceMap": true,
 		"strict": false,
 		"resolveJsonModule": true,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
   }
 }

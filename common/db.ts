@@ -1,57 +1,100 @@
-import { CosmosClient } from '@azure/cosmos'
+import { getRepository, ObjectType, createConnection, BaseEntity, Connection, QueryRunner } from 'typeorm'
 
-module DB_CONST{
-	export const NAME = "event-viewer"
+
+
+export class EventTableAccessor<Entity> {
+	private _connection: Connection
+	private _entityClass: ObjectType<Entity>
+
+	constructor(connection: Connection, entityClass: ObjectType<Entity>) {
+		this._connection = connection
+		this._entityClass = entityClass
+	}
+
+	public async getMaxBlockNumber<Entity>(): Promise<number> {
+		let { max } = await getRepository(this._entityClass)
+			.createQueryBuilder()
+			.select('MAX(block_number)', 'max')
+			.getRawOne()
+		if (max === null) {
+			max = 0
+		}
+		return Number(max)
+	}
+
+
+	public async hasData(eventId: string): Promise<boolean> {
+		const firstUser = await this._connection
+			.getRepository(this._entityClass)
+			.createQueryBuilder('tmp')
+			.where('tmp.event_id = :id', { id: eventId })
+			.getOne()
+		return typeof firstUser !== 'undefined'
+	}
 }
 
-export class EventViewerAccessor {
-	private _client!: CosmosClient
-	private _containerName: string
+export class DbConnection {
+	private _connection!: Connection
 
-	constructor(containerName: string) {
-		this._containerName = containerName
+	get connection(): Connection {
+		return this._connection
 	}
 
-	public async setup(partitionKeyName: string): Promise<void> {
-		await this._connect()
-		await this._createDataBase()
-		await this._createContainer(partitionKeyName)
+	public async connect(): Promise<void> {
+		const config = this._getConfig()
+		console.log(config)
+		this._connection = await createConnection(config)
+		BaseEntity.useConnection(this._connection)
 	}
 
-	public async getRecordCount(): Promise<Number> {
-		const querySpec = {
-			query: `SELECT VALUE COUNT(1) FROM ${this._containerName} c`,
+	public async quit(): Promise<void> {
+		try {
+			await this._connection.close()
+		} catch (err) {
+			console.error(err)
 		}
-		const { resources: results } = await this._client
-			.database(DB_CONST.NAME)
-			.container(this._containerName)
-			.items.query(querySpec)
-			.fetchNext()
-		return results[0]
 	}
 
-	public async upsertItem(item: object): Promise<void> {
-		await this._client.database(DB_CONST.NAME).container(this._containerName).items.upsert(item)
+	private _getConfig(): any {
+		return {
+			type: "postgres",
+			synchronize: false,
+			logging: false,
+			entities: ["/entity/*.ts"],
+			host: process.env.DB_HOST!,
+			port: process.env.DB_PORT!,
+			username: process.env.DB_USERNAME!,
+			password: process.env.DB_PASSWORD!,
+			database: process.env.DB_DATABASE!
+		}
+	}
+}
+
+export class Transaction {
+	private readonly _runner!: QueryRunner
+
+	constructor(connection: Connection) {
+		this._runner = connection.createQueryRunner()
 	}
 
-	private async _connect(): Promise<void> {
-		const endpoint = process.env.DB_END_POINT!
-		const key = process.env.DB_KEY!
-		this._client = new CosmosClient({endpoint, key})
+	public async start(): Promise<void> {
+		await this._runner.connect()
+		await this._runner.startTransaction()
 	}
 
-	private async _createDataBase(): Promise<void> {
-		await this._client.databases.createIfNotExists({
-			id: DB_CONST.NAME
-		  })
+	public async save<Entity>(entity: Entity): Promise<void> {
+		await this._runner.manager.save(entity)
 	}
 
-	private async _createContainer(partitionKeyName: string): Promise<void> {
-		const partitionKeyInfo = { paths: [partitionKeyName] }
-		await this._client.database(DB_CONST.NAME)
-		.containers.createIfNotExists(
-		  { id: this._containerName, partitionKey: partitionKeyInfo, uniqueKeyPolicy: {uniqueKeys: [{ paths: ['/eventId']}]}},
-		  { offerThroughput: 400 }
-		)
+	public async finish(): Promise<void> {
+		try {
+			await this._runner.commitTransaction()
+		} catch (err) {
+			console.error(err)
+			await this._runner.rollbackTransaction()
+			throw err
+		} finally {
+			await this._runner.release()
+		}
 	}
 }

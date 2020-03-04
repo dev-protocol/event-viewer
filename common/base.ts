@@ -1,17 +1,18 @@
 import { Context } from "@azure/functions"
+import { ObjectType } from 'typeorm'
 import { EventSaverLogging } from './notifications'
-import { EventViewerAccessor } from './db'
+import { EventTableAccessor, DbConnection, Transaction } from './db'
 import { getApprovalBlockNumber, Event } from './block-chain'
 
 export abstract class EventSaver {
-	private _db: EventViewerAccessor
+	private _db: DbConnection
 	private _context: Context
 	private _myTimer: any
 
-	constructor(context: Context, myTimer: any, containerName: string) {
+	constructor(context: Context, myTimer: any) {
 		this._context = context
 		this._myTimer = myTimer
-		this._db = new EventViewerAccessor(containerName)
+		this._db = new DbConnection()
 	}
 
 	public async execute(): Promise<void> {
@@ -21,7 +22,7 @@ export abstract class EventSaver {
 			if (this._myTimer.IsPastDue){
 				await logging.warning('Timer function is running late!')
 			}
-			await this._db.setup(this.getPartitionKey())
+			await this._db.connect()
 			const events = await this._getEvents()
 			if (events.length !== 0) {
 				await this._saveEvents(events)
@@ -40,44 +41,44 @@ export abstract class EventSaver {
 	}
 
 	private async _saveEvents(events: Array<Map<string, any>>): Promise<void> {
+		const eventTable = new EventTableAccessor(this._db.connection, this.getModelObject())
+		const transaction = new Transaction(this._db.connection)
+		await transaction.start()
 		for (let event of events) {
-			const unnecessaryKeys = [...Array(10).keys()]
-			unnecessaryKeys.some(function( key ) {
-				const keyStr = String(key)
-				if (keyStr in event['returnValues']) {
-					delete event['returnValues'][keyStr]
-				} else {
-					return true
-				}
-			});
-			event['eventId'] = event['id']
-			delete event['id']
-			await this._db.upsertItem(event)
+			const eventMap = new Map(Object.entries(event))
+			const hasData = await eventTable.hasData(eventMap.get('id'))
+			if (hasData) {
+				throw Error('Data already exists.')
+			}
+			const saveData = this.getSaveData(eventMap)
+			saveData.event_id = eventMap.get('id')
+			saveData.block_number = eventMap.get('blockNumber')
+			saveData.log_index = eventMap.get('logIndex')
+			saveData.transaction_index = eventMap.get('transactionIndex')
+			saveData.raw_data = JSON.stringify(event)
+
+			await transaction.save(saveData)
 		}
 	}
 
 	private async _getEvents(): Promise<Array<Map<string, any>>> {
-		const recordCount = await this._db.getRecordCount()
+		const eventTable = new EventTableAccessor(this._db.connection, this.getModelObject())
+		const maxBlockNumber = await eventTable.getMaxBlockNumber()
 		const contractJson = this.getAbi()
 		const approvalBlockNumber = await getApprovalBlockNumber()
-		let startBlockNumber = 0
-		if (recordCount !== 0) {
-			startBlockNumber = approvalBlockNumber - Number(process.env.GO_BACK_BLOCK_NUMBER!)
-		}
 		const event = new Event()
 		await event.generateContract(contractJson, this.getContractAddress())
 		const events = await event.getEvent(
 			this.getEventName(),
-			startBlockNumber,
+			Number(maxBlockNumber) + 1,
 			approvalBlockNumber
 		)
 		return events
 	}
-
+	abstract getModelObject<Entity>(): ObjectType<Entity>
 	abstract getContractAddress(): string
 	abstract getBatchName(): string
-	abstract getPartitionKey(): string
 	abstract getAbi(): any
-	//abstract getDirPath(): string
+	abstract getSaveData(event: Map<string, any>): any
 	abstract getEventName(): string
 }

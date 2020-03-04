@@ -2,14 +2,16 @@
 	"IsEncrypted": false,
 	"Values": {
 		"FUNCTIONS_WORKER_RUNTIME": "node",
-		"WEB3_URL": "",
+		"WEB3_URL": "https://mainnet.infura.io/v3/fcacd9c6d60c485283b668b7ce16884f",
 		"APPROVAL": "30",
+		"DB_HOST": "localhost",
+		"DB_PORT": "5432",
+		"DB_USERNAME": "testuser",
+		"DB_PASSWORD": "testpassword",
+		"DB_DATABASE": "testdb",
 		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
-		"DB_END_POINT": "",
-		"DB_KEY": "",
-		"GO_BACK_BLOCK_NUMBER" : 6000,
-		"DISCORD_WEBHOOK_URL_INFO": "",
-		"DISCORD_WEBHOOK_URL_WARNING": "",
-		"DISCORD_WEBHOOK_URL_ERROR": ""
+		"DISCORD_WEBHOOK_URL_INFO": "https://discordapp.com/api/webhooks/678842923093065738/Vw94sB8h2itfhYX3O8xDaGkpTKJndZytyBZsrv4Dfx7IDEO-YjOhkxk_Rg6tepAbYa-e",
+		"DISCORD_WEBHOOK_URL_WARNING": "https://discordapp.com/api/webhooks/678843237665865788/Al-gPljyvG6RbpRUO9aWRGhlzKY-pMqthhGlJotTdsuHPJDZ7szDzVPlrCZnT31lOE-N",
+		"DISCORD_WEBHOOK_URL_ERROR": "https://discordapp.com/api/webhooks/678843375390162954/hLeaj1_WOGWLwnNRI1s0HiicwAMXMWE9k_cZgPPPO8uONhBSL5CnRFDsORQxC_nGts1D"
 	}
 }

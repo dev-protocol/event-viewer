@@ -12,9 +12,12 @@
   },
   "description": "",
   "dependencies": {
-    "@azure/cosmos": "3.6.2",
     "discord-webhook-ts": "3.0.3",
-    "web3": "^1.2.6"
+    "web3": "1.2.6",
+    "typeorm": "0.2.22",
+    "pg": "7.18.2",
+    "reflect-metadata": "0.1.13",
+    "@types/pg": "7.14.1"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.1-beta1",
