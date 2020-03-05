@@ -1,9 +1,14 @@
-import { ObjectType, createConnection, BaseEntity, Connection, QueryRunner } from 'typeorm'
-
+import {
+	ObjectType,
+	createConnection,
+	BaseEntity,
+	Connection,
+	QueryRunner
+} from 'typeorm'
 
 export class EventTableAccessor<Entity> {
-	private _connection: Connection
-	private _entityClass: ObjectType<Entity>
+	private readonly _connection: Connection
+	private readonly _entityClass: ObjectType<Entity>
 
 	constructor(connection: Connection, entityClass: ObjectType<Entity>) {
 		this._connection = connection
@@ -19,9 +24,9 @@ export class EventTableAccessor<Entity> {
 		if (max === null) {
 			max = 0
 		}
+
 		return Number(max)
 	}
-
 
 	public async hasData(eventId: string): Promise<boolean> {
 		const firstUser = await this._connection
@@ -34,12 +39,12 @@ export class EventTableAccessor<Entity> {
 }
 
 export class DbConnection {
-	private _batchName: string
+	private readonly _batchName: string
+	private _connection!: Connection
+
 	constructor(batchName: string) {
 		this._batchName = batchName
 	}
-
-	private _connection!: Connection
 
 	get connection(): Connection {
 		return this._connection
@@ -58,10 +63,10 @@ export class DbConnection {
 	private _getConfig(): any {
 		return {
 			name: this._batchName,
-			type: "postgres",
+			type: 'postgres',
 			synchronize: false,
 			logging: false,
-			entities: ["dist/entities/*.js"],
+			entities: ['dist/entities/*.js'],
 			host: process.env.DB_HOST!,
 			port: process.env.DB_PORT!,
 			username: process.env.DB_USERNAME!,

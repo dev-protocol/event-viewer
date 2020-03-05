@@ -1,6 +1,7 @@
-import { AzureFunction, Context } from "@azure/functions"
+/* eslint-disable @typescript-eslint/camelcase */
+import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
-import { EventSaver } from "../common/base"
+import { EventSaver } from '../common/base'
 import { LockupLockedup } from '../entities/lockup-lockedup'
 import config from './config.json'
 import abi from './abi.json'
@@ -10,6 +11,7 @@ class LockupdEventSaver extends EventSaver {
 		return LockupLockedup
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
 		const lockupLockedup = new LockupLockedup()
 		const values = event.get('returnValues')
@@ -20,14 +22,14 @@ class LockupdEventSaver extends EventSaver {
 	}
 
 	getBatchName(): string {
-		return "lockup-lockedup"
+		return 'lockup-lockedup'
 	}
-
 
 	getContractAddress(): string {
 		return config.contractAddress
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getAbi(): any {
 		return abi
 	}
@@ -37,10 +39,12 @@ class LockupdEventSaver extends EventSaver {
 	}
 }
 
-
-const timerTrigger: AzureFunction = async function (context: Context, myTimer: any): Promise<void> {
+const timerTrigger: AzureFunction = async function(
+	context: Context,
+	myTimer: any
+): Promise<void> {
 	const saver = new LockupdEventSaver(context, myTimer)
 	await saver.execute()
-};
+}
 
-export default timerTrigger;
+export default timerTrigger

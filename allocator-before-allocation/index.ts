@@ -1,6 +1,7 @@
-import { AzureFunction, Context } from "@azure/functions"
+/* eslint-disable @typescript-eslint/camelcase */
+import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
-import { EventSaver } from "../common/base"
+import { EventSaver } from '../common/base'
 import { AllocatorBeforeAllocation } from '../entities/allocator-before-allocation'
 import config from './config.json'
 import abi from './abi.json'
@@ -10,6 +11,7 @@ class BeforeAllocationEventSaver extends EventSaver {
 		return AllocatorBeforeAllocation
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
 		const beforeAllocation = new AllocatorBeforeAllocation()
 		const values = event.get('returnValues')
@@ -24,14 +26,14 @@ class BeforeAllocationEventSaver extends EventSaver {
 	}
 
 	getBatchName(): string {
-		return "allocator-before-allocation"
+		return 'allocator-before-allocation'
 	}
-
 
 	getContractAddress(): string {
 		return config.contractAddress
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getAbi(): any {
 		return abi
 	}
@@ -41,10 +43,12 @@ class BeforeAllocationEventSaver extends EventSaver {
 	}
 }
 
-
-const timerTrigger: AzureFunction = async function (context: Context, myTimer: any): Promise<void> {
+const timerTrigger: AzureFunction = async function(
+	context: Context,
+	myTimer: any
+): Promise<void> {
 	const saver = new BeforeAllocationEventSaver(context, myTimer)
 	await saver.execute()
-};
+}
 
-export default timerTrigger;
+export default timerTrigger

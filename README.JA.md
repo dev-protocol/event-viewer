@@ -8,12 +8,7 @@ Azure Functionsをローカルで動作させるために、下記コマンド�
 brew tap azure/functions
 brew install azure-functions-core-tools@3
 ```
-## azuriteインストール&起動
-Time Triggerなどで必要なツールをインストールし、起動する。
-```
-npm install -g azurite
-azurite -l ~/azurite
-```
+
 ## DBセットアップ
 データを保存するためのデータベースをローカルに構築する。事前にdocker desktopなど、dockerが稼働する環境の構築を完了しておくこと。
 ```
@@ -32,11 +27,20 @@ DISCORD_WEBHOOK_URL_INFO：Discordにinfo情報を通知するためのURL
 DISCORD_WEBHOOK_URL_WARNING：Discordにwarning情報を通知するためのURL
 DISCORD_WEBHOOK_URL_ERROR：Discordにerror情報を通知するためのURL
 
-## Azure Functions稼働
+## 関連ライブラリインストール
+```
+npm install
+```
+## azurite起動
+Time Triggerなどで必要なツールを別画面などで起動する。
+```
+azurite -l ~/azurite
+```
+
+## Azure Functions起動
 下記コマンドでAzure Functionsが稼働する。
 なお、全てのFunctionsはタイマー起動となっており、現状は一時間に一回稼働する。
 ```
-npm install
 npm start
 ```
 

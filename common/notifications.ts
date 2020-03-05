@@ -1,4 +1,4 @@
-import { Logger } from "@azure/functions"
+import { Logger } from '@azure/functions'
 import DiscordWebhook, { Webhook } from 'discord-webhook-ts'
 
 class DiscordNotification {
@@ -81,12 +81,11 @@ class DiscordNotification {
 	}
 }
 
-
 export class EventSaverLogging {
-	private _logger: Logger
-	private _batchName: string
-	private _discord: DiscordNotification
-	constructor(logger: Logger, batchName: string){
+	private readonly _logger: Logger
+	private readonly _batchName: string
+	private readonly _discord: DiscordNotification
+	constructor(logger: Logger, batchName: string) {
 		this._logger = logger
 		this._batchName = batchName
 		this._discord = new DiscordNotification()
@@ -95,30 +94,55 @@ export class EventSaverLogging {
 	public async start(): Promise<void> {
 		let timeStamp = new Date().toISOString()
 		this._logger.info(timeStamp, 'info', this._batchName + ' started')
-		await this._discord.sendInfo('EventSaver', this._batchName, 'message', 'start')
+		await this._discord.sendInfo(
+			'EventSaver',
+			this._batchName,
+			'message',
+			'start'
+		)
 	}
 
 	public async finish(): Promise<void> {
 		let timeStamp = new Date().toISOString()
 		this._logger.info(timeStamp, 'info', this._batchName + ' finished')
-		await this._discord.sendInfo('EventSaver', this._batchName, 'message', 'finish')
+		await this._discord.sendInfo(
+			'EventSaver',
+			this._batchName,
+			'message',
+			'finish'
+		)
 	}
 
 	public async warning(message: string): Promise<void> {
 		let timeStamp = new Date().toISOString()
 		this._logger.warn(timeStamp, 'warning', this._batchName + ':' + message)
-		await this._discord.sendWarning('EventSaver', this._batchName, 'message', message)
+		await this._discord.sendWarning(
+			'EventSaver',
+			this._batchName,
+			'message',
+			message
+		)
 	}
 
 	public async info(message: string): Promise<void> {
 		let timeStamp = new Date().toISOString()
 		this._logger.info(timeStamp, 'info', this._batchName + ':' + message)
-		await this._discord.sendInfo('EventSaver', this._batchName, 'message', message)
+		await this._discord.sendInfo(
+			'EventSaver',
+			this._batchName,
+			'message',
+			message
+		)
 	}
 
 	public async error(message: string): Promise<void> {
 		let timeStamp = new Date().toISOString()
 		this._logger.error(timeStamp, 'error', this._batchName + ':' + message)
-		await this._discord.sendError('EventSaver', this._batchName, 'message', message)
+		await this._discord.sendError(
+			'EventSaver',
+			this._batchName,
+			'message',
+			message
+		)
 	}
 }

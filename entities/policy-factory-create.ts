@@ -1,4 +1,5 @@
-import * as fs from 'fs'
+/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable new-cap */
 import { Entity, PrimaryColumn, Column, BaseEntity } from 'typeorm'
 
 @Entity()
