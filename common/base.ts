@@ -12,7 +12,7 @@ export abstract class EventSaver {
 	constructor(context: Context, myTimer: any) {
 		this._context = context
 		this._myTimer = myTimer
-		this._db = new DbConnection()
+		this._db = new DbConnection(this.getBatchName())
 	}
 
 	public async execute(): Promise<void> {
@@ -29,35 +29,58 @@ export abstract class EventSaver {
 				await logging.info('save ' + events.length + ' data')
 			}
 		} catch (err) {
+			await this._notificationError(err, logging)
+			throw err
+		}　finally {
+			try {
+				await this._db.quit()
+			} catch (quitErr) {
+				this._context.log.error(quitErr)
+			}
+		}
+		await logging.finish()
+	}
+
+	private async _notificationError(err: Error, logging: EventSaverLogging): Promise<void> {
+		try {
 			let desctiption = (err as Error).stack
 			if (typeof desctiption === 'undefined') {
 				desctiption = (err as Error).message
 			}
 			await logging.error(desctiption)
-			throw err
+		} catch (nexteErr) {
+			this._context.log.error(err)
+			this._context.log.error(nexteErr)
 		}
-
-		await logging.finish()
 	}
+
 
 	private async _saveEvents(events: Array<Map<string, any>>): Promise<void> {
 		const eventTable = new EventTableAccessor(this._db.connection, this.getModelObject())
 		const transaction = new Transaction(this._db.connection)
-		await transaction.start()
-		for (let event of events) {
-			const eventMap = new Map(Object.entries(event))
-			const hasData = await eventTable.hasData(eventMap.get('id'))
-			if (hasData) {
-				throw Error('Data already exists.')
-			}
-			const saveData = this.getSaveData(eventMap)
-			saveData.event_id = eventMap.get('id')
-			saveData.block_number = eventMap.get('blockNumber')
-			saveData.log_index = eventMap.get('logIndex')
-			saveData.transaction_index = eventMap.get('transactionIndex')
-			saveData.raw_data = JSON.stringify(event)
+		try {
+			await transaction.start()
+			for (let event of events) {
+				const eventMap = new Map(Object.entries(event))
+				const hasData = await eventTable.hasData(eventMap.get('id'))
+				if (hasData) {
+					throw Error('Data already exists.')
+				}
+				const saveData = this.getSaveData(eventMap)
+				saveData.event_id = eventMap.get('id')
+				saveData.block_number = eventMap.get('blockNumber')
+				saveData.log_index = eventMap.get('logIndex')
+				saveData.transaction_index = eventMap.get('transactionIndex')
+				saveData.raw_data = JSON.stringify(event)
 
-			await transaction.save(saveData)
+				await transaction.save(saveData)
+			}
+			await transaction.commit()
+		} catch (err) {
+			await transaction.rollback()
+			throw err
+		} finally {
+			await transaction.finish()
 		}
 	}
 

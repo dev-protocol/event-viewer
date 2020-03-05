@@ -1,26 +1,30 @@
 import { AzureFunction, Context } from "@azure/functions"
 import { ObjectType } from 'typeorm'
 import { EventSaver } from "../common/base"
-import { PolicyFactoryCreate } from '../entities/policy-factory-create'
+import { AllocatorBeforeAllocation } from '../entities/allocator-before-allocation'
 import config from './config.json'
 import abi from './abi.json'
 
-class CreateEventSaver extends EventSaver {
+class BeforeAllocationEventSaver extends EventSaver {
 	getModelObject<Entity>(): ObjectType<Entity> {
-		return PolicyFactoryCreate
+		return AllocatorBeforeAllocation
 	}
 
 	getSaveData(event: Map<string, any>): any {
-		const policyFactoryCreate = new PolicyFactoryCreate()
+		const beforeAllocation = new AllocatorBeforeAllocation()
 		const values = event.get('returnValues')
-		policyFactoryCreate.from_address = values._from
-		policyFactoryCreate.policy_address = values._policy
-		policyFactoryCreate.inner_policy = values._innerPolicy
-		return policyFactoryCreate
+		beforeAllocation.blocks = values._blocks
+		beforeAllocation.mint = values._mint
+		beforeAllocation.token_value = values._value
+		beforeAllocation.market_value = values._marketValue
+		beforeAllocation.assets = values._assets
+		beforeAllocation.total_assets = values._totalAssets
+
+		return beforeAllocation
 	}
 
 	getBatchName(): string {
-		return "policy-factory-create"
+		return "allocator-before-allocation"
 	}
 
 
@@ -33,13 +37,13 @@ class CreateEventSaver extends EventSaver {
 	}
 
 	getEventName(): string {
-		return 'Create'
+		return 'BeforeAllocation'
 	}
 }
 
 
 const timerTrigger: AzureFunction = async function (context: Context, myTimer: any): Promise<void> {
-	const saver = new CreateEventSaver(context, myTimer)
+	const saver = new BeforeAllocationEventSaver(context, myTimer)
 	await saver.execute()
 };
 

@@ -1,5 +1,4 @@
-import { getRepository, ObjectType, createConnection, BaseEntity, Connection, QueryRunner } from 'typeorm'
-
+import { ObjectType, createConnection, BaseEntity, Connection, QueryRunner } from 'typeorm'
 
 
 export class EventTableAccessor<Entity> {
@@ -12,7 +11,8 @@ export class EventTableAccessor<Entity> {
 	}
 
 	public async getMaxBlockNumber<Entity>(): Promise<number> {
-		let { max } = await getRepository(this._entityClass)
+		let { max } = await this._connection
+			.getRepository(this._entityClass)
 			.createQueryBuilder()
 			.select('MAX(block_number)', 'max')
 			.getRawOne()
@@ -34,6 +34,11 @@ export class EventTableAccessor<Entity> {
 }
 
 export class DbConnection {
+	private _batchName: string
+	constructor(batchName: string) {
+		this._batchName = batchName
+	}
+
 	private _connection!: Connection
 
 	get connection(): Connection {
@@ -42,25 +47,21 @@ export class DbConnection {
 
 	public async connect(): Promise<void> {
 		const config = this._getConfig()
-		console.log(config)
 		this._connection = await createConnection(config)
 		BaseEntity.useConnection(this._connection)
 	}
 
 	public async quit(): Promise<void> {
-		try {
-			await this._connection.close()
-		} catch (err) {
-			console.error(err)
-		}
+		await this._connection.close()
 	}
 
 	private _getConfig(): any {
 		return {
+			name: this._batchName,
 			type: "postgres",
 			synchronize: false,
 			logging: false,
-			entities: ["/entity/*.ts"],
+			entities: ["dist/entities/*.js"],
 			host: process.env.DB_HOST!,
 			port: process.env.DB_PORT!,
 			username: process.env.DB_USERNAME!,
@@ -86,15 +87,15 @@ export class Transaction {
 		await this._runner.manager.save(entity)
 	}
 
+	public async commit(): Promise<void> {
+		await this._runner.commitTransaction()
+	}
+
+	public async rollback(): Promise<void> {
+		await this._runner.rollbackTransaction()
+	}
+
 	public async finish(): Promise<void> {
-		try {
-			await this._runner.commitTransaction()
-		} catch (err) {
-			console.error(err)
-			await this._runner.rollbackTransaction()
-			throw err
-		} finally {
-			await this._runner.release()
-		}
+		await this._runner.release()
 	}
 }

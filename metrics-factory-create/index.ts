@@ -1,26 +1,25 @@
 import { AzureFunction, Context } from "@azure/functions"
 import { ObjectType } from 'typeorm'
 import { EventSaver } from "../common/base"
-import { PolicyFactoryCreate } from '../entities/policy-factory-create'
+import { MetricsFactoryCreate } from '../entities/metrics-factory-create'
 import config from './config.json'
 import abi from './abi.json'
 
 class CreateEventSaver extends EventSaver {
 	getModelObject<Entity>(): ObjectType<Entity> {
-		return PolicyFactoryCreate
+		return MetricsFactoryCreate
 	}
 
 	getSaveData(event: Map<string, any>): any {
-		const policyFactoryCreate = new PolicyFactoryCreate()
+		const metricsFactoryCreate = new MetricsFactoryCreate()
 		const values = event.get('returnValues')
-		policyFactoryCreate.from_address = values._from
-		policyFactoryCreate.policy_address = values._policy
-		policyFactoryCreate.inner_policy = values._innerPolicy
-		return policyFactoryCreate
+		metricsFactoryCreate.from_address = values._from
+		metricsFactoryCreate.metrics = values._metrics
+		return metricsFactoryCreate
 	}
 
 	getBatchName(): string {
-		return "policy-factory-create"
+		return "metrics-factory-create"
 	}
 
 

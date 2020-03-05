@@ -1,7 +1,7 @@
 import { Entity, PrimaryColumn, Column, BaseEntity } from 'typeorm'
 
 @Entity()
-export class PolicyFactoryCreate extends BaseEntity {
+export class MetricsFactoryCreate extends BaseEntity {
 	@PrimaryColumn()
 	public event_id!: string
 
@@ -18,10 +18,7 @@ export class PolicyFactoryCreate extends BaseEntity {
 	public from_address!: string
 
 	@Column()
-	public policy_address!: string
-
-	@Column()
-	public inner_policy!: string
+	public metrics!: string
 
 	@Column()
 	public raw_data!: string

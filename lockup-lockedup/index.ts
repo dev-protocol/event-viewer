@@ -1,26 +1,26 @@
 import { AzureFunction, Context } from "@azure/functions"
 import { ObjectType } from 'typeorm'
 import { EventSaver } from "../common/base"
-import { PolicyFactoryCreate } from '../entities/policy-factory-create'
+import { LockupLockedup } from '../entities/lockup-lockedup'
 import config from './config.json'
 import abi from './abi.json'
 
-class CreateEventSaver extends EventSaver {
+class LockupdEventSaver extends EventSaver {
 	getModelObject<Entity>(): ObjectType<Entity> {
-		return PolicyFactoryCreate
+		return LockupLockedup
 	}
 
 	getSaveData(event: Map<string, any>): any {
-		const policyFactoryCreate = new PolicyFactoryCreate()
+		const lockupLockedup = new LockupLockedup()
 		const values = event.get('returnValues')
-		policyFactoryCreate.from_address = values._from
-		policyFactoryCreate.policy_address = values._policy
-		policyFactoryCreate.inner_policy = values._innerPolicy
-		return policyFactoryCreate
+		lockupLockedup.from_address = values._from
+		lockupLockedup.property = values._property
+		lockupLockedup.token_value = values._value
+		return lockupLockedup
 	}
 
 	getBatchName(): string {
-		return "policy-factory-create"
+		return "lockup-lockedup"
 	}
 
 
@@ -33,13 +33,13 @@ class CreateEventSaver extends EventSaver {
 	}
 
 	getEventName(): string {
-		return 'Create'
+		return 'Lockedup'
 	}
 }
 
 
 const timerTrigger: AzureFunction = async function (context: Context, myTimer: any): Promise<void> {
-	const saver = new CreateEventSaver(context, myTimer)
+	const saver = new LockupdEventSaver(context, myTimer)
 	await saver.execute()
 };
 
