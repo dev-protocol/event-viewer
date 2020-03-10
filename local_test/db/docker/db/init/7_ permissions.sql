@@ -1,0 +1,14 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE SCHEMA IF NOT EXISTS hdb_catalog;
+CREATE SCHEMA IF NOT EXISTS hdb_views;
+
+ALTER SCHEMA hdb_catalog OWNER TO testuser;
+ALTER SCHEMA hdb_views OWNER TO testuser;
+
+GRANT SELECT ON ALL TABLES IN SCHEMA information_schema TO testuser;
+GRANT SELECT ON ALL TABLES IN SCHEMA pg_catalog TO testuser;
+
+GRANT USAGE ON SCHEMA public TO testuser;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO testuser;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO testuser;

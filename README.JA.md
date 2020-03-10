@@ -18,7 +18,7 @@ brew install azure-functions-core-tools@3
 データを保存するためのデータベースをローカルに構築する。事前に docker desktop など、docker が稼働する環境の構築を完了しておくこと。
 
 ```
-cd local_test
+cd local_test/db
 docker-compose up -d
 ```
 
@@ -30,7 +30,7 @@ docker-compose exec db psql -U testuser testdb
 
 ## 環境変数
 
-Discord へのメッセージ通知 Webhook などの設定を行う。設定するファイルは local.settings.json。下記の 4 つ以外はそのままで大丈夫。
+設定するファイルは local.settings.json。下記の 4 つ以外はそのままで大丈夫。
 
 WEB3_URL: web3.js に渡す URL
 DISCORD_WEBHOOK_URL_INFO：Discord に info 情報を通知するための URL
@@ -68,6 +68,30 @@ market-factory-createを実行したい場合
 curl --request POST -H "Content-Type:application/json" --data '{}' http://localhost:7071/admin/functions/market-factory-create
 ```
 
+## コンソールセットアップ
+
+Linux、Windowsの場合は必要に応じてパラメータを変更してください。
+https://hasura.io/docs/1.0/graphql/manual/deployment/docker/index.html
+
+
+```
+cd local_test/console
+docker-compose up -d
+```
+
+下記URLをブラウザで開くとコンソールが起動する
+
+```
+http://localhost:8080/console
+```
+
+また下記コマンドでもデータを取得することができる
+
+```
+curl -X POST -H "Content-Type: application/json" -H "x-hasura-admin-secret: q94GdsRB6iMmgJv32a" --data '{ "query": "{ market_factory_create { block_number } }" }' http://localhost:8080/v1/graphql
+```
+
+
 # 新規関数を追加する場合
 
 新しいコントラクトがデプロイされたり、新しいイベントの情報を取得したい場合の手順を記述する
@@ -87,11 +111,3 @@ func new --template "Timer trigger"  --language TypeScript --name hogehoge-facto
 local_test/docker/db/init 　以下に create の SQL 文を追加する
 
 あとは他の関数をみてよしなにやってください。
-
-# デプロイ
-
-カレントで下記コマンドを実行し、必要に応じて環境変数を設定してください。
-
-```
-func azure functionapp publish dev-protocol-event-viewer
-```
