@@ -95,4 +95,3 @@ local_test/docker/db/init 　以下に create の SQL 文を追加する
 ```
 func azure functionapp publish dev-protocol-event-viewer
 ```
-
