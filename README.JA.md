@@ -70,16 +70,15 @@ curl --request POST -H "Content-Type:application/json" --data '{}' http://localh
 
 ## コンソールセットアップ
 
-Linux、Windowsの場合は必要に応じてパラメータを変更してください。
+Linux、Windows の場合は必要に応じてパラメータを変更してください。
 https://hasura.io/docs/1.0/graphql/manual/deployment/docker/index.html
-
 
 ```
 cd local_test/console
 docker-compose up -d
 ```
 
-下記URLをブラウザで開くとコンソールが起動する
+下記 URL をブラウザで開くとコンソールが起動する
 
 ```
 http://localhost:8080/console
@@ -90,7 +89,6 @@ http://localhost:8080/console
 ```
 curl -X POST -H "Content-Type: application/json" -H "x-hasura-admin-secret: q94GdsRB6iMmgJv32a" --data '{ "query": "{ market_factory_create { block_number } }" }' http://localhost:8080/v1/graphql
 ```
-
 
 # 新規関数を追加する場合
 
