@@ -90,8 +90,9 @@ local_test/docker/db/init 　以下に create の SQL 文を追加する
 
 # デプロイ
 
-カレントで下記コマンドを実行してください。
+カレントで下記コマンドを実行し、必要に応じて環境変数を設定してください。
 
 ```
 func azure functionapp publish dev-protocol-event-viewer
 ```
+
