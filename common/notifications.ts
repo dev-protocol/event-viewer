@@ -92,8 +92,7 @@ export class EventSaverLogging {
 	}
 
 	public async start(): Promise<void> {
-		let timeStamp = new Date().toISOString()
-		this._logger.info(timeStamp, 'info', this._batchName + ' started')
+		this._logger.info(this._batchName + ' started')
 		await this._discord.sendInfo(
 			'EventSaver',
 			this._batchName,
@@ -103,8 +102,7 @@ export class EventSaverLogging {
 	}
 
 	public async finish(): Promise<void> {
-		let timeStamp = new Date().toISOString()
-		this._logger.info(timeStamp, 'info', this._batchName + ' finished')
+		this._logger.info(this._batchName + ' finished')
 		await this._discord.sendInfo(
 			'EventSaver',
 			this._batchName,
@@ -114,8 +112,7 @@ export class EventSaverLogging {
 	}
 
 	public async warning(message: string): Promise<void> {
-		let timeStamp = new Date().toISOString()
-		this._logger.warn(timeStamp, 'warning', this._batchName + ':' + message)
+		this._logger.warn(this._batchName + ':' + message)
 		await this._discord.sendWarning(
 			'EventSaver',
 			this._batchName,
@@ -125,8 +122,7 @@ export class EventSaverLogging {
 	}
 
 	public async info(message: string): Promise<void> {
-		let timeStamp = new Date().toISOString()
-		this._logger.info(timeStamp, 'info', this._batchName + ':' + message)
+		this._logger.info(this._batchName + ':' + message)
 		await this._discord.sendInfo(
 			'EventSaver',
 			this._batchName,
@@ -136,8 +132,7 @@ export class EventSaverLogging {
 	}
 
 	public async error(message: string): Promise<void> {
-		let timeStamp = new Date().toISOString()
-		this._logger.error(timeStamp, 'error', this._batchName + ':' + message)
+		this._logger.error(this._batchName + ':' + message)
 		await this._discord.sendError(
 			'EventSaver',
 			this._batchName,

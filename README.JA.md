@@ -25,17 +25,19 @@ docker-compose up -d
 下記コマンドで DB に接続することができる
 
 ```
-docker-compose exec db psql -U testuser testdb
+docker exec db psql -U testuser testdb
 ```
 
 ## 環境変数
 
 設定するファイルは local.settings.json。下記の 4 つ以外はそのままで大丈夫。
 
+```
 WEB3_URL: web3.js に渡す URL
 DISCORD_WEBHOOK_URL_INFO：Discord に info 情報を通知するための URL
 DISCORD_WEBHOOK_URL_WARNING：Discord に warning 情報を通知するための URL
 DISCORD_WEBHOOK_URL_ERROR：Discord に error 情報を通知するための URL
+```
 
 ## 関連ライブラリインストール
 
