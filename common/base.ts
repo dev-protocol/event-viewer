@@ -110,7 +110,9 @@ export abstract class EventSaver {
 		const contractJson = this.getAbi()
 		const approvalBlockNumber = await getApprovalBlockNumber()
 		const event = new Event()
-		await event.generateContract(contractJson, this.getContractAddress())
+		const contractAddress = this.getContractAddress()
+		this._context.log.info('target contract address:' + contractAddress)
+		await event.generateContract(contractJson, contractAddress)
 		const events = await event.getEvent(
 			this.getEventName(),
 			Number(maxBlockNumber) + 1,
