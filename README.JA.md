@@ -25,7 +25,8 @@ docker-compose up -d
 下記コマンドで DB に接続することができる
 
 ```
-docker exec db psql -U testuser testdb
+psql postgresql://testuser@localhost:5432/testdb
+パスワード：testpassword
 ```
 
 ## 環境変数
@@ -109,5 +110,6 @@ func new --template "Timer trigger"  --language TypeScript --name hogehoge-facto
 ## テーブル定義の追加
 
 local_test/docker/db/init 　以下に create の SQL 文を追加する
+entities 　以下に テーブル定義を追加する
 
 あとは他の関数をみてよしなにやってください。
