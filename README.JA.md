@@ -25,7 +25,8 @@ docker-compose up -d
 下記コマンドで DB に接続することができる
 
 ```
-docker exec db psql -U testuser testdb
+psql postgresql://testuser@localhost:5432/testdb
+パスワード：testpassword
 ```
 
 ## 環境変数

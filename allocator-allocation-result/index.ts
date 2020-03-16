@@ -39,7 +39,7 @@ class AllocationResultEventSaver extends EventSaver {
 	}
 
 	getEventName(): string {
-		return 'Allocation Result'
+		return 'AllocationResult'
 	}
 }
 
