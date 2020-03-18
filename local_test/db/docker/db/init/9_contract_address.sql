@@ -6,8 +6,8 @@ CREATE TABLE contract_address(
     PRIMARY KEY(batch_name)
 );
 
-INSERT INTO contract_address VALUES ('allocator-allocation-result', '0xb15E6CeAED167Bf5a50aB780BD0e758d96D44856');
-INSERT INTO contract_address VALUES ('allocator-before-allocation', '0xb15E6CeAED167Bf5a50aB780BD0e758d96D44856');
+INSERT INTO contract_address VALUES ('allocator-allocation-result', '0xF743b637425EA171018980cF086082C474d7974F');
+INSERT INTO contract_address VALUES ('allocator-before-allocation', '0xF743b637425EA171018980cF086082C474d7974F');
 INSERT INTO contract_address VALUES ('lockup-lockedup', '0x3d40fab11ee30e3aa1900ccfafd190f0851a6157');
 INSERT INTO contract_address VALUES ('market-factory-create', '0x6fbb138ac2e9f780826ed10cc05211d9506d8ad9');
 INSERT INTO contract_address VALUES ('metrics-factory-create', '0xaf490ba3eaff9495f01407ec22027bd90eafabb1');
