@@ -3,7 +3,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from '../common/base'
 import { AllocatorBeforeAllocation } from '../entities/allocator-before-allocation'
-import config from './config.json'
 import abi from './abi.json'
 
 class BeforeAllocationEventSaver extends EventSaver {
@@ -27,10 +26,6 @@ class BeforeAllocationEventSaver extends EventSaver {
 
 	getBatchName(): string {
 		return 'allocator-before-allocation'
-	}
-
-	getContractAddress(): string {
-		return config.contractAddress
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature

@@ -2,7 +2,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from '../common/base'
 import { MarketFactoryCreate } from '../entities/market-factory-create'
-import config from './config.json'
 import abi from './abi.json'
 
 class CreateEventSaver extends EventSaver {
@@ -22,10 +21,6 @@ class CreateEventSaver extends EventSaver {
 
 	getBatchName(): string {
 		return 'market-factory-create'
-	}
-
-	getContractAddress(): string {
-		return config.contractAddress
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature

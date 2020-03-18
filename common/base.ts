@@ -2,7 +2,9 @@
 import { Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaverLogging } from './notifications'
-import { EventTableAccessor, DbConnection, Transaction } from './db'
+import { DbConnection, Transaction } from './db/common'
+import { EventTableAccessor } from './db/event'
+import { ContractAddressAccessor } from './db/contract-address'
 import { getApprovalBlockNumber, Event } from './block-chain'
 
 export abstract class EventSaver {
@@ -110,7 +112,7 @@ export abstract class EventSaver {
 		const contractJson = this.getAbi()
 		const approvalBlockNumber = await getApprovalBlockNumber()
 		const event = new Event()
-		const contractAddress = this.getContractAddress()
+		const contractAddress = await this._getContractAddress()
 		this._context.log.info('target contract address:' + contractAddress)
 		await event.generateContract(contractJson, contractAddress)
 		const events = await event.getEvent(
@@ -121,8 +123,15 @@ export abstract class EventSaver {
 		return events
 	}
 
+	private async _getContractAddress(): Promise<string> {
+		const contractAddress = new ContractAddressAccessor(this._db.connection)
+		const address = await contractAddress.getContractAddress(
+			this.getBatchName()
+		)
+		return address
+	}
+
 	abstract getModelObject<Entity>(): ObjectType<Entity>
-	abstract getContractAddress(): string
 	abstract getBatchName(): string
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	abstract getAbi(): any
