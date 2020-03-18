@@ -3,7 +3,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from '../common/base'
 import { LockupLockedup } from '../entities/lockup-lockedup'
-import config from './config.json'
 import abi from './abi.json'
 
 class LockupdEventSaver extends EventSaver {
@@ -23,10 +22,6 @@ class LockupdEventSaver extends EventSaver {
 
 	getBatchName(): string {
 		return 'lockup-lockedup'
-	}
-
-	getContractAddress(): string {
-		return config.contractAddress
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
