@@ -14,3 +14,4 @@ INSERT INTO contract_address VALUES ('metrics-factory-create', '0xC6eDBd2bcD3dD5
 INSERT INTO contract_address VALUES ('metrics-factory-destroy', '0xC6eDBd2bcD3dD5f13b9AFA578458A37A42a53040');
 INSERT INTO contract_address VALUES ('policy-factory-create', '0xca0f09564b1d0182b907352c631734d65c457d77');
 INSERT INTO contract_address VALUES ('property-factory-create', '0xcb90fc08d405b75f5242cfe8f8d0397de19d149c');
+
