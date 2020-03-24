@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Connection } from 'typeorm'
 import { ContractAddress } from '../../entities/contract_address'
 
