@@ -11,12 +11,12 @@ class DestroyEventSaver extends EventSaver {
 
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
-		const metricsFactoryCreate = new MetricsFactoryDestroy()
+		const metricsFactoryDestroy = new MetricsFactoryDestroy()
 		const values = event.get('returnValues')
 		// eslint-disable-next-line @typescript-eslint/camelcase
-		metricsFactoryCreate.from_address = values._from
-		metricsFactoryCreate.metrics = values._metrics
-		return metricsFactoryCreate
+		metricsFactoryDestroy.from_address = values._from
+		metricsFactoryDestroy.metrics = values._metrics
+		return metricsFactoryDestroy
 	}
 
 	getBatchName(): string {
