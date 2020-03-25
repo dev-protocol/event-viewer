@@ -3,7 +3,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from '../common/base'
 import { AllocatorAllocationResult } from '../entities/allocator-allocation-result'
-import abi from './abi.json'
 
 class AllocationResultEventSaver extends EventSaver {
 	getModelObject<Entity>(): ObjectType<Entity> {
@@ -24,13 +23,12 @@ class AllocationResultEventSaver extends EventSaver {
 		return allocationResult
 	}
 
-	getBatchName(): string {
-		return 'allocator-allocation-result'
+	getContractName(): string {
+		return 'Allocator'
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
-	getAbi(): any {
-		return abi
+	getBatchName(): string {
+		return 'allocator-allocation-result'
 	}
 
 	getEventName(): string {

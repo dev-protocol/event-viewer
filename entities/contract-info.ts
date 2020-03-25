@@ -3,10 +3,13 @@
 import { Entity, PrimaryColumn, Column, BaseEntity } from 'typeorm'
 
 @Entity()
-export class ContractAddress extends BaseEntity {
+export class ContractInfo extends BaseEntity {
 	@PrimaryColumn()
-	public batch_name!: string
+	public name!: string
 
 	@Column()
-	public contract_address!: string
+	public address!: string
+
+	@Column()
+	public abi!: string
 }

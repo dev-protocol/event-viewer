@@ -4,7 +4,7 @@ import { ObjectType } from 'typeorm'
 import { EventSaverLogging } from './notifications'
 import { DbConnection, Transaction } from './db/common'
 import { EventTableAccessor } from './db/event'
-import { ContractAddressAccessor } from './db/contract-address'
+import { ContractInfoAccessor } from './db/contract-info'
 import { getApprovalBlockNumber, Event } from './block-chain'
 
 export abstract class EventSaver {
@@ -109,12 +109,16 @@ export abstract class EventSaver {
 			this.getModelObject()
 		)
 		const maxBlockNumber = await eventTable.getMaxBlockNumber()
-		const contractJson = this.getAbi()
+		const contractInfo = await this._getContractInfo()
 		const approvalBlockNumber = await getApprovalBlockNumber()
 		const event = new Event()
-		const contractAddress = await this._getContractAddress()
-		this._context.log.info('target contract address:' + contractAddress)
-		await event.generateContract(contractJson, contractAddress)
+		this._context.log.info(
+			'target contract address:' + contractInfo.get('contract_info_address')
+		)
+		await event.generateContract(
+			JSON.parse(contractInfo.get('contract_info_abi')),
+			contractInfo.get('contract_info_address')
+		)
 		const events = await event.getEvent(
 			this.getEventName(),
 			Number(maxBlockNumber) + 1,
@@ -123,18 +127,17 @@ export abstract class EventSaver {
 		return events
 	}
 
-	private async _getContractAddress(): Promise<string> {
-		const contractAddress = new ContractAddressAccessor(this._db.connection)
-		const address = await contractAddress.getContractAddress(
-			this.getBatchName()
+	private async _getContractInfo(): Promise<Map<string, string>> {
+		const contractInfoAccessor = new ContractInfoAccessor(this._db.connection)
+		const info = await contractInfoAccessor.getContractInfo(
+			this.getContractName()
 		)
-		return address
+		return new Map(Object.entries(info))
 	}
 
 	abstract getModelObject<Entity>(): ObjectType<Entity>
 	abstract getBatchName(): string
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
-	abstract getAbi(): any
+	abstract getContractName(): string
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	abstract getSaveData(event: Map<string, any>): any
 	abstract getEventName(): string
