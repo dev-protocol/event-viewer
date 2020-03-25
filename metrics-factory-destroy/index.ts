@@ -2,7 +2,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from '../common/base'
 import { MetricsFactoryDestroy } from '../entities/metrics-factory-destroy'
-import abi from './abi.json'
 
 class DestroyEventSaver extends EventSaver {
 	getModelObject<Entity>(): ObjectType<Entity> {
@@ -19,13 +18,12 @@ class DestroyEventSaver extends EventSaver {
 		return metricsFactoryDestroy
 	}
 
-	getBatchName(): string {
-		return 'metrics-factory-destroy'
+	getContractName(): string {
+		return 'MetricsFactory'
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
-	getAbi(): any {
-		return abi
+	getBatchName(): string {
+		return 'metrics-factory-destroy'
 	}
 
 	getEventName(): string {

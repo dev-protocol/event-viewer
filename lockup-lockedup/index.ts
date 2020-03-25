@@ -3,7 +3,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from '../common/base'
 import { LockupLockedup } from '../entities/lockup-lockedup'
-import abi from './abi.json'
 
 class LockupdEventSaver extends EventSaver {
 	getModelObject<Entity>(): ObjectType<Entity> {
@@ -20,13 +19,12 @@ class LockupdEventSaver extends EventSaver {
 		return lockupLockedup
 	}
 
-	getBatchName(): string {
-		return 'lockup-lockedup'
+	getContractName(): string {
+		return 'Lockup'
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
-	getAbi(): any {
-		return abi
+	getBatchName(): string {
+		return 'lockup-lockedup'
 	}
 
 	getEventName(): string {

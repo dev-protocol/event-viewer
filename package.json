@@ -1,6 +1,6 @@
 {
 	"name": "event-viewer",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "A tool that can refer to Dev Protocol event information",
 	"author": "Akira-Taniguchi",
 	"license": "MPL-2.0",
@@ -14,7 +14,7 @@
 		"test": "echo \"No tests yet...\"",
 		"lint": "npm run lint:eslint && npm run lint:format",
 		"lint:eslint": "eslint . --ext .ts --fix",
-		"lint:format": "prettier --write '**/*.{js,json,md,yml}'"
+		"lint:format": "prettier --write '**/*.{json,md,yml}'"
 	},
 	"husky": {
 		"hooks": {
