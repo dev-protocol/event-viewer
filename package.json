@@ -11,10 +11,27 @@
 		"prestart": "npm run build && func extensions install",
 		"start:host": "func start",
 		"start": "npm-run-all --parallel start:host watch",
-		"test": "echo \"No tests yet...\"",
+		"test": "jest",
 		"lint": "npm run lint:eslint && npm run lint:format",
 		"lint:eslint": "eslint . --ext .ts --fix",
 		"lint:format": "prettier --write '**/*.{json,md,yml}'"
+	},
+	"jest": {
+		"moduleFileExtensions": [
+			"ts",
+			"js"
+		],
+		"transform": {
+			"^.+\\.(ts)$": "ts-jest"
+		},
+		"globals": {
+			"ts-jest": {
+				"config": "tsconfig.json"
+			}
+		},
+		"testMatch": [
+			"**/test/**/*.ts"
+		]
 	},
 	"husky": {
 		"hooks": {
@@ -22,26 +39,30 @@
 		}
 	},
 	"dependencies": {
+		"@types/pg": "7.14.1",
 		"discord-webhook-ts": "3.0.3",
-		"web3": "1.2.6",
-		"typeorm": "0.2.22",
 		"pg": "7.18.2",
 		"reflect-metadata": "0.1.13",
-		"@types/pg": "7.14.1"
+		"typeorm": "0.2.22",
+		"web3": "1.2.6"
 	},
 	"devDependencies": {
 		"@azure/functions": "^1.0.1-beta1",
+		"@types/jest": "^25.1.4",
 		"@typescript-eslint/eslint-plugin": "^2.17.0",
 		"@typescript-eslint/parser": "^2.17.0",
+		"azurite": "^3.5.0",
+		"azure-function-context-mock": "^0.0.7",
 		"eslint": "^6.8.0",
 		"eslint-config-prettier": "^6.9.0",
 		"eslint-config-xo": "^0.27.2",
 		"eslint-config-xo-typescript": "^0.24.1",
 		"eslint-plugin-prettier": "^3.1.2",
 		"husky": "^4.2.0",
-		"prettier": "^1.19.1",
-		"azurite": "^3.5.0",
+		"jest": "^25.2.0",
 		"npm-run-all": "^4.1.5",
+		"prettier": "^1.19.1",
+		"ts-jest": "^25.2.1",
 		"typescript": "^3.3.3"
 	},
 	"repository": {
