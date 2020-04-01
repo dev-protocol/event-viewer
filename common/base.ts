@@ -6,6 +6,8 @@ import { DbConnection, Transaction } from './db/common'
 import { EventTableAccessor } from './db/event'
 import { ContractInfoAccessor } from './db/contract-info'
 import { getApprovalBlockNumber, Event } from './block-chain'
+/* eslint-disable @typescript-eslint/no-var-requires */
+const Web3 = require('web3')
 
 export abstract class EventSaver {
 	private readonly _db: DbConnection
@@ -110,8 +112,11 @@ export abstract class EventSaver {
 		)
 		const maxBlockNumber = await eventTable.getMaxBlockNumber()
 		const contractInfo = await this._getContractInfo()
-		const approvalBlockNumber = await getApprovalBlockNumber()
-		const event = new Event()
+		const web3 = new Web3(
+			new Web3.providers.HttpProvider(process.env.WEB3_URL!)
+		)
+		const approvalBlockNumber = await getApprovalBlockNumber(web3)
+		const event = new Event(web3)
 		this._context.log.info(
 			'target contract address:' + contractInfo.get('contract_info_address')
 		)
