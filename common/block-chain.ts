@@ -1,9 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Web3 = require('web3')
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export async function getApprovalBlockNumber() {
-	const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_URL!))
+export async function getApprovalBlockNumber(web3: any): Promise<number> {
 	const currentBlockNumber = await web3.eth.getBlockNumber()
 	return currentBlockNumber - Number(process.env.APPROVAL!)
 }
@@ -11,10 +6,9 @@ export async function getApprovalBlockNumber() {
 export class Event {
 	private readonly _web3: any
 	private _contract: any
-	constructor() {
-		this._web3 = new Web3(
-			new Web3.providers.HttpProvider(process.env.WEB3_URL!)
-		)
+	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
+	constructor(web3: any) {
+		this._web3 = web3
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
