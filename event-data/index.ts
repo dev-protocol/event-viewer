@@ -1,5 +1,8 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import axios from 'axios'
+import { AxiosResponse } from 'axios'
+import urljoin from 'url-join'
+import { EventSaverLogging } from '../common/notifications'
 import { RequestValidatorBuilder, ValidateError } from './validator'
 
 const httpTrigger: AzureFunction = async function(
@@ -7,9 +10,11 @@ const httpTrigger: AzureFunction = async function(
 	req: HttpRequest
 ): Promise<void> {
 	// Validate
+	const logging = new EventSaverLogging(context.log, 'event-data')
 	const validatorBuilder = new RequestValidatorBuilder(req)
 	validatorBuilder.addJsonValidator()
 	validatorBuilder.addQueryValidator()
+	validatorBuilder.addFuncNameValidator()
 	try {
 		validatorBuilder.build().execute()
 	} catch (e) {
@@ -21,23 +26,37 @@ const httpTrigger: AzureFunction = async function(
 			return
 		}
 
+		logging.error(e.message)
 		throw e
 	}
 
 	// Request
-	const res = await axios.post(
-		process.env.HASERA_REQUEST_URL!,
-		{
-			query: req.body.query
-		},
-		{
-			headers: {
-				'content-type': 'application/json',
-				'x-hasura-role': process.env.HASERA_ROLE,
-				'x-hasura-admin-secret': process.env.HASURA_SECRET!
+	let res: AxiosResponse
+	try {
+		res = await axios.post(
+			urljoin(
+				process.env.HASERA_REQUEST_URL!,
+				req.params.version,
+				req.params.language
+			),
+			{
+				query: req.body.query
+			},
+			{
+				headers: {
+					'content-type': 'application/json',
+					'x-hasura-role': process.env.HASERA_ROLE,
+					'x-hasura-admin-secret': process.env.HASURA_SECRET!
+				}
 			}
+		)
+	} catch (e) {
+		context.res = {
+			status: e.response.status,
+			body: e.response.statusText
 		}
-	)
+		return
+	}
 
 	// Response
 	if (res.status !== 200 || typeof res.data.errors !== 'undefined') {
@@ -45,7 +64,7 @@ const httpTrigger: AzureFunction = async function(
 			status: 400,
 			body: 'unknown error'
 		}
-		console.log(res)
+		logging.error(res.statusText)
 		return
 	}
 
