@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { Web3 } from '../../lib/web3-mock'
 import { getApprovalBlockNumber, Event } from '../../../common/block-chain'
 
