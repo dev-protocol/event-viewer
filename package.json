@@ -1,6 +1,6 @@
 {
 	"name": "event-viewer",
-	"version": "0.0.5",
+	"version": "0.1.0",
 	"description": "A tool that can refer to Dev Protocol event information",
 	"author": "Akira-Taniguchi",
 	"license": "MPL-2.0",
@@ -44,6 +44,7 @@
 	},
 	"dependencies": {
 		"@types/pg": "7.14.1",
+		"axios": "^0.19.2",
 		"discord-webhook-ts": "3.0.3",
 		"pg": "7.18.2",
 		"reflect-metadata": "0.1.13",

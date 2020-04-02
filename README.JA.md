@@ -38,6 +38,9 @@ WEB3_URL: web3.js に渡す URL
 DISCORD_WEBHOOK_URL_INFO：Discord に info 情報を通知するための URL
 DISCORD_WEBHOOK_URL_WARNING：Discord に warning 情報を通知するための URL
 DISCORD_WEBHOOK_URL_ERROR：Discord に error 情報を通知するための URL
+HASERA_REQUEST_URL：HasuraのAPI URL
+HASERA_ROLE：クエリを実行するHasuraロール名
+HASURA_SECRET：Hasuraのシークレットキー
 ```
 
 ## 関連ライブラリインストール
@@ -57,7 +60,6 @@ azurite -l ~/azurite
 ## Azure Functions 起動
 
 下記コマンドで Azure Functions が稼働する。
-なお、全ての Functions はタイマー起動となっており、現状は一時間に一回稼働する。
 
 ```
 npm start
@@ -69,6 +71,9 @@ npm start
 market-factory-createを実行したい場合
 
 curl --request POST -H "Content-Type:application/json" --data '{}' http://localhost:7071/admin/functions/market-factory-create
+
+イベントデータを取得したい場合
+curl -X POST -H "Content-Type: application/json" --data '{ "query": "{ allocator_before_allocation { blocks mint token_value market_value assets total_assets} }" }' http://localhost:7071/api/event-data
 ```
 
 ## コンソールセットアップ
@@ -90,7 +95,7 @@ http://localhost:8080/console
 また下記コマンドでもデータを取得することができる
 
 ```
-curl -X POST -H "Content-Type: application/json" -H "x-hasura-admin-secret: q94GdsRB6iMmgJv32a" --data '{ "query": "{ market_factory_create { block_number } }" }' http://localhost:8080/v1/graphql
+curl -X POST -H "Content-Type: application/json" -H "x-hasura-admin-secret: hasurakey" --data '{ "query": "{ market_factory_create { block_number } }" }' http://localhost:8080/v1/graphql
 ```
 
 # 新規関数を追加する場合
@@ -105,6 +110,9 @@ curl -X POST -H "Content-Type: application/json" -H "x-hasura-admin-secret: q94G
 hogehoge-factoryコントラクトのcreateイベントの場合
 
 func new --template "Timer trigger"  --language TypeScript --name hogehoge-factory-create
+
+httpリクエストで実行される関数を作成する場合
+func new --name event-data --template "HTTP trigger" --language TypeScript
 ```
 
 ## テーブル定義の追加

@@ -12,6 +12,9 @@
 		"AzureWebJobsStorage": "UseDevelopmentStorage=true",
 		"DISCORD_WEBHOOK_URL_INFO": "",
 		"DISCORD_WEBHOOK_URL_WARNING": "",
-		"DISCORD_WEBHOOK_URL_ERROR": ""
+		"DISCORD_WEBHOOK_URL_ERROR": "",
+		"HASERA_REQUEST_URL": "",
+		"HASERA_ROLE": "",
+		"HASURA_SECRET": ""
 	}
 }
