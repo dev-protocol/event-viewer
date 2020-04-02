@@ -1,6 +1,6 @@
 {
 	"name": "event-viewer",
-	"version": "0.0.5",
+	"version": "0.1.0",
 	"description": "A tool that can refer to Dev Protocol event information",
 	"author": "Akira-Taniguchi",
 	"license": "MPL-2.0",
