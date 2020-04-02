@@ -14,7 +14,6 @@ const httpTrigger: AzureFunction = async function(
 	const validatorBuilder = new RequestValidatorBuilder(req)
 	validatorBuilder.addJsonValidator()
 	validatorBuilder.addQueryValidator()
-	validatorBuilder.addFuncNameValidator()
 	try {
 		validatorBuilder.build().execute()
 	} catch (e) {

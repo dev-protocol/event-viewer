@@ -1,5 +1,5 @@
 {
-	"scriptFile": "../dist/event-data/index.js",
+	"scriptFile": "../dist/events/index.js",
 	"bindings": [
 		{
 			"authLevel": "function",
@@ -7,7 +7,7 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["post"],
-			"route": "{funcName}/{version}/{language}"
+			"route": "events/{version}/{language}"
 		},
 		{
 			"type": "http",
