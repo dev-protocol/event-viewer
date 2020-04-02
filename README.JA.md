@@ -105,6 +105,9 @@ curl -X POST -H "Content-Type: application/json" -H "x-hasura-admin-secret: q94G
 hogehoge-factoryコントラクトのcreateイベントの場合
 
 func new --template "Timer trigger"  --language TypeScript --name hogehoge-factory-create
+
+httpリクエストで実行される関数を作成する場合
+func new --name event-data --template "HTTP trigger" --language TypeScript
 ```
 
 ## テーブル定義の追加
