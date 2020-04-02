@@ -1,10 +1,11 @@
 {
+	"env": { "jest": true },
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"project": "./tsconfig.json",
 		"tsconfigRootDir": "."
 	},
-	"plugins": ["@typescript-eslint", "prettier"],
+	"plugins": ["@typescript-eslint", "prettier", "jest"],
 	"extends": [
 		"xo",
 		"xo-typescript",

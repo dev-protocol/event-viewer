@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 import { getContextMock } from '../../lib/context'
 
 jest.mock('discord-webhook-ts')
