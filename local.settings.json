@@ -13,8 +13,8 @@
 		"DISCORD_WEBHOOK_URL_INFO": "",
 		"DISCORD_WEBHOOK_URL_WARNING": "",
 		"DISCORD_WEBHOOK_URL_ERROR": "",
-		"HASERA_REQUEST_URL": "",
-		"HASERA_ROLE": "",
-		"HASURA_SECRET": ""
+		"HASERA_REQUEST_URL": "https://devprtcl-event.azurewebsites.net",
+		"HASERA_ROLE": "user",
+		"HASURA_SECRET": "rKDjQfY8SHvUjgXBPa"
 	}
 }

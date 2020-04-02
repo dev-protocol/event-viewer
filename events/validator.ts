@@ -14,10 +14,6 @@ export class RequestValidatorBuilder {
 		this._validator.addValidator(new QueryValidator())
 	}
 
-	public addFuncNameValidator(): void {
-		this._validator.addValidator(new FuncNameValidator())
-	}
-
 	public build(): RequestValidator {
 		return this._validator
 	}
@@ -76,15 +72,5 @@ class QueryValidator implements Validator {
 		}
 
 		throw new ValidateError(400, 'query only')
-	}
-}
-
-class FuncNameValidator implements Validator {
-	public execute(req: HttpRequest): void {
-		if (req.params.funcName === 'event-data') {
-			return
-		}
-
-		throw new ValidateError(400, 'function name is event-data only')
 	}
 }
