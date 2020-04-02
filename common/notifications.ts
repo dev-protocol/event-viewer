@@ -83,59 +83,59 @@ class DiscordNotification {
 
 export class EventSaverLogging {
 	private readonly _logger: Logger
-	private readonly _batchName: string
+	private readonly _funcname: string
 	private readonly _discord: DiscordNotification
-	constructor(logger: Logger, batchName: string) {
+	constructor(logger: Logger, funcname: string) {
 		this._logger = logger
-		this._batchName = batchName
+		this._funcname = funcname
 		this._discord = new DiscordNotification()
 	}
 
 	public async start(): Promise<void> {
-		this._logger.info(this._batchName + ' started')
+		this._logger.info(this._funcname + ' started')
 		await this._discord.sendInfo(
 			'EventSaver',
-			this._batchName,
+			this._funcname,
 			'message',
 			'start'
 		)
 	}
 
 	public async finish(): Promise<void> {
-		this._logger.info(this._batchName + ' finished')
+		this._logger.info(this._funcname + ' finished')
 		await this._discord.sendInfo(
 			'EventSaver',
-			this._batchName,
+			this._funcname,
 			'message',
 			'finish'
 		)
 	}
 
 	public async warning(message: string): Promise<void> {
-		this._logger.warn(this._batchName + ':' + message)
+		this._logger.warn(this._funcname + ':' + message)
 		await this._discord.sendWarning(
 			'EventSaver',
-			this._batchName,
+			this._funcname,
 			'message',
 			message
 		)
 	}
 
 	public async info(message: string): Promise<void> {
-		this._logger.info(this._batchName + ':' + message)
+		this._logger.info(this._funcname + ':' + message)
 		await this._discord.sendInfo(
 			'EventSaver',
-			this._batchName,
+			this._funcname,
 			'message',
 			message
 		)
 	}
 
 	public async error(message: string): Promise<void> {
-		this._logger.error(this._batchName + ':' + message)
+		this._logger.error(this._funcname + ':' + message)
 		await this._discord.sendError(
 			'EventSaver',
-			this._batchName,
+			this._funcname,
 			'message',
 			message
 		)
