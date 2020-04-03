@@ -9,7 +9,7 @@ describe('DbConnection', () => {
 		process.env.DB_DATABASE = 'testdb'
 		const con = new DbConnection('test-batch-name')
 		await con.connect()
-		console.log(111)
 		expect(con.connection.isConnected).toBe(true)
+		await con.quit()
 	})
 })
