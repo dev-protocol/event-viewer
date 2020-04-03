@@ -17,12 +17,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: npm install and test
-        env:
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USERNAME: testuser
-          DB_PASSWORD: testpassword
-          DB_DATABASE: testdb
         run: |
           npm ci
           cd local_test/db
