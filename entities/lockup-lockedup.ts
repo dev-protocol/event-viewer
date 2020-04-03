@@ -17,10 +17,10 @@ export class LockupLockedup extends BaseEntity {
 	public transaction_index!: number
 
 	@Column()
-	public from_address!: number
+	public from_address!: string
 
 	@Column()
-	public property!: number
+	public property!: string
 
 	@Column()
 	public token_value!: number
