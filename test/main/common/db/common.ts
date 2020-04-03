@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { EntityManager, Connection } from 'typeorm'
+import { EntityManager } from 'typeorm'
 
 import { DbConnection, Transaction } from '../../../../common/db/common'
 import { LockupLockedup } from '../../../../entities/lockup-lockedup'
@@ -16,11 +16,12 @@ describe('DbConnection', () => {
 })
 
 describe('Transaction', () => {
-	it('commitするとデータが保存できる.', async () => {
+	it('can save data when you commit.', async () => {
 		setDbSettings()
 		const con = new DbConnection('test-batch-name')
 		await con.connect()
-		await deleteAllData(con.connection)
+		const manager = new EntityManager(con.connection)
+		await manager.clear(LockupLockedup)
 		const transaction = new Transaction(con.connection)
 		await transaction.start()
 		const lockupLockedup = new LockupLockedup()
@@ -28,55 +29,45 @@ describe('Transaction', () => {
 		lockupLockedup.block_number = 30000
 		lockupLockedup.log_index = 21
 		lockupLockedup.transaction_index = 36
-		// LockupLockedup.from_address = '0x12345'
-		// lockupLockedup.property = '0x12345'
+		lockupLockedup.from_address = '0x12345'
+		lockupLockedup.property = '0x12345'
 		lockupLockedup.token_value = 100
 		lockupLockedup.raw_data = '{}'
+		await transaction.save(lockupLockedup)
+		await transaction.commit()
+		await transaction.finish()
 
+		const recordCount = await con.connection
+			.getRepository(LockupLockedup)
+			.count()
 		await con.quit()
+		expect(recordCount).toBe(1)
 	})
-	it('rollbackするとデータが保存されない.', async () => {
+	it('cannot save data when you rollback.', async () => {
 		setDbSettings()
 		const con = new DbConnection('test-batch-name')
 		await con.connect()
-		await deleteAllData(con.connection)
+		const manager = new EntityManager(con.connection)
+		await manager.clear(LockupLockedup)
 		const transaction = new Transaction(con.connection)
 		await transaction.start()
+		const lockupLockedup = new LockupLockedup()
+		lockupLockedup.event_id = 'dummy-event-id'
+		lockupLockedup.block_number = 30000
+		lockupLockedup.log_index = 21
+		lockupLockedup.transaction_index = 36
+		lockupLockedup.from_address = '0x12345'
+		lockupLockedup.property = '0x12345'
+		lockupLockedup.token_value = 100
+		lockupLockedup.raw_data = '{}'
+		await transaction.save(lockupLockedup)
+		await transaction.rollback()
+		await transaction.finish()
 
+		const recordCount = await con.connection
+			.getRepository(LockupLockedup)
+			.count()
 		await con.quit()
+		expect(recordCount).toBe(0)
 	})
 })
-
-async function deleteAllData(con: Connection): Promise<void> {
-	const manager = new EntityManager(con)
-	await manager.clear(LockupLockedup)
-}
-
-// Export class Transaction {
-// 	private readonly _runner!: QueryRunner
-
-// 	constructor(connection: Connection) {
-// 		this._runner = connection.createQueryRunner()
-// 	}
-
-// 	public async start(): Promise<void> {
-// 		await this._runner.connect()
-// 		await this._runner.startTransaction()
-// 	}
-
-// 	public async save<Entity>(entity: Entity): Promise<void> {
-// 		await this._runner.manager.save(entity)
-// 	}
-
-// 	public async commit(): Promise<void> {
-// 		await this._runner.commitTransaction()
-// 	}
-
-// 	public async rollback(): Promise<void> {
-// 		await this._runner.rollbackTransaction()
-// 	}
-
-// 	public async finish(): Promise<void> {
-// 		await this._runner.release()
-// 	}
-// }
