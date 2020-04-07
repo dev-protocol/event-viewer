@@ -1,5 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import axios from 'axios'
+import axios, { Method } from 'axios'
 import { AxiosResponse } from 'axios'
 import urljoin from 'url-join'
 import { EventSaverLogging } from '../common/notifications'
@@ -32,23 +32,23 @@ const httpTrigger: AzureFunction = async function(
 	// Request
 	let res: AxiosResponse
 	try {
-		res = await axios.post(
-			urljoin(
+		res = await axios({
+			method: req.method as Method,
+			url: urljoin(
 				process.env.HASERA_REQUEST_URL!,
 				req.params.version,
 				req.params.language
 			),
-			{
-				query: req.body.query
-			},
-			{
-				headers: {
+			data: req.body,
+			headers: {
+				...req.headers,
+				...{
 					'content-type': 'application/json',
 					'x-hasura-role': process.env.HASERA_ROLE,
 					'x-hasura-admin-secret': process.env.HASURA_SECRET!
 				}
 			}
-		)
+		})
 	} catch (e) {
 		context.res = {
 			status: e.response.status,
@@ -67,8 +67,11 @@ const httpTrigger: AzureFunction = async function(
 		return
 	}
 
+	const { status, headers, data: body } = res
 	context.res = {
-		body: res.data
+		status,
+		headers,
+		body
 	}
 }
 
