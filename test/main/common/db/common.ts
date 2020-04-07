@@ -17,6 +17,10 @@ describe('Transaction', () => {
 		con = await getDbConnection()
 		done()
 	})
+	afterAll(async done => {
+		await con.quit()
+		done()
+	})
 	it('can save data when you commit.', async () => {
 		await saveLockupLockupedTestdata(con.connection, true)
 		const recordCount = await con.connection
@@ -30,9 +34,5 @@ describe('Transaction', () => {
 			.getRepository(LockupLockedup)
 			.count()
 		expect(recordCount).toBe(0)
-	})
-	afterAll(async done => {
-		await con.quit()
-		done()
 	})
 })
