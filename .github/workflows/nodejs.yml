@@ -22,5 +22,4 @@ jobs:
           cd local_test/db
           docker-compose up -d
           cd ../..
-          npm run build
           npm test
