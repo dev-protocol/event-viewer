@@ -17,10 +17,6 @@
 		"lint:format": "prettier --write '**/*.{json,md,yml}'"
 	},
 	"jest": {
-		"moduleDirectories": [
-			"node_modules",
-			"./"
-		],
 		"moduleFileExtensions": [
 			"js",
 			"json",
