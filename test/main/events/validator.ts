@@ -2,7 +2,7 @@ import {
 	ValidateError,
 	RequestValidatorBuilder
 } from '../../../events/validator'
-import { getHttpRequestMockBase } from '../../lib/http'
+import { getHttpRequestMock } from '../../lib/http'
 
 describe('ValidateError', () => {
 	it('The set status code and error messages can be retrieved.', async () => {
@@ -14,16 +14,13 @@ describe('ValidateError', () => {
 
 describe('RequestValidatorBuilder', () => {
 	it('If the content-type is application/json, no error will occur.', async () => {
-		const req = getHttpRequestMockBase(
-			{ 'content-type': 'application/json' },
-			{}
-		)
+		const req = getHttpRequestMock({ 'content-type': 'application/json' }, {})
 		const validateBuilder = new RequestValidatorBuilder(req)
 		validateBuilder.addJsonValidator()
 		validateBuilder.build().execute()
 	})
 	it('If the content-type is not application/json, an error is raised.', async () => {
-		const req = getHttpRequestMockBase(
+		const req = getHttpRequestMock(
 			{ 'content-type': 'multipart/form-data' },
 			{}
 		)
@@ -39,13 +36,13 @@ describe('RequestValidatorBuilder', () => {
 		)
 	})
 	it('If the body is a query, no error will occur.', async () => {
-		const req = getHttpRequestMockBase({}, { query: 'dummy query' })
+		const req = getHttpRequestMock({}, { query: 'dummy query' })
 		const validateBuilder = new RequestValidatorBuilder(req)
 		validateBuilder.addQueryValidator()
 		validateBuilder.build()
 	})
 	it('If the body is not a query, an error is raised.', async () => {
-		const req = getHttpRequestMockBase({}, { mutation: 'dummy mutation' })
+		const req = getHttpRequestMock({}, { mutation: 'dummy mutation' })
 		const validateBuilder = new RequestValidatorBuilder(req)
 		validateBuilder.addQueryValidator()
 		const validator = validateBuilder.build()

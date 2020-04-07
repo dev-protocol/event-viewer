@@ -1,6 +1,6 @@
 import { HttpRequest } from '@azure/functions'
 
-export function getHttpRequestMockBase(
+export function getHttpRequestMock(
 	headersArg: {
 		[key: string]: string
 	},
