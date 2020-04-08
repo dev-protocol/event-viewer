@@ -73,7 +73,7 @@ market-factory-createを実行したい場合
 curl --request POST -H "Content-Type:application/json" --data '{}' http://localhost:7071/admin/functions/market-factory-create
 
 イベントデータを取得したい場合
-curl -X POST -H "Content-Type: application/json" --data '{ "query": "{ allocator_before_allocation { blocks mint token_value market_value assets total_assets} }" }' http://localhost:7071/api/event-data
+curl -X POST -H "Content-Type: application/json" --data '{ "query": "{ allocator_before_allocation { blocks mint token_value market_value assets total_assets} }" }' http://localhost:7071/events/v1/graphql
 ```
 
 ## コンソールセットアップ
