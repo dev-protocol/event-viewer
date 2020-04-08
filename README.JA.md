@@ -38,7 +38,7 @@ WEB3_URL: web3.js に渡す URL
 DISCORD_WEBHOOK_URL_INFO：Discord に info 情報を通知するための URL
 DISCORD_WEBHOOK_URL_WARNING：Discord に warning 情報を通知するための URL
 DISCORD_WEBHOOK_URL_ERROR：Discord に error 情報を通知するための URL
-HASERA_REQUEST_URL：HasuraのAPI URL
+HASERA_REQUEST_DESTINATION：HasuraのAPI URL
 HASERA_ROLE：クエリを実行するHasuraロール名
 HASURA_SECRET：Hasuraのシークレットキー
 ```
