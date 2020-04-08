@@ -1,7 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import axios, { Method } from 'axios'
-import { AxiosResponse } from 'axios'
-import urljoin from 'url-join'
+import axios, { Method, AxiosResponse } from 'axios'
+import { parse } from 'url'
 import { EventSaverLogging } from '../common/notifications'
 import { RequestValidatorBuilder, ValidateError } from './validator'
 
@@ -34,10 +33,9 @@ const httpTrigger: AzureFunction = async function(
 	try {
 		res = await axios({
 			method: req.method as Method,
-			url: urljoin(
-				process.env.HASERA_REQUEST_URL!,
-				req.params.version,
-				req.params.language
+			url: req.url.replace(
+				parse(req.url).host,
+				process.env.HASERA_REQUEST_DESTINATION
 			),
 			data: req.body,
 			headers: {

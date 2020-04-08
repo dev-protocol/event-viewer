@@ -6,8 +6,7 @@
 			"type": "httpTrigger",
 			"direction": "in",
 			"name": "req",
-			"methods": ["post"],
-			"route": "events/{version}/{language}"
+			"route": "events/{version?}/{language?}"
 		},
 		{
 			"type": "http",
