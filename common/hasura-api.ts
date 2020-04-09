@@ -91,7 +91,7 @@ export abstract class HasuraApiExecuter {
 	abstract getPostHeader(): object
 }
 
-export class PostError extends Error {
+class PostError extends Error {
 	_status: number
 	constructor(status: number, m: string) {
 		super(m)
