@@ -1,7 +1,7 @@
 import {
 	ValidateError,
 	RequestValidatorBuilder
-} from '../../../events/validator'
+} from '../../../common/validator'
 import { getHttpRequestMock } from '../../lib/http'
 
 describe('ValidateError', () => {

@@ -2,6 +2,7 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import axios from 'axios'
 import { AxiosResponse } from 'axios'
 import urljoin from 'url-join'
+import url from 'url'
 import { EventSaverLogging } from '../common/notifications'
 import { RequestValidatorBuilder, ValidateError } from '../common/validator'
 
@@ -10,10 +11,11 @@ const httpTrigger: AzureFunction = async function(
 	req: HttpRequest
 ): Promise<void> {
 	// Validate
-	const logging = new EventSaverLogging(context.log, 'events')
+	const logging = new EventSaverLogging(context.log, 'schema')
 	const validatorBuilder = new RequestValidatorBuilder(req)
 	validatorBuilder.addJsonValidator()
 	validatorBuilder.addQueryValidator()
+	validatorBuilder.addSchemaQueryValidator()
 	try {
 		validatorBuilder.build().execute()
 	} catch (e) {
@@ -43,9 +45,11 @@ const httpTrigger: AzureFunction = async function(
 			},
 			{
 				headers: {
-					'content-type': 'application/json',
-					'x-hasura-role': process.env.HASERA_ROLE,
-					'x-hasura-admin-secret': process.env.HASURA_SECRET!
+					...req.headers,
+					...{
+						host: url.parse(process.env.HASERA_REQUEST_DESTINATION!).host,
+						'x-hasura-admin-secret': process.env.HASURA_SECRET!
+					}
 				}
 			}
 		)

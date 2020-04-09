@@ -14,6 +14,10 @@ export class RequestValidatorBuilder {
 		this._validator.addValidator(new QueryValidator())
 	}
 
+	public addSchemaQueryValidator(): void {
+		this._validator.addValidator(new SchemaQueryValidator())
+	}
+
 	public build(): RequestValidator {
 		return this._validator
 	}
@@ -72,5 +76,17 @@ class QueryValidator implements Validator {
 		}
 
 		throw new ValidateError(400, 'query only')
+	}
+}
+
+class SchemaQueryValidator implements Validator {
+	public execute(req: HttpRequest): void {
+		if (req.body.operationName !== 'IntrospectionQuery') {
+			throw new ValidateError(400, 'operation name error')
+		}
+
+		if (!req.body.query.startsWith('query IntrospectionQuery')) {
+			throw new ValidateError(400, 'query error')
+		}
 	}
 }
