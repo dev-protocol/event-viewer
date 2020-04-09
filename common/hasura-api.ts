@@ -1,5 +1,5 @@
 import { Context, HttpRequest } from '@azure/functions'
-import axios from 'axios'
+import axios, { Method } from 'axios'
 import { AxiosResponse } from 'axios'
 import urljoin from 'url-join'
 import { EventSaverLogging } from './notifications'
@@ -25,7 +25,7 @@ export abstract class HasuraApiExecuter {
 		let body_ = {}
 		try {
 			this._validate()
-			const res = await this._post()
+			const res = await this._send()
 			body_ = res.data
 		} catch (err) {
 			this._context.log.error(err.stack)
@@ -42,22 +42,19 @@ export abstract class HasuraApiExecuter {
 		return { status: status_, body: body_ }
 	}
 
-	private async _post(): Promise<AxiosResponse> {
+	private async _send(): Promise<AxiosResponse> {
 		let res: AxiosResponse
 		try {
-			res = await axios.post(
-				urljoin(
+			res = await axios({
+				method: this._req.method as Method,
+				url: urljoin(
 					process.env.HASERA_REQUEST_DESTINATION!,
 					this._req.params.version,
 					this._req.params.language
 				),
-				{
-					query: this._req.body.query
-				},
-				{
-					headers: this.getPostHeader()
-				}
-			)
+				data: this._req.body,
+				headers: this.getPostHeader()
+			})
 		} catch (e) {
 			throw new PostError(e.response.status, e.response.statusText)
 		}
