@@ -38,7 +38,7 @@ WEB3_URL: web3.js に渡す URL
 DISCORD_WEBHOOK_URL_INFO：Discord に info 情報を通知するための URL
 DISCORD_WEBHOOK_URL_WARNING：Discord に warning 情報を通知するための URL
 DISCORD_WEBHOOK_URL_ERROR：Discord に error 情報を通知するための URL
-HASERA_REQUEST_URL：HasuraのAPI URL
+HASERA_REQUEST_DESTINATION：HasuraのAPI URL
 HASERA_ROLE：クエリを実行するHasuraロール名
 HASURA_SECRET：Hasuraのシークレットキー
 ```
@@ -112,7 +112,7 @@ hogehoge-factoryコントラクトのcreateイベントの場合
 func new --template "Timer trigger"  --language TypeScript --name hogehoge-factory-create
 
 httpリクエストで実行される関数を作成する場合
-func new --name event-data --template "HTTP trigger" --language TypeScript
+func new --name events --template "HTTP trigger" --language TypeScript
 ```
 
 ## テーブル定義の追加

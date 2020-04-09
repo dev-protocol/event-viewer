@@ -1,0 +1,18 @@
+{
+	"scriptFile": "../dist/schema/index.js",
+	"bindings": [
+		{
+			"authLevel": "function",
+			"type": "httpTrigger",
+			"direction": "in",
+			"name": "req",
+			"methods": ["post"],
+			"route": "schema/{version}/{language}"
+		},
+		{
+			"type": "http",
+			"direction": "out",
+			"name": "res"
+		}
+	]
+}
