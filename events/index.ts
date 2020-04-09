@@ -1,74 +1,32 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import axios from 'axios'
-import { AxiosResponse } from 'axios'
-import urljoin from 'url-join'
-import { EventSaverLogging } from '../common/notifications'
-import { RequestValidatorBuilder, ValidateError } from '../common/validator'
+import { RequestValidatorBuilder } from '../common/validator'
+import { HasuraApiExecuter } from '../common/hasura-api'
+
+class DataApi extends HasuraApiExecuter {
+	addValidator(validatorBuilder: RequestValidatorBuilder): void {
+		validatorBuilder.addJsonValidator()
+		validatorBuilder.addQueryValidator()
+	}
+
+	getPostHeader(): object {
+		return {
+			'content-type': 'application/json',
+			'x-hasura-role': process.env.HASERA_ROLE,
+			'x-hasura-admin-secret': process.env.HASURA_SECRET!
+		}
+	}
+}
 
 const httpTrigger: AzureFunction = async function(
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
-	// Validate
-	const logging = new EventSaverLogging(context.log, 'events')
-	const validatorBuilder = new RequestValidatorBuilder(req)
-	validatorBuilder.addJsonValidator()
-	validatorBuilder.addQueryValidator()
-	try {
-		validatorBuilder.build().execute()
-	} catch (e) {
-		if (e instanceof ValidateError) {
-			context.res = {
-				status: e.status,
-				body: e.message
-			}
-			return
-		}
-
-		logging.error(e.message)
-		throw e
-	}
-
-	// Request
-	let res: AxiosResponse
-	try {
-		res = await axios.post(
-			urljoin(
-				process.env.HASERA_REQUEST_DESTINATION!,
-				req.params.version,
-				req.params.language
-			),
-			{
-				query: req.body.query
-			},
-			{
-				headers: {
-					'content-type': 'application/json',
-					'x-hasura-role': process.env.HASERA_ROLE,
-					'x-hasura-admin-secret': process.env.HASURA_SECRET!
-				}
-			}
-		)
-	} catch (e) {
-		context.res = {
-			status: e.response.status,
-			body: e.response.statusText
-		}
-		return
-	}
-
-	// Response
-	if (res.status !== 200 || typeof res.data.errors !== 'undefined') {
-		context.res = {
-			status: 400,
-			body: 'unknown error'
-		}
-		logging.error(res.statusText)
-		return
-	}
+	const api = new DataApi(context, req)
+	const res = await api.execute()
 
 	context.res = {
-		body: res.data
+		status: res.status,
+		body: res.body
 	}
 }
 

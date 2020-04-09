@@ -14,7 +14,7 @@ describe('ValidateError', () => {
 	it('The set status code and error messages can be retrieved.', async () => {
 		const context = getContextMock()
 		const req = getHttpRequestMock({}, {})
-		httpTrigger(context, req)
+		await httpTrigger(context, req)
 		expect(context.res.status).toBe(415)
 		expect(context.res.body).toBe('content-type is application/json only')
 	})

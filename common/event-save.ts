@@ -39,7 +39,8 @@ export abstract class EventSaver {
 				await logging.info('save ' + String(events.length) + ' data')
 			}
 		} catch (err) {
-			await this._notificationError(err, logging)
+			this._context.log.error(err.stack)
+			await logging.error(err.message)
 			throw err
 		} finally {
 			try {
@@ -50,23 +51,6 @@ export abstract class EventSaver {
 		}
 
 		await logging.finish()
-	}
-
-	private async _notificationError(
-		err: Error,
-		logging: EventSaverLogging
-	): Promise<void> {
-		try {
-			let desctiption = err.stack
-			if (typeof desctiption === 'undefined') {
-				desctiption = err.message
-			}
-
-			await logging.error(desctiption)
-		} catch (nexteErr) {
-			this._context.log.error(err)
-			this._context.log.error(nexteErr)
-		}
 	}
 
 	private async _saveEvents(events: Array<Map<string, any>>): Promise<void> {

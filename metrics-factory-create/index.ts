@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
-import { EventSaver } from '../common/base'
+import { EventSaver } from '../common/event-save'
 import { MetricsFactoryCreate } from '../entities/metrics-factory-create'
 
 class CreateEventSaver extends EventSaver {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
-import { EventSaver } from '../common/base'
+import { EventSaver } from '../common/event-save'
 import { AllocatorAllocationResult } from '../entities/allocator-allocation-result'
 
 class AllocationResultEventSaver extends EventSaver {
