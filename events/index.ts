@@ -1,6 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import axios, { Method, AxiosResponse } from 'axios'
-import { parse } from 'url'
+import urljoin from 'url-join'
 import { EventSaverLogging } from '../common/notifications'
 import { RequestValidatorBuilder, ValidateError } from './validator'
 
@@ -30,12 +30,26 @@ const httpTrigger: AzureFunction = async function(
 
 	// Request
 	let res: AxiosResponse
+	req.headers.host = 'devprtcl-event.azurewebsites.net'
+	const tmp = {
+		...req.headers,
+		...{
+			'content-type': 'application/json',
+			'x-hasura-role': process.env.HASERA_ROLE,
+			'x-hasura-admin-secret': process.env.HASURA_SECRET!
+		}
+	}
+	context.log('*********************************************************')
+	context.log(tmp)
+	context.log(req.headers)
+	context.log('*********************************************************')
 	try {
 		res = await axios({
 			method: req.method as Method,
-			url: req.url.replace(
-				parse(req.url).host,
-				process.env.HASERA_REQUEST_DESTINATION
+			url: urljoin(
+				process.env.HASERA_REQUEST_DESTINATION,
+				req.params.version,
+				req.params.language
 			),
 			data: req.body,
 			headers: {
@@ -48,6 +62,7 @@ const httpTrigger: AzureFunction = async function(
 			}
 		})
 	} catch (e) {
+		context.log(e)
 		context.res = {
 			status: e.response.status,
 			body: e.response.statusText
@@ -55,6 +70,9 @@ const httpTrigger: AzureFunction = async function(
 		return
 	}
 
+	context.log('*********************************************************')
+	context.log(res)
+	context.log('*********************************************************')
 	// Response
 	if (res.status !== 200 || typeof res.data.errors !== 'undefined') {
 		context.res = {
@@ -65,12 +83,19 @@ const httpTrigger: AzureFunction = async function(
 		return
 	}
 
-	const { status, headers, data: body } = res
+	const { status } = res
+	context.log('*********************************************************')
+	context.log(res.data)
+	context.log('*********************************************************')
 	context.res = {
-		status,
-		headers,
-		body
+		status: status,
+		body: res.data
 	}
+	// Context.res = {
+	// 	status,
+	// 	headers,
+	// 	data
+	// }
 }
 
 export default httpTrigger
