@@ -81,12 +81,10 @@ class QueryValidator implements Validator {
 
 class SchemaQueryValidator implements Validator {
 	public execute(req: HttpRequest): void {
-		if (req.body.operationName !== 'IntrospectionQuery') {
-			throw new ValidateError(400, 'operation name error')
+		if (req.body.query.startsWith('query IntrospectionQuery')) {
+			return
 		}
 
-		if (!req.body.query.startsWith('query IntrospectionQuery')) {
-			throw new ValidateError(400, 'query error')
-		}
+		throw new ValidateError(400, 'query error')
 	}
 }

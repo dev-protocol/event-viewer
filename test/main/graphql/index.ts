@@ -1,4 +1,4 @@
-import httpTrigger from '../../../events/index'
+import httpTrigger from '../../../graphql/index'
 import { getContextMock } from '../../lib/context'
 import { getHttpRequestMock } from '../../lib/http'
 

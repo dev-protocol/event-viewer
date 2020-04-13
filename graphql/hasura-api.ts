@@ -1,12 +1,17 @@
 import { Context, HttpRequest } from '@azure/functions'
 import axios from 'axios'
 import { AxiosResponse } from 'axios'
+import url from 'url'
 import urljoin from 'url-join'
-import { EventSaverLogging } from './notifications'
-import { isNotEmpty } from './utils'
+import { EventSaverLogging } from '../common/notifications'
+import { isNotEmpty } from '../common/utils'
 import { RequestValidatorBuilder, ValidateError } from './validator'
 
-export abstract class HasuraApiExecuter {
+interface ApiExecuter {
+	execute(): Promise<any>
+}
+
+abstract class HasuraApiExecuter implements ApiExecuter {
 	private readonly _context: Context
 	// eslint-disable-next-line @typescript-eslint/member-ordering
 	protected readonly _req: HttpRequest
@@ -91,6 +96,39 @@ export abstract class HasuraApiExecuter {
 	abstract getPostHeader(): object
 }
 
+class EventApiExecuter extends HasuraApiExecuter {
+	addValidator(validatorBuilder: RequestValidatorBuilder): void {
+		validatorBuilder.addJsonValidator()
+		validatorBuilder.addQueryValidator()
+	}
+
+	getPostHeader(): object {
+		return {
+			'content-type': 'application/json',
+			'x-hasura-role': process.env.HASERA_ROLE,
+			'x-hasura-admin-secret': process.env.HASURA_SECRET!
+		}
+	}
+}
+
+class SchemaApiExecuter extends HasuraApiExecuter {
+	addValidator(validatorBuilder: RequestValidatorBuilder): void {
+		validatorBuilder.addJsonValidator()
+		validatorBuilder.addQueryValidator()
+		validatorBuilder.addSchemaQueryValidator()
+	}
+
+	getPostHeader(): object {
+		return {
+			...this._req.headers,
+			...{
+				host: url.parse(process.env.HASERA_REQUEST_DESTINATION!).host,
+				'x-hasura-admin-secret': process.env.HASURA_SECRET!
+			}
+		}
+	}
+}
+
 class PostError extends Error {
 	_status: number
 	constructor(status: number, m: string) {
@@ -101,4 +139,15 @@ class PostError extends Error {
 	get status(): number {
 		return this._status
 	}
+}
+
+export function apiExecuterFactory(
+	context: Context,
+	req: HttpRequest
+): ApiExecuter {
+	if (req.body.operationName === 'IntrospectionQuery') {
+		return new SchemaApiExecuter(context, req)
+	}
+
+	return new EventApiExecuter(context, req)
 }
