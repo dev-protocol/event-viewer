@@ -1,7 +1,7 @@
 import {
 	ValidateError,
 	RequestValidatorBuilder
-} from '../../../common/validator'
+} from '../../../graphql/validator'
 import { getHttpRequestMock } from '../../lib/http'
 
 describe('ValidateError', () => {
@@ -61,7 +61,6 @@ describe('RequestValidatorBuilder', () => {
 			const req = getHttpRequestMock(
 				{},
 				{
-					operationName: 'IntrospectionQuery',
 					query: 'query IntrospectionQuery hogehoge'
 				}
 			)
@@ -69,28 +68,10 @@ describe('RequestValidatorBuilder', () => {
 			validateBuilder.addSchemaQueryValidator()
 			validateBuilder.build().execute()
 		})
-		it('If operationName does not start with "IntrospectionQuery", an error occurs.', async () => {
-			const req = getHttpRequestMock(
-				{},
-				{
-					operationName: 'hogehoge',
-					query: 'query IntrospectionQuery hogehoge'
-				}
-			)
-			const validateBuilder = new RequestValidatorBuilder(req)
-			validateBuilder.addSchemaQueryValidator()
-			const validator = validateBuilder.build()
-			const t = (): void => {
-				validator.execute()
-			}
-
-			expect(t).toThrowError(new ValidateError(400, 'operation name error'))
-		})
 		it('If the query does not start with "query IntrospectionQuery", an error occurs.', async () => {
 			const req = getHttpRequestMock(
 				{},
 				{
-					operationName: 'IntrospectionQuery',
 					query: 'query hogehoge'
 				}
 			)

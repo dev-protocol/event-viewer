@@ -1,5 +1,5 @@
 {
-	"scriptFile": "../dist/events/index.js",
+	"scriptFile": "../dist/graphql/index.js",
 	"bindings": [
 		{
 			"authLevel": "function",
@@ -7,7 +7,7 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["post"],
-			"route": "events/{version}/{language}"
+			"route": "{version}/{language}"
 		},
 		{
 			"type": "http",
