@@ -48,7 +48,7 @@
 		"discord-webhook-ts": "3.0.3",
 		"pg": "8.0.2",
 		"reflect-metadata": "0.1.13",
-		"typeorm": "0.2.22",
+		"typeorm": "0.2.24",
 		"url-join": "4.0.1",
 		"web3": "1.2.6"
 	},
