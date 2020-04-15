@@ -5,7 +5,8 @@ import { EventSaverLogging } from './notifications'
 import { DbConnection, Transaction } from './db/common'
 import { EventTableAccessor } from './db/event'
 import { ContractInfoAccessor } from './db/contract-info'
-import { getApprovalBlockNumber, Event } from './block-chain'
+import { Event } from './block-chain/event'
+import { getApprovalBlockNumber } from './block-chain/utils'
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Web3 = require('web3')
 

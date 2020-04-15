@@ -1,0 +1,21 @@
+/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable new-cap */
+import { Entity, Column, BaseEntity } from 'typeorm'
+
+@Entity()
+export class PropertyAuthentication extends BaseEntity {
+	@Column()
+	public block_number!: number
+
+	@Column()
+	public property!: string
+
+	@Column()
+	public metrics!: string
+
+	@Column()
+	public market!: string
+
+	@Column()
+	public authentication_id!: string
+}

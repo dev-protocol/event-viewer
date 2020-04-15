@@ -1,5 +1,8 @@
 import { Web3 } from '../../lib/web3-mock'
-import { getApprovalBlockNumber, Event } from '../../../common/block-chain'
+import {
+	getApprovalBlockNumber,
+	Event
+} from '../../../common/block-chain/event'
 
 describe('getApprovalBlockNumber', () => {
 	it('Get the block number to be approved.', async () => {
