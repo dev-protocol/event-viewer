@@ -21,8 +21,9 @@ export async function getPropertyByMetrics(
 	}
 
 	const recordMap = new Map(Object.entries(metricsInfo))
+
 	const metricsInstance = await new web3.eth.Contract(
-		recordMap.get('group_contract_info_abi'),
+		JSON.parse(recordMap.get('group_contract_info_abi')),
 		metricsAddress
 	)
 	const propertyAddress = await metricsInstance.methods.property().call()
@@ -41,27 +42,38 @@ export async function getAuthenticationIdByMetrics(
 		'Market',
 		'IMarket'
 	)
-	const metricsInstance = await new web3.eth.Contract(marketAbi, marketAddress)
+	console.log('**********************************1')
+	const metricsInstance = await new web3.eth.Contract(
+		JSON.parse(marketAbi),
+		marketAddress
+	)
+	console.log('**********************************2')
 	const behaviorAddress = await metricsInstance.methods.behavior().call()
+	console.log('**********************************3')
 	const behaviorAbi = await getGroupContractAbi(
 		con,
 		marketAddress,
 		'MarketBehavior',
 		'IMarketBehavior'
 	)
+	console.log(behaviorAddress)
+	console.log(behaviorAbi)
+	console.log('**********************************4')
 	const behaviorInstance = await new web3.eth.Contract(
-		behaviorAbi,
+		JSON.parse(behaviorAbi),
 		behaviorAddress
 	)
+	console.log('**********************************5')
 	let id: string
 	if (hasFunction(behaviorAbi, 'getId')) {
 		id = await behaviorInstance.methods.getId(metricsAddress).call()
-	}
-
-	if (hasFunction(behaviorAbi, 'getPackage')) {
+	} else if (hasFunction(behaviorAbi, 'getPackage')) {
 		id = await behaviorInstance.methods.getPackage(metricsAddress).call()
+	} else {
+		throw new Error('not found get id function')
 	}
 
+	console.log('**********************************6')
 	return id
 }
 
@@ -98,7 +110,6 @@ async function getGroupContractAbi(
 
 	const groupAccessor = new GroupContractInfoAccessor(con)
 	contractInfo = await groupAccessor.getContractInfo(groupName)
-
 	if (typeof contractInfo === 'undefined') {
 		throw new Error('target contract info is not found')
 	}

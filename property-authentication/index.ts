@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable @typescript-eslint/camelcase */
 import { AzureFunction, Context } from '@azure/functions'
 import { Connection } from 'typeorm'
@@ -57,7 +58,8 @@ async function createPropertyAuthenticationRecord(
 	const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_URL!))
 	const transaction = new Transaction(con)
 	try {
-		records.forEach(async record => {
+		await transaction.start()
+		for (let record of records) {
 			const insertRecord = new PropertyAuthentication()
 			insertRecord.block_number = record.block_number
 			insertRecord.property = await getPropertyByMetrics(
@@ -74,7 +76,7 @@ async function createPropertyAuthenticationRecord(
 				record.metrics
 			)
 			await transaction.save(insertRecord)
-		})
+		}
 
 		await transaction.commit()
 	} catch (e) {

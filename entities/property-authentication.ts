@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable new-cap */
-import { Entity, Column, BaseEntity } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
 
 @Entity()
 export class PropertyAuthentication extends BaseEntity {
+	@PrimaryGeneratedColumn()
+	public id: number
+
 	@Column()
 	public block_number!: number
 
