@@ -54,11 +54,11 @@
 	},
 	"devDependencies": {
 		"@azure/functions": "1.2.0",
-		"@types/jest": "25.1.4",
+		"@types/jest": "25.2.1",
 		"@typescript-eslint/eslint-plugin": "2.22.0",
 		"@typescript-eslint/parser": "2.22.0",
 		"azure-function-context-mock": "0.0.7",
-		"azurite": "3.5.0",
+		"azurite": "3.6.0",
 		"eslint": "6.8.0",
 		"eslint-config-prettier": "6.10.0",
 		"eslint-config-xo": "0.27.2",
