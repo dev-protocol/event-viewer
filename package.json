@@ -43,7 +43,7 @@
 		}
 	},
 	"dependencies": {
-		"@types/pg": "7.14.1",
+		"@types/pg": "7.14.3",
 		"axios": "^0.19.2",
 		"discord-webhook-ts": "3.0.3",
 		"pg": "8.0.2",
