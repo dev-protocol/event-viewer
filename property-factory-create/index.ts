@@ -8,11 +8,9 @@ class CreateEventSaver extends EventSaver {
 		return PropertyFactoryCreate
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
 		const propertyFactoryCreate = new PropertyFactoryCreate()
 		const values = event.get('returnValues')
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		propertyFactoryCreate.from_address = values._from
 		propertyFactoryCreate.property = values._property
 		return propertyFactoryCreate

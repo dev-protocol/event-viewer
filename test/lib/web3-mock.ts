@@ -1,6 +1,5 @@
 export class Web3 {
 	eth: any
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	constructor(_: any) {
 		this.eth = {
 			// eslint-disable-next-line @typescript-eslint/promise-function-async
@@ -12,7 +11,6 @@ export class Web3 {
 			Contract: class Contract {
 				_abi: any
 				_address: string
-				// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 				constructor(abi: any, address: string) {
 					this._abi = abi
 					this._address = address

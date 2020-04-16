@@ -1,12 +1,10 @@
 export class Event {
 	private readonly _web3: any
 	private _contract: any
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	constructor(web3: any) {
 		this._web3 = web3
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	public async generateContract(
 		abi: any,
 		contractAddress: string

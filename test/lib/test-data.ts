@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { EntityManager, Connection } from 'typeorm'
 import { Transaction } from '../../common/db/common'
 import { LockupLockedup } from '../../entities/lockup-lockedup'

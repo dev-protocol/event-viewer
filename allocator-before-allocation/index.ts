@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { AzureFunction, Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaver } from '../common/event-save'
@@ -9,7 +8,6 @@ class BeforeAllocationEventSaver extends EventSaver {
 		return AllocatorBeforeAllocation
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
 		const beforeAllocation = new AllocatorBeforeAllocation()
 		const values = event.get('returnValues')

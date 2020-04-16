@@ -8,11 +8,9 @@ class CreateEventSaver extends EventSaver {
 		return MetricsFactoryCreate
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
 		const metricsFactoryCreate = new MetricsFactoryCreate()
 		const values = event.get('returnValues')
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		metricsFactoryCreate.from_address = values._from
 		metricsFactoryCreate.metrics = values._metrics
 		return metricsFactoryCreate
