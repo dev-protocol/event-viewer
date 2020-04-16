@@ -8,11 +8,9 @@ class DestroyEventSaver extends EventSaver {
 		return MetricsFactoryDestroy
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	getSaveData(event: Map<string, any>): any {
 		const metricsFactoryDestroy = new MetricsFactoryDestroy()
 		const values = event.get('returnValues')
-		// eslint-disable-next-line @typescript-eslint/camelcase
 		metricsFactoryDestroy.from_address = values._from
 		metricsFactoryDestroy.metrics = values._metrics
 		return metricsFactoryDestroy
