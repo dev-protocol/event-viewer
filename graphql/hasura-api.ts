@@ -57,7 +57,7 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 					this._req.params.language
 				),
 				{
-					query: this._req.body.query
+					...this._req.body
 				},
 				{
 					headers: this.getPostHeader()
