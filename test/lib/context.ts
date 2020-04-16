@@ -8,7 +8,6 @@ context.executionContext = {
 	functionName: 'test-name'
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getContextMock() {
 	return context
 }
