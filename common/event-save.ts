@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
 import { EventSaverLogging } from './notifications'
@@ -14,7 +13,6 @@ export abstract class EventSaver {
 	private readonly _context: Context
 	private readonly _myTimer: any
 
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	constructor(context: Context, myTimer: any) {
 		this._context = context
 		this._myTimer = myTimer
@@ -127,7 +125,6 @@ export abstract class EventSaver {
 	abstract getModelObject<Entity>(): ObjectType<Entity>
 	abstract getBatchName(): string
 	abstract getContractName(): string
-	// eslint-disable-next-line @typescript-eslint/no-untyped-public-signature
 	abstract getSaveData(event: Map<string, any>): any
 	abstract getEventName(): string
 }
