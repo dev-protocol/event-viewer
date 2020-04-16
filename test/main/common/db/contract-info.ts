@@ -1,5 +1,5 @@
 import { DbConnection } from '../../../../common/db/common'
-import { ContractInfoAccessor } from '../../../../common/db/contract-info'
+import { getContractInfo } from '../../../../common/db/contract-info'
 import { getDbConnection } from './../../../lib/db'
 
 describe('ContractInfoAccessor', () => {
@@ -13,8 +13,7 @@ describe('ContractInfoAccessor', () => {
 		done()
 	})
 	it('If the target record exists, the meta-information of the corresponding contract can be retrieved.', async () => {
-		const accessor = new ContractInfoAccessor(con.connection)
-		const record = await accessor.getContractInfo('Lockup')
+		const record = await getContractInfo(con.connection, 'Lockup')
 		const recordMap = new Map(Object.entries(record))
 		expect(recordMap.get('contract_info_address')).toBe(
 			'0x3d40fab11ee30e3aa1900ccfafd190f0851a6157'
@@ -24,8 +23,7 @@ describe('ContractInfoAccessor', () => {
 		)
 	})
 	it('If the target record does not exist, the meta information of the corresponding contract cannot be retrieved.', async () => {
-		const accessor = new ContractInfoAccessor(con.connection)
-		const record = await accessor.getContractInfo('dummy')
+		const record = await getContractInfo(con.connection, 'dummy')
 		expect(record).toBe(undefined)
 	})
 })

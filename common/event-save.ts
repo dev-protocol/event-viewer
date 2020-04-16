@@ -3,7 +3,7 @@ import { ObjectType } from 'typeorm'
 import { EventSaverLogging } from './notifications'
 import { DbConnection, Transaction } from './db/common'
 import { EventTableAccessor } from './db/event'
-import { ContractInfoAccessor } from './db/contract-info'
+import { getContractInfo } from './db/contract-info'
 import { Event } from './block-chain/event'
 import { getApprovalBlockNumber } from './block-chain/utils'
 /* eslint-disable @typescript-eslint/no-var-requires */
@@ -116,8 +116,8 @@ export abstract class EventSaver {
 	}
 
 	private async _getContractInfo(): Promise<Map<string, string>> {
-		const contractInfoAccessor = new ContractInfoAccessor(this._db.connection)
-		const info = await contractInfoAccessor.getContractInfo(
+		const info = await getContractInfo(
+			this._db.connection,
 			this.getContractName()
 		)
 		return new Map(Object.entries(info))

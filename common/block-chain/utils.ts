@@ -1,7 +1,7 @@
 import { Connection } from 'typeorm'
 import {
-	GroupContractInfoAccessor,
-	LegacyGroupContractInfoAccessor
+	getGroupContractInfo,
+	getLegacyGroupContractInfo
 } from '../db/contract-info'
 
 export async function getApprovalBlockNumber(web3: any): Promise<number> {
@@ -14,8 +14,7 @@ export async function getPropertyByMetrics(
 	web3: any,
 	metricsAddress: string
 ): Promise<string> {
-	const accessor = new GroupContractInfoAccessor(con)
-	const metricsInfo = await accessor.getContractInfo('Metrics')
+	const metricsInfo = await getGroupContractInfo(con, 'Metrics')
 	if (typeof metricsInfo === 'undefined') {
 		throw new Error('metrics info is not found')
 	}
@@ -42,20 +41,18 @@ export async function getAuthenticationIdByMetrics(
 		'Market',
 		'IMarket'
 	)
-	console.log('**********************************1')
 	const metricsInstance = await new web3.eth.Contract(
 		JSON.parse(marketAbi),
 		marketAddress
 	)
-	console.log('**********************************2')
 	const behaviorAddress = await metricsInstance.methods.behavior().call()
-	console.log('**********************************3')
 	const behaviorAbi = await getGroupContractAbi(
 		con,
 		marketAddress,
 		'MarketBehavior',
 		'IMarketBehavior'
 	)
+	console.log('**********************************3')
 	console.log(behaviorAddress)
 	console.log(behaviorAbi)
 	console.log('**********************************4')
@@ -98,8 +95,8 @@ async function getGroupContractAbi(
 	legacyName: string,
 	groupName: string
 ): Promise<string> {
-	const legacyAccessor = new LegacyGroupContractInfoAccessor(con)
-	let contractInfo = await legacyAccessor.getContractInfo(
+	let contractInfo = await getLegacyGroupContractInfo(
+		con,
 		legacyName,
 		contractAddress
 	)
@@ -108,8 +105,7 @@ async function getGroupContractAbi(
 		return recordMap.get('legacy_group_contract_info_abi')
 	}
 
-	const groupAccessor = new GroupContractInfoAccessor(con)
-	contractInfo = await groupAccessor.getContractInfo(groupName)
+	contractInfo = await getGroupContractInfo(con, groupName)
 	if (typeof contractInfo === 'undefined') {
 		throw new Error('target contract info is not found')
 	}
