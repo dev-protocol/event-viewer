@@ -13,7 +13,7 @@ export function getHttpRequestMock(
 		query: {},
 		params: {},
 		body: bodyArg,
-		rawBody: undefined
+		rawBody: undefined,
 	}
 	return mockHttpReq
 }

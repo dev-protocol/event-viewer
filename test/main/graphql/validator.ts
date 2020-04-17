@@ -1,6 +1,6 @@
 import {
 	ValidateError,
-	RequestValidatorBuilder
+	RequestValidatorBuilder,
 } from '../../../graphql/validator'
 import { getHttpRequestMock } from '../../lib/http'
 
@@ -61,7 +61,7 @@ describe('RequestValidatorBuilder', () => {
 			const req = getHttpRequestMock(
 				{},
 				{
-					query: 'query IntrospectionQuery hogehoge'
+					query: 'query IntrospectionQuery hogehoge',
 				}
 			)
 			const validateBuilder = new RequestValidatorBuilder(req)
@@ -72,7 +72,7 @@ describe('RequestValidatorBuilder', () => {
 			const req = getHttpRequestMock(
 				{},
 				{
-					query: 'query hogehoge'
+					query: 'query hogehoge',
 				}
 			)
 			const validateBuilder = new RequestValidatorBuilder(req)
