@@ -16,7 +16,7 @@ class AllocationResultEventSaver extends EventSaver {
 		allocationResult.market = values._market
 		allocationResult.property = values._property
 		allocationResult.lockup_value = values._lockupValue
-		// AllocationResult.result = values._result
+		allocationResult.result = values._result
 
 		return allocationResult
 	}
