@@ -1,7 +1,7 @@
 import { Connection } from 'typeorm'
 import {
 	getGroupContractInfo,
-	getLegacyGroupContractInfo
+	getLegacyGroupContractInfo,
 } from '../db/contract-info'
 
 export async function getApprovalBlockNumber(web3: any): Promise<number> {
@@ -48,19 +48,14 @@ export async function getAuthenticationIdByMetrics(
 	const behaviorAddress = await metricsInstance.methods.behavior().call()
 	const behaviorAbi = await getGroupContractAbi(
 		con,
-		marketAddress,
+		behaviorAddress,
 		'MarketBehavior',
 		'IMarketBehavior'
 	)
-	console.log('**********************************3')
-	console.log(behaviorAddress)
-	console.log(behaviorAbi)
-	console.log('**********************************4')
 	const behaviorInstance = await new web3.eth.Contract(
 		JSON.parse(behaviorAbi),
 		behaviorAddress
 	)
-	console.log('**********************************5')
 	let id: string
 	if (hasFunction(behaviorAbi, 'getId')) {
 		id = await behaviorInstance.methods.getId(metricsAddress).call()
@@ -70,7 +65,6 @@ export async function getAuthenticationIdByMetrics(
 		throw new Error('not found get id function')
 	}
 
-	console.log('**********************************6')
 	return id
 }
 

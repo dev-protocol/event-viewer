@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS property_authentication;
 
 CREATE TABLE property_authentication(
+	id BIGSERIAL NOT NULL,
     block_number INT NOT NULL,
     property TEXT NOT NULL,
     metrics TEXT NOT NULL,

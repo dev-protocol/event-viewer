@@ -5,7 +5,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
 @Entity()
 export class PropertyAuthentication extends BaseEntity {
 	@PrimaryGeneratedColumn()
-	public id: number
+	public readonly id: number
 
 	@Column()
 	public block_number!: number

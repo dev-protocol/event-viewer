@@ -7,14 +7,14 @@ import { DbConnection, Transaction } from '../common/db/common'
 import { getMaxBlockNumber, getEventRecord } from '../common/db/event'
 import {
 	getPropertyByMetrics,
-	getAuthenticationIdByMetrics
+	getAuthenticationIdByMetrics,
 } from '../common/block-chain/utils'
 import { PropertyAuthentication } from '../entities/property-authentication'
 import { MetricsFactoryCreate } from '../entities/metrics-factory-create'
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Web3 = require('web3')
 
-const timerTrigger: AzureFunction = async function(
+const timerTrigger: AzureFunction = async function (
 	context: Context,
 	myTimer: any
 ): Promise<void> {
