@@ -1,7 +1,7 @@
 import { DbConnection } from '../../../../common/db/common'
-// Import { LockupLockedup } from '../../../../entities/lockup-lockedup'
+import { LockupLockedup } from '../../../../entities/lockup-lockedup'
 import { getDbConnection } from './../../../lib/db'
-// Import { saveLockupLockupedTestdata } from './../../../lib/test-data'
+import { saveLockupLockupedTestdata } from './../../../lib/test-data'
 
 describe('DbConnection', () => {
 	it('can connect to db.', async () => {
@@ -13,26 +13,26 @@ describe('DbConnection', () => {
 
 describe('Transaction', () => {
 	let con: DbConnection
-	beforeAll(async done => {
+	beforeAll(async (done) => {
 		con = await getDbConnection()
 		done()
 	})
-	afterAll(async done => {
+	afterAll(async (done) => {
 		await con.quit()
 		done()
 	})
 	it('can save data when you commit.', async () => {
-		// Await saveLockupLockupedTestdata(con.connection, true)
-		// const recordCount = await con.connection
-		// 	.getRepository(LockupLockedup)
-		// 	.count()
-		// expect(recordCount).toBe(3)
+		await saveLockupLockupedTestdata(con.connection, true)
+		const recordCount = await con.connection
+			.getRepository(LockupLockedup)
+			.count()
+		expect(recordCount).toBe(3)
 	})
 	it('cannot save data when you rollback.', async () => {
-		// Await saveLockupLockupedTestdata(con.connection, false)
-		// const recordCount = await con.connection
-		// 	.getRepository(LockupLockedup)
-		// 	.count()
-		// expect(recordCount).toBe(0)
+		await saveLockupLockupedTestdata(con.connection, false)
+		const recordCount = await con.connection
+			.getRepository(LockupLockedup)
+			.count()
+		expect(recordCount).toBe(0)
 	})
 })

@@ -57,10 +57,10 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 					this._req.params.language
 				),
 				{
-					...this._req.body
+					...this._req.body,
 				},
 				{
-					headers: this.getPostHeader()
+					headers: this.getPostHeader(),
 				}
 			)
 		} catch (e) {
@@ -106,7 +106,7 @@ class EventApiExecuter extends HasuraApiExecuter {
 		return {
 			'content-type': 'application/json',
 			'x-hasura-role': process.env.HASERA_ROLE,
-			'x-hasura-admin-secret': process.env.HASURA_SECRET!
+			'x-hasura-admin-secret': process.env.HASURA_SECRET!,
 		}
 	}
 }
@@ -123,8 +123,8 @@ class SchemaApiExecuter extends HasuraApiExecuter {
 			...this._req.headers,
 			...{
 				host: url.parse(process.env.HASERA_REQUEST_DESTINATION!).host,
-				'x-hasura-admin-secret': process.env.HASURA_SECRET!
-			}
+				'x-hasura-admin-secret': process.env.HASURA_SECRET!,
+			},
 		}
 	}
 }
