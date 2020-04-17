@@ -29,7 +29,7 @@ const timerTrigger: AzureFunction = async function (
 	await db.connect()
 
 	try {
-		await createPropertyAuthenticationRecord(db.connection)
+		await createPropertyAuthenticationRecord(db.connection, logging)
 	} catch (e) {
 		context.log.error(e.stack)
 		await logging.error(e.message)
@@ -42,7 +42,8 @@ const timerTrigger: AzureFunction = async function (
 }
 
 async function createPropertyAuthenticationRecord(
-	con: Connection
+	con: Connection,
+	logging: EventSaverLogging
 ): Promise<void> {
 	const blockNumber = await getMaxBlockNumber(con, PropertyAuthentication)
 	const records = await getEventRecord(
@@ -78,6 +79,7 @@ async function createPropertyAuthenticationRecord(
 		}
 
 		await transaction.commit()
+		await logging.info(`record wa inserted：${records.length}`)
 	} catch (e) {
 		await transaction.rollback()
 		throw e

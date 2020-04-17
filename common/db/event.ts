@@ -50,7 +50,6 @@ export async function getEventRecord<Entity>(
 		.createQueryBuilder('tmp')
 		.where('tmp.block_number >= :_blockNumber', { _blockNumber: blockNumber })
 		.orderBy('tmp.block_number')
-		.take(10)
 		.getMany()
 
 	return records
