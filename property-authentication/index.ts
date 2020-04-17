@@ -1,5 +1,4 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/camelcase */
 import { AzureFunction, Context } from '@azure/functions'
 import { Connection } from 'typeorm'
 import { EventSaverLogging } from '../common/notifications'

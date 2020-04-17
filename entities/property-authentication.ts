@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable new-cap */
 import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
 
