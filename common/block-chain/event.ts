@@ -1,8 +1,3 @@
-export async function getApprovalBlockNumber(web3: any): Promise<number> {
-	const currentBlockNumber = await web3.eth.getBlockNumber()
-	return currentBlockNumber - Number(process.env.APPROVAL!)
-}
-
 export class Event {
 	private readonly _web3: any
 	private _contract: any

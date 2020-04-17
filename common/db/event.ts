@@ -10,16 +10,8 @@ export class EventTableAccessor<Entity> {
 	}
 
 	public async getMaxBlockNumber<Entity>(): Promise<number> {
-		let { max } = await this._connection
-			.getRepository(this._entityClass)
-			.createQueryBuilder()
-			.select('MAX(block_number)', 'max')
-			.getRawOne()
-		if (max === null) {
-			max = 0
-		}
-
-		return Number(max)
+		const number = await getMaxBlockNumber(this._connection, this._entityClass)
+		return number
 	}
 
 	public async hasData(eventId: string): Promise<boolean> {
@@ -30,4 +22,36 @@ export class EventTableAccessor<Entity> {
 			.getOne()
 		return typeof firstUser !== 'undefined'
 	}
+}
+
+export async function getMaxBlockNumber<Entity>(
+	connection: Connection,
+	entityClass: ObjectType<Entity>
+): Promise<number> {
+	let { max } = await connection
+		.getRepository(entityClass)
+		.createQueryBuilder()
+		.select('MAX(block_number)', 'max')
+		.getRawOne()
+	if (max === null) {
+		max = 0
+	}
+
+	return Number(max)
+}
+
+export async function getEventRecord<Entity>(
+	connection: Connection,
+	entityClass: ObjectType<Entity>,
+	blockNumber: number
+): Promise<Entity[]> {
+	const records = await connection
+		.getRepository(entityClass)
+		.createQueryBuilder('tmp')
+		.where('tmp.block_number >= :_blockNumber', { _blockNumber: blockNumber })
+		.orderBy('tmp.block_number')
+		.take(10)
+		.getMany()
+
+	return records
 }
