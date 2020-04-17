@@ -4,11 +4,11 @@ import { getDbConnection } from './../../../lib/db'
 
 describe('ContractInfoAccessor', () => {
 	let con: DbConnection
-	beforeAll(async done => {
+	beforeAll(async (done) => {
 		con = await getDbConnection()
 		done()
 	})
-	afterAll(async done => {
+	afterAll(async (done) => {
 		await con.quit()
 		done()
 	})

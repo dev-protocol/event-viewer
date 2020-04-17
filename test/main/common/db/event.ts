@@ -4,16 +4,16 @@ import { LockupLockedup } from '../../../../entities/lockup-lockedup'
 import { getDbConnection } from './../../../lib/db'
 import {
 	saveLockupLockupedTestdata,
-	clearLockupLockupedTestdata
+	clearLockupLockupedTestdata,
 } from './../../../lib/test-data'
 
 describe('EventTableAccessor', () => {
 	let con: DbConnection
-	beforeAll(async done => {
+	beforeAll(async (done) => {
 		con = await getDbConnection()
 		done()
 	})
-	afterAll(async done => {
+	afterAll(async (done) => {
 		await con.quit()
 		done()
 	})

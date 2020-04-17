@@ -65,17 +65,17 @@ class DiscordNotification {
 			embeds: [
 				{
 					title: title,
-					description: titleDescription
+					description: titleDescription,
 				},
 				{
 					fields: [
 						{
 							name: field,
-							value: fieldDesctiption
-						}
-					]
-				}
-			]
+							value: fieldDesctiption,
+						},
+					],
+				},
+			],
 		}
 		return requestBody
 	}

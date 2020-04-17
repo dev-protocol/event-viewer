@@ -1,7 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { apiExecuterFactory } from './hasura-api'
 
-const httpTrigger: AzureFunction = async function(
+const httpTrigger: AzureFunction = async function (
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
@@ -10,7 +10,7 @@ const httpTrigger: AzureFunction = async function(
 
 	context.res = {
 		status: res.status,
-		body: res.body
+		body: res.body,
 	}
 }
 

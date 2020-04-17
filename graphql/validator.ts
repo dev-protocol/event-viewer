@@ -36,7 +36,7 @@ class RequestValidator {
 	}
 
 	public execute(): void {
-		this._validators.forEach(validator => {
+		this._validators.forEach((validator) => {
 			validator.execute(this._req)
 		})
 	}

@@ -3,8 +3,8 @@ export class Web3 {
 	constructor(_: any) {
 		this.eth = {
 			// eslint-disable-next-line @typescript-eslint/promise-function-async
-			getBlockNumber: function() {
-				return new Promise(resolve => {
+			getBlockNumber: function () {
+				return new Promise((resolve) => {
 					resolve(25000)
 				})
 			},
@@ -38,11 +38,11 @@ export class Web3 {
 					tmpMap3.set('logIndex', 21)
 					tmpMap3.set('transactionIndex', 19)
 
-					return new Promise(resolve => {
+					return new Promise((resolve) => {
 						resolve([tmpMap1, tmpMap2, tmpMap3])
 					})
 				}
-			}
+			},
 		}
 	}
 }

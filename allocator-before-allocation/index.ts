@@ -34,7 +34,7 @@ class BeforeAllocationEventSaver extends EventSaver {
 	}
 }
 
-const timerTrigger: AzureFunction = async function(
+const timerTrigger: AzureFunction = async function (
 	context: Context,
 	myTimer: any
 ): Promise<void> {
