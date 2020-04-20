@@ -1,19 +1,16 @@
 /* eslint-disable new-cap */
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm'
+import { Entity, Column, PrimaryColumn, BaseEntity } from 'typeorm'
 
 @Entity()
 export class PropertyAuthentication extends BaseEntity {
-	@PrimaryGeneratedColumn()
-	public readonly id: number
+	@PrimaryColumn()
+	public property!: string
+
+	@PrimaryColumn()
+	public metrics!: string
 
 	@Column()
 	public block_number!: number
-
-	@Column()
-	public property!: string
-
-	@Column()
-	public metrics!: string
 
 	@Column()
 	public market!: string
