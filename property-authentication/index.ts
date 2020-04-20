@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { AzureFunction, Context } from '@azure/functions'
 import { Connection } from 'typeorm'
+import { getTargetRecordsSeparatedByBlockNumber } from '../common/utils'
 import { EventSaverLogging } from '../common/notifications'
 import { DbConnection, Transaction } from '../common/db/common'
 import { getMaxBlockNumber, getEventRecord } from '../common/db/event'
@@ -52,14 +53,19 @@ async function createPropertyAuthenticationRecord(
 		blockNumber + 1
 	)
 	if (records.length === 0) {
+		await logging.info('no target record')
 		return
 	}
+
+	const targetRecords = getTargetRecordsSeparatedByBlockNumber(records, 100)
 
 	const web3 = new Web3(new Web3.providers.HttpProvider(process.env.WEB3_URL!))
 	const transaction = new Transaction(con)
 	try {
 		await transaction.start()
-		for (let record of records) {
+		await logging.info(`record count：${targetRecords.length}`)
+		let count = 0
+		for (let record of targetRecords) {
 			const insertRecord = new PropertyAuthentication()
 			insertRecord.block_number = record.block_number
 			insertRecord.property = await getPropertyByMetrics(
@@ -76,10 +82,14 @@ async function createPropertyAuthenticationRecord(
 				record.metrics
 			)
 			await transaction.save(insertRecord)
+			count++
+			if (count % 10 === 0) {
+				await logging.info(`records were inserted：${count}`)
+			}
 		}
 
 		await transaction.commit()
-		await logging.info(`record wa inserted：${records.length}`)
+		await logging.info(`all records were inserted：${targetRecords.length}`)
 	} catch (e) {
 		await transaction.rollback()
 		throw e
