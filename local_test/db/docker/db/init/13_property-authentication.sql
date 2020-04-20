@@ -6,7 +6,8 @@ CREATE TABLE property_authentication(
     property TEXT NOT NULL,
     metrics TEXT NOT NULL,
     market TEXT NOT NULL,
-    authentication_id TEXT NOT NULL
+    authentication_id TEXT NOT NULL,
+	PRIMARY KEY(id)
 );
 
 
