@@ -140,4 +140,12 @@ export class EventSaverLogging {
 			message
 		)
 	}
+
+	public infolog(message: string): void {
+		this._logger.info(message)
+	}
+
+	public errorlog(message: string): void {
+		this._logger.error(message)
+	}
 }
