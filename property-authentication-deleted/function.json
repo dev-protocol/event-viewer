@@ -1,5 +1,5 @@
 {
-	"scriptFile": "../dist/delete-property-authentication/index.js",
+	"scriptFile": "../dist/property-authentication-deleted/index.js",
 	"bindings": [
 		{
 			"name": "myTimer",
@@ -9,4 +9,3 @@
 		}
 	]
 }
-

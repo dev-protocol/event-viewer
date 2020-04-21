@@ -58,6 +58,13 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 						_metrics: data.metrics,
 					})
 					.getOne()
+				if (typeof record === 'undefined') {
+					throw new Error(
+						// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+						`property_authintication record is not found.  property:${data.property} metrics:${data.metrics}`
+					)
+				}
+
 				// eslint-disable-next-line no-await-in-loop
 				await con
 					.createQueryBuilder()
