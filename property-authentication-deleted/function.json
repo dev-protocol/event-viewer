@@ -1,0 +1,12 @@
+{
+	"scriptFile": "../dist/delete-property-authentication/index.js",
+	"bindings": [
+		{
+			"name": "myTimer",
+			"type": "timerTrigger",
+			"direction": "in",
+			"schedule": "45 0 * * * *"
+		}
+	]
+}
+
