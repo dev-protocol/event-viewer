@@ -1,5 +1,6 @@
 import { Connection } from 'typeorm'
 import {
+	getContractInfo,
 	getGroupContractInfo,
 	getLegacyGroupContractInfo,
 } from '../db/contract-info'
@@ -66,6 +67,30 @@ export async function getAuthenticationIdByMetrics(
 	}
 
 	return id
+}
+
+export async function getPolicyInstance(
+	con: Connection,
+	web3: any
+): Promise<any> {
+	const info = await getContractInfo(con, 'AddressConfig')
+	const recordMap = new Map(Object.entries(info))
+	const addressConfigInstance = await new web3.eth.Contract(
+		JSON.parse(recordMap.get('contract_info_abi')),
+		recordMap.get('contract_info_address')
+	)
+	const policyAddress = await addressConfigInstance.methods.policy().call()
+	const iPolicyAbi = await getGroupContractAbi(
+		con,
+		policyAddress,
+		'Policy',
+		'IPolicy'
+	)
+	const policyInstance = await new web3.eth.Contract(
+		JSON.parse(iPolicyAbi),
+		policyAddress
+	)
+	return policyInstance
 }
 
 function hasFunction(abi: string, funcName: string): boolean {
