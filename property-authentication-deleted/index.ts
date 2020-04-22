@@ -3,7 +3,6 @@ import { Connection } from 'typeorm'
 import { TimerBatchBase } from '../common/base'
 import { getPropertyByMetrics } from '../common/block-chain/utils'
 import { getMaxBlockNumber, getEventRecord } from '../common/db/event'
-import { EventSaverLogging } from '../common/notifications'
 import { DbConnection, Transaction } from '../common/db/common'
 import { PropertyAuthentication } from '../entities/property-authentication'
 import { PropertyAuthenticationDeleted } from '../entities/property-authentication-deleted'
@@ -16,15 +15,14 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 		return 'property-authentication-deleted'
 	}
 
-	async innerExecute(logging: EventSaverLogging): Promise<void> {
+	async innerExecute(): Promise<void> {
 		const db = new DbConnection(this.getBatchName())
 		await db.connect()
 
 		try {
-			await this.movePropertyAuthenticationRecord(db.connection, logging)
+			await this.movePropertyAuthenticationRecord(db.connection)
+			// eslint-disable-next-line no-useless-catch
 		} catch (e) {
-			logging.errorlog(e.stack)
-			await logging.error(e.message)
 			throw e
 		} finally {
 			await db.quit()
@@ -32,12 +30,11 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 	}
 
 	private async movePropertyAuthenticationRecord(
-		con: Connection,
-		logging: EventSaverLogging
+		con: Connection
 	): Promise<any[]> {
 		const destroyRecords = await this.getEvents(con)
 		if (destroyRecords.length === 0) {
-			logging.infolog('target record is not found.')
+			this.logging.infolog('no target record')
 			return []
 		}
 
@@ -48,7 +45,7 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 		const transaction = new Transaction(con)
 		try {
 			await transaction.start()
-			logging.infolog(`record count：${relationData.length}`)
+			this.logging.infolog(`record count：${relationData.length}`)
 			for (const data of relationData) {
 				// eslint-disable-next-line no-await-in-loop
 				const record = await this.getPropertyAuthenticationRecord(
@@ -56,14 +53,12 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 					data.property,
 					data.metrics
 				)
-
 				// eslint-disable-next-line no-await-in-loop
-				await this.deletePropertyAuthenticationRecord(
-					con,
-					data.property,
-					data.metrics
+				await transaction.remove(record)
+				const saveData = this.createPropertyAuthenticationDeletedData(
+					data,
+					record
 				)
-				const saveData = this.createPropertyAuthenticationDeletedData(record)
 
 				// eslint-disable-next-line no-await-in-loop
 				await transaction.save(saveData)
@@ -76,22 +71,6 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 		} finally {
 			await transaction.finish()
 		}
-	}
-
-	private async deletePropertyAuthenticationRecord(
-		con: Connection,
-		property: string,
-		metrics: string
-	): Promise<void> {
-		await con
-			.createQueryBuilder()
-			.delete()
-			.from(PropertyAuthentication)
-			.where('property = :_property AND metrics = :_metrics', {
-				_property: property,
-				_metrics: metrics,
-			})
-			.execute()
 	}
 
 	private async getPropertyAuthenticationRecord(
@@ -117,11 +96,12 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 	}
 
 	private createPropertyAuthenticationDeletedData(
+		data: any,
 		originalRecord: PropertyAuthentication
 	): PropertyAuthenticationDeleted {
 		const saveData = new PropertyAuthenticationDeleted()
-		saveData.property = originalRecord.property
-		saveData.metrics = originalRecord.metrics
+		saveData.property = data.property
+		saveData.metrics = data.metrics
 		saveData.block_number = originalRecord.block_number
 		saveData.market = originalRecord.market
 		saveData.authentication_id = originalRecord.authentication_id
@@ -155,6 +135,7 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 			con,
 			PropertyAuthenticationDeleted
 		)
+		this.logging.infolog(`processed block number:${blockNumber}`)
 		const records = await getEventRecord(
 			con,
 			MetricsFactoryDestroy,

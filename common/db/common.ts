@@ -54,6 +54,10 @@ export class Transaction {
 		await this._runner.manager.save(entity)
 	}
 
+	public async remove<Entity>(entity: Entity): Promise<Entity> {
+		return this._runner.manager.remove(entity)
+	}
+
 	public async commit(): Promise<void> {
 		await this._runner.commitTransaction()
 	}
