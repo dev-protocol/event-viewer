@@ -1,6 +1,5 @@
 import { Context } from '@azure/functions'
 import { ObjectType } from 'typeorm'
-import { EventSaverLogging } from './notifications'
 import { TimerBatchBase } from './base'
 import { DbConnection, Transaction } from './db/common'
 import { EventTableAccessor } from './db/event'
@@ -18,24 +17,19 @@ export abstract class EventSaver extends TimerBatchBase {
 		this._db = new DbConnection(this.getBatchName())
 	}
 
-	async innerExecute(logging: EventSaverLogging): Promise<void> {
+	async innerExecute(): Promise<void> {
 		try {
 			await this._db.connect()
-			const events = await this._getEvents(logging)
+			const events = await this._getEvents()
 			if (events.length !== 0) {
 				await this._saveEvents(events)
-				await logging.info('save ' + String(events.length) + ' data')
+				this.logging.infolog('save ' + String(events.length) + ' data')
 			}
+			// eslint-disable-next-line no-useless-catch
 		} catch (err) {
-			logging.errorlog(err.stack)
-			await logging.error(err.message)
 			throw err
 		} finally {
-			try {
-				await this._db.quit()
-			} catch (quitErr) {
-				logging.errorlog(quitErr)
-			}
+			await this._db.quit()
 		}
 	}
 
@@ -52,7 +46,7 @@ export abstract class EventSaver extends TimerBatchBase {
 				// eslint-disable-next-line no-await-in-loop
 				const hasData = await eventTable.hasData(eventMap.get('id'))
 				if (hasData) {
-					throw Error('Data already exists.')
+					throw new Error('Data already exists.')
 				}
 
 				const saveData = this.getSaveData(eventMap)
@@ -75,9 +69,7 @@ export abstract class EventSaver extends TimerBatchBase {
 		}
 	}
 
-	private async _getEvents(
-		logging: EventSaverLogging
-	): Promise<Array<Map<string, any>>> {
+	private async _getEvents(): Promise<Array<Map<string, any>>> {
 		const eventTable = new EventTableAccessor(
 			this._db.connection,
 			this.getModelObject()
@@ -89,7 +81,7 @@ export abstract class EventSaver extends TimerBatchBase {
 		)
 		const approvalBlockNumber = await getApprovalBlockNumber(web3)
 		const event = new Event(web3)
-		logging.infolog(
+		this.logging.infolog(
 			'target contract address:' + contractInfo.get('contract_info_address')
 		)
 		await event.generateContract(

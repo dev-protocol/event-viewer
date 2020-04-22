@@ -3,7 +3,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { Connection } from 'typeorm'
 import { TimerBatchBase } from '../common/base'
 import { getTargetRecordsSeparatedByBlockNumber } from '../common/utils'
-import { EventSaverLogging } from '../common/notifications'
 import { DbConnection, Transaction } from '../common/db/common'
 import { getMaxBlockNumber, getEventRecord } from '../common/db/event'
 import {
@@ -20,15 +19,14 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 		return 'property-authentication'
 	}
 
-	async innerExecute(logging: EventSaverLogging): Promise<void> {
+	async innerExecute(): Promise<void> {
 		const db = new DbConnection(this.getBatchName())
 		await db.connect()
 
 		try {
-			await this.createPropertyAuthenticationRecord(db.connection, logging)
+			await this.createPropertyAuthenticationRecord(db.connection)
+			// eslint-disable-next-line no-useless-catch
 		} catch (e) {
-			logging.errorlog(e.stack)
-			await logging.error(e.message)
 			throw e
 		} finally {
 			await db.quit()
@@ -36,8 +34,7 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 	}
 
 	private async createPropertyAuthenticationRecord(
-		con: Connection,
-		logging: EventSaverLogging
+		con: Connection
 	): Promise<void> {
 		const blockNumber = await getMaxBlockNumber(con, PropertyAuthentication)
 		const records = await getEventRecord(
@@ -46,7 +43,7 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 			blockNumber + 1
 		)
 		if (records.length === 0) {
-			await logging.info('no target record')
+			this.logging.infolog('no target record')
 			return
 		}
 
@@ -58,7 +55,7 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 		const transaction = new Transaction(con)
 		try {
 			await transaction.start()
-			await logging.info(`record count：${targetRecords.length}`)
+			this.logging.infolog(`record count：${targetRecords.length}`)
 			let count = 0
 			for (let record of targetRecords) {
 				const insertRecord = new PropertyAuthentication()
@@ -79,12 +76,12 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 				await transaction.save(insertRecord)
 				count++
 				if (count % 10 === 0) {
-					await logging.info(`records were inserted：${count}`)
+					this.logging.infolog(`records were inserted：${count}`)
 				}
 			}
 
 			await transaction.commit()
-			await logging.info(`all records were inserted：${targetRecords.length}`)
+			this.logging.infolog(`all records were inserted：${targetRecords.length}`)
 		} catch (e) {
 			await transaction.rollback()
 			throw e
