@@ -46,7 +46,7 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 			blockNumber + 1
 		)
 		if (records.length === 0) {
-			await logging.info('no target record')
+			logging.infolog('no target record')
 			return
 		}
 
@@ -58,7 +58,7 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 		const transaction = new Transaction(con)
 		try {
 			await transaction.start()
-			await logging.info(`record count：${targetRecords.length}`)
+			logging.infolog(`record count：${targetRecords.length}`)
 			let count = 0
 			for (let record of targetRecords) {
 				const insertRecord = new PropertyAuthentication()
@@ -79,12 +79,12 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 				await transaction.save(insertRecord)
 				count++
 				if (count % 10 === 0) {
-					await logging.info(`records were inserted：${count}`)
+					logging.infolog(`records were inserted：${count}`)
 				}
 			}
 
 			await transaction.commit()
-			await logging.info(`all records were inserted：${targetRecords.length}`)
+			logging.infolog(`all records were inserted：${targetRecords.length}`)
 		} catch (e) {
 			await transaction.rollback()
 			throw e

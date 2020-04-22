@@ -13,7 +13,7 @@ const Web3 = require('web3')
 
 class PropertyAuthenticationDeleter extends TimerBatchBase {
 	getBatchName(): string {
-		return 'property-authentication'
+		return 'property-authentication-deleted'
 	}
 
 	async innerExecute(logging: EventSaverLogging): Promise<void> {
@@ -37,6 +37,7 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 	): Promise<any[]> {
 		const destroyRecords = await this.getEvents(con)
 		if (destroyRecords.length === 0) {
+			logging.infolog('target record is not found.')
 			return []
 		}
 
@@ -47,40 +48,22 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 		const transaction = new Transaction(con)
 		try {
 			await transaction.start()
-			await logging.info(`record count：${relationData.length}`)
+			logging.infolog(`record count：${relationData.length}`)
 			for (const data of relationData) {
 				// eslint-disable-next-line no-await-in-loop
-				const record = await con
-					.getRepository(PropertyAuthentication)
-					.createQueryBuilder('tmp')
-					.where('tmp.property = :_property AND tmp.metrics = :_metrics', {
-						_property: data.property,
-						_metrics: data.metrics,
-					})
-					.getOne()
-				if (typeof record === 'undefined') {
-					throw new Error(
-						// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-						`property_authintication record is not found.  property:${data.property} metrics:${data.metrics}`
-					)
-				}
+				const record = await this.getPropertyAuthenticationRecord(
+					con,
+					data.property,
+					data.metrics
+				)
 
 				// eslint-disable-next-line no-await-in-loop
-				await con
-					.createQueryBuilder()
-					.delete()
-					.from(PropertyAuthentication)
-					.where('property = :_property AND metrics = :_metrics', {
-						_property: data.property,
-						_metrics: data.metrics,
-					})
-					.execute()
-				const saveData = new PropertyAuthenticationDeleted()
-				saveData.property = record.property
-				saveData.metrics = record.metrics
-				saveData.block_number = record.block_number
-				saveData.market = record.market
-				saveData.authentication_id = record.authentication_id
+				await this.deletePropertyAuthenticationRecord(
+					con,
+					data.property,
+					data.metrics
+				)
+				const saveData = this.createPropertyAuthenticationDeletedData(record)
 
 				// eslint-disable-next-line no-await-in-loop
 				await transaction.save(saveData)
@@ -93,6 +76,56 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 		} finally {
 			await transaction.finish()
 		}
+	}
+
+	private async deletePropertyAuthenticationRecord(
+		con: Connection,
+		property: string,
+		metrics: string
+	): Promise<void> {
+		await con
+			.createQueryBuilder()
+			.delete()
+			.from(PropertyAuthentication)
+			.where('property = :_property AND metrics = :_metrics', {
+				_property: property,
+				_metrics: metrics,
+			})
+			.execute()
+	}
+
+	private async getPropertyAuthenticationRecord(
+		con: Connection,
+		property: string,
+		metrics: string
+	): Promise<PropertyAuthentication> {
+		const record = await con
+			.getRepository(PropertyAuthentication)
+			.createQueryBuilder('tmp')
+			.where('tmp.property = :_property AND tmp.metrics = :_metrics', {
+				_property: property,
+				_metrics: metrics,
+			})
+			.getOne()
+		if (typeof record === 'undefined') {
+			throw new Error(
+				`property_authintication record is not found.  property:${property} metrics:${metrics}`
+			)
+		}
+
+		return record
+	}
+
+	private createPropertyAuthenticationDeletedData(
+		originalRecord: PropertyAuthentication
+	): PropertyAuthenticationDeleted {
+		const saveData = new PropertyAuthenticationDeleted()
+		saveData.property = originalRecord.property
+		saveData.metrics = originalRecord.metrics
+		saveData.block_number = originalRecord.block_number
+		saveData.market = originalRecord.market
+		saveData.authentication_id = originalRecord.authentication_id
+		return saveData
 	}
 
 	private async getPropertyInfo(
