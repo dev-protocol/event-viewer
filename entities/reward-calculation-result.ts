@@ -18,11 +18,11 @@ export class RewardCalculationResult extends BaseEntity {
 	@Column()
 	public allocate_result!: number
 
-	@Column()
-	public holder_reward!: number
+	@Column({ type: 'numeric' })
+	public holder_reward!: string
 
-	@Column()
-	public staking_reward!: number
+	@Column({ type: 'numeric' })
+	public staking_reward!: string
 
 	@Column()
 	public policy!: string

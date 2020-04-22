@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { AzureFunction, Context } from '@azure/functions'
 import { Connection } from 'typeorm'
+import BigNumber from 'bignumber.js'
 import { TimerBatchBase } from '../common/base'
 import { getTargetRecordsSeparatedByBlockNumber } from '../common/utils'
 import { getPolicyInstance } from '../common/block-chain/utils'
@@ -64,16 +65,14 @@ class RewardCalculationer extends TimerBatchBase {
 				insertRecord.metrics = record.metrics
 				insertRecord.lockup = record.lockup_value
 				insertRecord.allocate_result = record.result
-				const holderReward = await policyInstance.methods
+				const tmp = await policyInstance.methods
 					.holdersShare(record.result, record.lockup_value)
 					.call()
-				const stakingReward = record.result - holderReward
-				insertRecord.holder_reward = holderReward
-				insertRecord.staking_reward = stakingReward
-
-				insertRecord.policy = web3.utils.toChecksumAddress(
-					policyInstance.options.address
-				)
+				const holderReward = new BigNumber(tmp)
+				const stakingReward = new BigNumber(record.result).minus(holderReward)
+				insertRecord.holder_reward = holderReward.toString()
+				insertRecord.staking_reward = stakingReward.toString()
+				insertRecord.policy = policyInstance.options.address
 				await transaction.save(insertRecord)
 				count++
 				if (count % 10 === 0) {
