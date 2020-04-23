@@ -26,5 +26,10 @@ describe('EventSaverLogging', () => {
 			await res.warning('warning message')
 			await res.error('error message')
 		})
+		it('No error occurs when running infolog or errorlog.', async () => {
+			const res = new EventSaverLogging(context.log, 'TestBatchName')
+			res.infolog('info message')
+			res.errorlog('error message')
+		})
 	})
 })
