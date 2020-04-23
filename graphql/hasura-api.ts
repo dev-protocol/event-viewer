@@ -61,6 +61,10 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 				},
 				{
 					headers: this.getPostHeader(),
+					transformResponse: (res) => {
+						return res
+					},
+					responseType: 'json',
 				}
 			)
 		} catch (e) {
