@@ -51,7 +51,7 @@
 		"reflect-metadata": "0.1.13",
 		"typeorm": "0.2.24",
 		"url-join": "4.0.1",
-		"web3": "1.2.6"
+		"web3": "1.2.7"
 	},
 	"devDependencies": {
 		"@azure/functions": "1.2.0",
