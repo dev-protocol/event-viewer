@@ -55,7 +55,7 @@ export class ValidateError extends Error {
 }
 
 interface Validator {
-	execute(req: HttpRequest): void
+	execute: (req: HttpRequest) => void
 }
 
 class JsonValidator implements Validator {

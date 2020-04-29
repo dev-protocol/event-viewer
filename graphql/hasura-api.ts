@@ -8,7 +8,7 @@ import { isNotEmpty } from '../common/utils'
 import { RequestValidatorBuilder, ValidateError } from './validator'
 
 interface ApiExecuter {
-	execute(): Promise<any>
+	execute: () => Promise<any>
 }
 
 abstract class HasuraApiExecuter implements ApiExecuter {
