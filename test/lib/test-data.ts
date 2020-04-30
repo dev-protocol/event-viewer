@@ -1,6 +1,9 @@
 import { EntityManager, Connection } from 'typeorm'
 import { Transaction } from '../../common/db/common'
 import { LockupLockedup } from '../../entities/lockup-lockedup'
+import { ContractInfo } from '../../entities/contract-info'
+import { GroupContractInfo } from '../../entities/group-contract-info'
+import { LegacyGroupContractInfo } from '../../entities/legacy-group-contract-info'
 
 export async function saveLockupLockupedTestdata(
 	con: Connection,
@@ -54,4 +57,92 @@ export async function clearLockupLockupedTestdata(
 ): Promise<void> {
 	const manager = new EntityManager(con)
 	await manager.clear(LockupLockedup)
+}
+
+export async function saveContractInfoTestdata(con: Connection): Promise<void> {
+	const manager = new EntityManager(con)
+	await manager.clear(ContractInfo)
+	const transaction = new Transaction(con)
+	await transaction.start()
+	const contractInfo = new ContractInfo()
+
+	contractInfo.name = 'dummy-name-1'
+	contractInfo.address = '0x152437ababab'
+	contractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
+	await transaction.save(contractInfo)
+
+	contractInfo.name = 'dummy-name-2'
+	contractInfo.address = '0x152437cdcdcd'
+	contractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
+	await transaction.save(contractInfo)
+
+	contractInfo.name = 'dummy-name-3'
+	contractInfo.address = '0x152437efefef'
+	contractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
+	await transaction.save(contractInfo)
+
+	await transaction.commit()
+	await transaction.finish()
+}
+
+export async function saveGroupContractInfoTestdata(
+	con: Connection
+): Promise<void> {
+	const manager = new EntityManager(con)
+	await manager.clear(GroupContractInfo)
+	const transaction = new Transaction(con)
+	await transaction.start()
+	const groupContractInfo = new GroupContractInfo()
+
+	groupContractInfo.name = 'dummy-name-1'
+	groupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
+	await transaction.save(groupContractInfo)
+
+	groupContractInfo.name = 'dummy-name-2'
+	groupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
+	await transaction.save(groupContractInfo)
+
+	groupContractInfo.name = 'dummy-name-3'
+	groupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
+	await transaction.save(groupContractInfo)
+
+	await transaction.commit()
+	await transaction.finish()
+}
+
+export async function saveLegacyGroupContractInfoTestdata(
+	con: Connection
+): Promise<void> {
+	const manager = new EntityManager(con)
+	await manager.clear(LegacyGroupContractInfo)
+	const transaction = new Transaction(con)
+	await transaction.start()
+	const legacyGroupContractInfo = new LegacyGroupContractInfo()
+
+	legacyGroupContractInfo.name = 'dummy-name-1'
+	legacyGroupContractInfo.address = '0x152437ababab'
+	legacyGroupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
+	await transaction.save(legacyGroupContractInfo)
+
+	legacyGroupContractInfo.name = 'dummy-name-2'
+	legacyGroupContractInfo.address = '0x152437cdcdcd'
+	legacyGroupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
+	await transaction.save(legacyGroupContractInfo)
+
+	legacyGroupContractInfo.name = 'dummy-name-3'
+	legacyGroupContractInfo.address = '0x152437efefef'
+	legacyGroupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
+	await transaction.save(legacyGroupContractInfo)
+
+	await transaction.commit()
+	await transaction.finish()
 }
