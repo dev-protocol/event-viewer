@@ -74,6 +74,10 @@ export async function getPolicyInstance(
 	web3: any
 ): Promise<any> {
 	const info = await getContractInfo(con, 'AddressConfig')
+	if (typeof info === 'undefined') {
+		throw new Error('AddressConfig contract info is not found.')
+	}
+
 	const recordMap = new Map(Object.entries(info))
 	const addressConfigInstance = await new web3.eth.Contract(
 		JSON.parse(recordMap.get('contract_info_abi')),

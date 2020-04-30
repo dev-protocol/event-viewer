@@ -88,16 +88,22 @@ export async function saveContractInfoTestdata(con: Connection): Promise<void> {
 	await transaction.finish()
 }
 
-export async function saveGroupContractInfoTestdata(
+export async function clearContractInfoTestdata(
 	con: Connection
 ): Promise<void> {
 	const manager = new EntityManager(con)
-	await manager.clear(GroupContractInfo)
+	await manager.clear(ContractInfo)
+}
+
+export async function saveGroupContractInfoTestdata(
+	con: Connection
+): Promise<void> {
+	await clearGroupContractInfoTestdata(con)
 	const transaction = new Transaction(con)
 	await transaction.start()
 	const groupContractInfo = new GroupContractInfo()
 
-	groupContractInfo.name = 'dummy-name-1'
+	groupContractInfo.name = 'Metrics'
 	groupContractInfo.abi =
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
 	await transaction.save(groupContractInfo)
@@ -114,6 +120,13 @@ export async function saveGroupContractInfoTestdata(
 
 	await transaction.commit()
 	await transaction.finish()
+}
+
+export async function clearGroupContractInfoTestdata(
+	con: Connection
+): Promise<void> {
+	const manager = new EntityManager(con)
+	await manager.clear(GroupContractInfo)
 }
 
 export async function saveLegacyGroupContractInfoTestdata(
