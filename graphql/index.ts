@@ -11,6 +11,9 @@ const httpTrigger: AzureFunction = async function (
 	context.res = {
 		status: res.status,
 		body: res.body,
+		headers: {
+			'Cache-Control': 'no-store',
+		},
 	}
 }
 
