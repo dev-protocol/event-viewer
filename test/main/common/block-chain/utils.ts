@@ -146,7 +146,7 @@ describe('getAuthenticationIdByMetrics', () => {
 		await con.quit()
 		done()
 	})
-	it('If the information of AddressConfig does not exist, an error occurs.', async () => {
+	it('In the case of a normal Market, execute the getId function to obtain an authentication ID.', async () => {
 		await saveGroupContractInfoTestdata(con.connection)
 		const web3 = new Web3Mock('hoge')
 		const authenticationId = await getAuthenticationIdByMetrics(
@@ -157,7 +157,7 @@ describe('getAuthenticationIdByMetrics', () => {
 		)
 		expect(authenticationId).toBe('authentication-id')
 	})
-	it('If the information of AddressConfig does not exist, an error occurs.', async () => {
+	it('In the case of the old Market, run the getPackage function to get the authentication ID.', async () => {
 		await saveGroupContractInfoTestdata(con.connection)
 		await updateGroupContractInfoTestdata(
 			con.connection,
