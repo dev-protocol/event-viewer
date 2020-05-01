@@ -63,7 +63,7 @@ export async function getAuthenticationIdByMetrics(
 	} else if (hasFunction(behaviorAbi, 'getPackage')) {
 		id = await behaviorInstance.methods.getPackage(metricsAddress).call()
 	} else {
-		throw new Error('not found get id function')
+		throw new Error('not found get id function.')
 	}
 
 	return id
@@ -74,6 +74,10 @@ export async function getPolicyInstance(
 	web3: any
 ): Promise<any> {
 	const info = await getContractInfo(con, 'AddressConfig')
+	if (typeof info === 'undefined') {
+		throw new Error('AddressConfig contract info is not found.')
+	}
+
 	const recordMap = new Map(Object.entries(info))
 	const addressConfigInstance = await new web3.eth.Contract(
 		JSON.parse(recordMap.get('contract_info_abi')),
@@ -126,7 +130,7 @@ async function getGroupContractAbi(
 
 	contractInfo = await getGroupContractInfo(con, groupName)
 	if (typeof contractInfo === 'undefined') {
-		throw new Error('target contract info is not found')
+		throw new Error('target contract info is not found.')
 	}
 
 	const recordMap = new Map(Object.entries(contractInfo))
