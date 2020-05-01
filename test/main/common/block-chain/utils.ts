@@ -1,13 +1,17 @@
+import { DbConnection } from '../../../../common/db/common'
 import { getDbConnection } from '../../../lib/db'
 import {
 	saveGroupContractInfoTestdata,
 	clearGroupContractInfoTestdata,
 	clearContractInfoTestdata,
+	saveContractInfoTestdata,
+	updateGroupContractInfoTestdata,
 } from '../../../lib/test-data'
 import {
 	getApprovalBlockNumber,
 	getPropertyByMetrics,
 	getPolicyInstance,
+	getAuthenticationIdByMetrics,
 } from '../../../../common/block-chain/utils'
 
 describe('getApprovalBlockNumber', () => {
@@ -57,8 +61,16 @@ describe('getPropertyByMetrics', () => {
 			}
 		}
 	}
+	let con: DbConnection
+	beforeAll(async (done) => {
+		con = await getDbConnection()
+		done()
+	})
+	afterAll(async (done) => {
+		await con.quit()
+		done()
+	})
 	it('can get a property address from a metrics address.', async () => {
-		const con = await getDbConnection()
 		await saveGroupContractInfoTestdata(con.connection)
 		const web3 = new Web3PropertyCallMock('hoge')
 		const result = await getPropertyByMetrics(
@@ -68,10 +80,8 @@ describe('getPropertyByMetrics', () => {
 		)
 
 		expect(result).toBe('0x54E575848E4b62a1a3aaBd09380f73Fc2d6758CA')
-		await con.quit()
 	})
 	it('If the contract information does not exist, an error is returned.', async () => {
-		const con = await getDbConnection()
 		await clearGroupContractInfoTestdata(con.connection)
 		const web3 = new Web3PropertyCallMock('hoge')
 		const promise = getPropertyByMetrics(
@@ -83,7 +93,85 @@ describe('getPropertyByMetrics', () => {
 		await expect(promise).rejects.toThrowError(
 			new Error('metrics info is not found')
 		)
+	})
+})
+
+describe('getAuthenticationIdByMetrics', () => {
+	class Web3Mock {
+		eth: any
+		constructor(_: any) {
+			this.eth = {
+				Contract: class Contract {
+					_abi: any
+					_address: string
+					methods: any
+					constructor(abi: any, address: string) {
+						this._abi = abi
+						this._address = address
+						this.methods = {}
+						this.methods.getId = function () {
+							return {
+								call: async function (): Promise<string> {
+									return 'authentication-id'
+								},
+							}
+						}
+
+						this.methods.getPackage = function () {
+							return {
+								call: async function (): Promise<string> {
+									return 'authentication-id-package'
+								},
+							}
+						}
+
+						this.methods.behavior = function () {
+							return {
+								call: async function (): Promise<string> {
+									return '0x54E575848E4b62a1a3aaBd09380f73Fc2d6758CA'
+								},
+							}
+						}
+					}
+				},
+			}
+		}
+	}
+	let con: DbConnection
+	beforeAll(async (done) => {
+		con = await getDbConnection()
+		done()
+	})
+	afterAll(async (done) => {
 		await con.quit()
+		done()
+	})
+	it('If the information of AddressConfig does not exist, an error occurs.', async () => {
+		await saveGroupContractInfoTestdata(con.connection)
+		const web3 = new Web3Mock('hoge')
+		const authenticationId = await getAuthenticationIdByMetrics(
+			con.connection,
+			web3,
+			'dummy-market-address',
+			'dummy-metrics-address'
+		)
+		expect(authenticationId).toBe('authentication-id')
+	})
+	it('If the information of AddressConfig does not exist, an error occurs.', async () => {
+		await saveGroupContractInfoTestdata(con.connection)
+		await updateGroupContractInfoTestdata(
+			con.connection,
+			'IMarketBehavior',
+			'[{"constant":true,"inputs":[{"internalType":"address","name":"_metrics","type":"address"}],"name":"getPackage","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}]'
+		)
+		const web3 = new Web3Mock('hoge')
+		const authenticationId = await getAuthenticationIdByMetrics(
+			con.connection,
+			web3,
+			'dummy-market-address',
+			'dummy-metrics-address'
+		)
+		expect(authenticationId).toBe('authentication-id-package')
 	})
 })
 
@@ -108,18 +196,47 @@ describe('getPolicyInstance', () => {
 							}
 						}
 					}
+
+					get address(): string {
+						return this._address
+					}
 				},
 			}
 		}
 	}
+	let con: DbConnection
+	beforeAll(async (done) => {
+		con = await getDbConnection()
+		done()
+	})
+	afterAll(async (done) => {
+		await con.quit()
+		done()
+	})
 	it('If the information of AddressConfig does not exist, an error occurs.', async () => {
-		const con = await getDbConnection()
 		await clearContractInfoTestdata(con.connection)
 		const web3 = new Web3Mock('hoge')
 		const promise = getPolicyInstance(con.connection, web3)
 		await expect(promise).rejects.toThrowError(
 			new Error('AddressConfig contract info is not found.')
 		)
-		await con.quit()
+	})
+	it('If the information of Policy does not exist, an error occurs.', async () => {
+		await saveContractInfoTestdata(con.connection)
+		await clearGroupContractInfoTestdata(con.connection)
+		const web3 = new Web3Mock('hoge')
+		const promise = getPolicyInstance(con.connection, web3)
+		await expect(promise).rejects.toThrowError(
+			new Error('target contract info is not found.')
+		)
+	})
+	it('If the information of Policy exist, return. PolicyInstance returns', async () => {
+		await saveContractInfoTestdata(con.connection)
+		await saveGroupContractInfoTestdata(con.connection)
+		const web3 = new Web3Mock('hoge')
+		const policyInstance = await getPolicyInstance(con.connection, web3)
+		expect(policyInstance.address).toBe(
+			'0x54E575848E4b62a1a3aaBd09380f73Fc2d6758CA'
+		)
 	})
 })

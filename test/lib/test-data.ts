@@ -66,7 +66,7 @@ export async function saveContractInfoTestdata(con: Connection): Promise<void> {
 	await transaction.start()
 	const contractInfo = new ContractInfo()
 
-	contractInfo.name = 'dummy-name-1'
+	contractInfo.name = 'AddressConfig'
 	contractInfo.address = '0x152437ababab'
 	contractInfo.abi =
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
@@ -113,13 +113,38 @@ export async function saveGroupContractInfoTestdata(
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
 	await transaction.save(groupContractInfo)
 
-	groupContractInfo.name = 'dummy-name-3'
+	groupContractInfo.name = 'IPolicy'
 	groupContractInfo.abi =
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
 	await transaction.save(groupContractInfo)
 
+	groupContractInfo.name = 'IMarketBehavior'
+	groupContractInfo.abi =
+		'[{"constant":true,"inputs":[{"internalType":"address","name":"_metrics","type":"address"}],"name":"getId","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"}]'
+	await transaction.save(groupContractInfo)
+
+	groupContractInfo.name = 'IMarket'
+	groupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "byte32"}]}]'
+	await transaction.save(groupContractInfo)
+
 	await transaction.commit()
 	await transaction.finish()
+}
+
+export async function updateGroupContractInfoTestdata(
+	con: Connection,
+	name: string,
+	abi: string
+): Promise<void> {
+	const groupContractInfo = new GroupContractInfo()
+	const transaction = new Transaction(con)
+	await transaction.start()
+	groupContractInfo.name = name
+	groupContractInfo.abi = abi
+	await transaction.save(groupContractInfo)
+
+	await transaction.commit()
 }
 
 export async function clearGroupContractInfoTestdata(
