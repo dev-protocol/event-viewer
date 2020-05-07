@@ -1,4 +1,4 @@
-import { getContextMock } from '../../lib/context'
+import { getContextMock } from '../../lib/mock'
 
 jest.mock('discord-webhook-ts')
 

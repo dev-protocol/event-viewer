@@ -11,3 +11,12 @@ context.executionContext = {
 export function getContextMock() {
 	return context
 }
+
+const timer = {
+	IsPastDue: false,
+}
+
+export function getTimerMock(isPastDue = false) {
+	timer.IsPastDue = isPastDue
+	return timer
+}

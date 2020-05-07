@@ -34,7 +34,7 @@
 			}
 		},
 		"testMatch": [
-			"**/dist/test/main/**/*.js"
+			"**/test/main/**/*.ts"
 		]
 	},
 	"husky": {
