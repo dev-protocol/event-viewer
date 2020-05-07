@@ -22,7 +22,7 @@ describe('Transaction', () => {
 		done()
 	})
 	it('can save data when you commit.', async () => {
-		await saveLockupLockupedTestdata(con.connection, true)
+		await saveLockupLockupedTestdata(con.connection)
 		const recordCount = await con.connection
 			.getRepository(LockupLockedup)
 			.count()

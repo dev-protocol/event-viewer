@@ -7,7 +7,7 @@ import { LegacyGroupContractInfo } from '../../entities/legacy-group-contract-in
 
 export async function saveLockupLockupedTestdata(
 	con: Connection,
-	executeCommit: boolean
+	executeCommit = true
 ): Promise<void> {
 	await clearLockupLockupedTestdata(con)
 	const transaction = new Transaction(con)
@@ -59,6 +59,14 @@ export async function clearLockupLockupedTestdata(
 	await manager.clear(LockupLockedup)
 }
 
+export async function getLockupLockupedTestdataCount(
+	con: Connection
+): Promise<number> {
+	const manager = new EntityManager(con)
+	const number = await manager.count(LockupLockedup)
+	return number
+}
+
 export async function saveContractInfoTestdata(con: Connection): Promise<void> {
 	const manager = new EntityManager(con)
 	await manager.clear(ContractInfo)
@@ -80,6 +88,12 @@ export async function saveContractInfoTestdata(con: Connection): Promise<void> {
 
 	contractInfo.name = 'dummy-name-3'
 	contractInfo.address = '0x152437efefef'
+	contractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
+	await transaction.save(contractInfo)
+
+	contractInfo.name = 'Lockup'
+	contractInfo.address = '0x152437abababab'
 	contractInfo.abi =
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
 	await transaction.save(contractInfo)
