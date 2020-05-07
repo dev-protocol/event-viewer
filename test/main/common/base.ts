@@ -9,20 +9,6 @@ jest.mock('../../../common/notifications')
 
 const TEST_FUNC_NAME = 'test-func-name'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-// const start = jest.fn().mockResolvedValue(() => {})
-// EventSaverLogging.mockImplementation(() => {
-// 	return {
-// 		start: start,
-// 	}
-// })
-
-// Const logging = new EventSaverLogging(context, TEST_FUNC_NAME)
-// ;(logging.start as any).mockResolvedValue()
-// ;(logging.warning as any).mockResolvedValue()
-// ;(logging.error as any).mockResolvedValue()
-// ;(logging.finish as any).mockResolvedValue()
-
 class TestTimerBatchBase extends TimerBatchBase {
 	getBatchName(): string {
 		return TEST_FUNC_NAME
@@ -41,14 +27,58 @@ class TestTimerBatchBase extends TimerBatchBase {
 	}
 }
 
+class TestTimerBatchBaseError extends TimerBatchBase {
+	getBatchName(): string {
+		return TEST_FUNC_NAME
+	}
+
+	async innerExecute(): Promise<void> {
+		throw new Error('test-error')
+	}
+}
+
 describe('TimerBatchBase', () => {
 	beforeEach(() => {
 		mocked(EventSaverLogging).mockClear()
 	})
-	it('null is recognized as an empty string.', async () => {
+	it('Upon successful completion, logging executes the start and finish methods.', async () => {
+		expect(EventSaverLogging).not.toHaveBeenCalled()
 		const timer = getTimerMock()
 		const timerBatch = new TestTimerBatchBase(context, timer)
 		await timerBatch.execute()
 		expect(EventSaverLogging).toHaveBeenCalledTimes(1)
+		const mockSoundPlayerInstance = mocked(EventSaverLogging).mock.instances[0]
+		expect(mockSoundPlayerInstance.start).toHaveBeenCalledTimes(1)
+		expect(mockSoundPlayerInstance.finish).toHaveBeenCalledTimes(1)
+		expect(mockSoundPlayerInstance.warning).toHaveBeenCalledTimes(0)
+		expect(mockSoundPlayerInstance.error).toHaveBeenCalledTimes(0)
+	})
+	it('If running deferred, logging executes the start, finish, and warning methods.', async () => {
+		expect(EventSaverLogging).not.toHaveBeenCalled()
+		const timer = getTimerMock(true)
+		const timerBatch = new TestTimerBatchBase(context, timer)
+		await timerBatch.execute()
+		expect(EventSaverLogging).toHaveBeenCalledTimes(1)
+		const mockSoundPlayerInstance = mocked(EventSaverLogging).mock.instances[0]
+		expect(mockSoundPlayerInstance.start).toHaveBeenCalledTimes(1)
+		expect(mockSoundPlayerInstance.finish).toHaveBeenCalledTimes(1)
+		expect(mockSoundPlayerInstance.warning).toHaveBeenCalledTimes(1)
+		expect(mockSoundPlayerInstance.warning).toHaveBeenCalledWith(
+			'Timer function is running late!'
+		)
+		expect(mockSoundPlayerInstance.error).toHaveBeenCalledTimes(0)
+	})
+	it('If an error occurs, logging executes the start and error methods.', async () => {
+		expect(EventSaverLogging).not.toHaveBeenCalled()
+		const timer = getTimerMock()
+		const timerBatch = new TestTimerBatchBaseError(context, timer)
+		const promise = timerBatch.execute()
+		await expect(promise).rejects.toThrowError(new Error('test-error'))
+		expect(EventSaverLogging).toHaveBeenCalledTimes(1)
+		const mockSoundPlayerInstance = mocked(EventSaverLogging).mock.instances[0]
+		expect(mockSoundPlayerInstance.start).toHaveBeenCalledTimes(1)
+		expect(mockSoundPlayerInstance.finish).toHaveBeenCalledTimes(0)
+		expect(mockSoundPlayerInstance.warning).toHaveBeenCalledTimes(0)
+		expect(mockSoundPlayerInstance.error).toHaveBeenCalledTimes(1)
 	})
 })
