@@ -1,11 +1,11 @@
-import { ObjectType } from 'typeorm'
+import { EntityManager, ObjectType } from 'typeorm'
 import { mocked } from 'ts-jest/utils'
 import { getContextMock, getTimerMock } from '../../lib/mock'
 import {
 	saveContractInfoTestdata,
-	clearLockupLockupedTestdata,
-	getLockupLockupedTestdataCount,
+	getCount,
 	saveLockupLockupedTestdata,
+	clearData,
 } from '../../lib/test-data'
 import { getDbConnection } from '../../lib/db'
 
@@ -62,7 +62,7 @@ describe('EventSaver', () => {
 		await saveContractInfoTestdata(con.connection)
 	})
 	beforeEach(async () => {
-		await clearLockupLockupedTestdata(con.connection)
+		await clearData(con.connection, LockupLockedup)
 	})
 	it('If the number of events retrieved is 0, no data is recorded.', async () => {
 		mocked(Event).mockImplementation((): any => {
@@ -73,7 +73,7 @@ describe('EventSaver', () => {
 		})
 		const timerBatch = new TestEventSaver(context, timer)
 		await timerBatch.execute()
-		const result = await getLockupLockupedTestdataCount(con.connection)
+		const result = await getCount(con.connection, LockupLockedup)
 		expect(result).toBe(0)
 	})
 	it('An error occurs if there is a duplicate ID.', async () => {
@@ -145,8 +145,41 @@ describe('EventSaver', () => {
 		})
 		const timerBatch = new TestEventSaver(context, timer)
 		await timerBatch.execute()
-		const result = await getLockupLockupedTestdataCount(con.connection)
+		const result = await getCount(con.connection, LockupLockedup)
 		expect(result).toBe(3)
+		const manager = new EntityManager(con.connection)
+		let record = await manager.findOneOrFail(LockupLockedup, 'dummy-event-id1')
+		expect(record.event_id).toBe('dummy-event-id1')
+		expect(record.block_number).toBe(12345)
+		expect(record.log_index).toBe(15)
+		expect(record.transaction_index).toBe(26)
+		let rawData = JSON.parse(record.raw_data)
+		expect(rawData.id).toBe('dummy-event-id1')
+		expect(rawData.blockNumber).toBe(12345)
+		expect(rawData.logIndex).toBe(15)
+		expect(rawData.transactionIndex).toBe(26)
+
+		record = await manager.findOneOrFail(LockupLockedup, 'dummy-event-id2')
+		expect(record.event_id).toBe('dummy-event-id2')
+		expect(record.block_number).toBe(12346)
+		expect(record.log_index).toBe(14)
+		expect(record.transaction_index).toBe(23)
+		rawData = JSON.parse(record.raw_data)
+		expect(rawData.id).toBe('dummy-event-id2')
+		expect(rawData.blockNumber).toBe(12346)
+		expect(rawData.logIndex).toBe(14)
+		expect(rawData.transactionIndex).toBe(23)
+
+		record = await manager.findOneOrFail(LockupLockedup, 'dummy-event-id3')
+		expect(record.event_id).toBe('dummy-event-id3')
+		expect(record.block_number).toBe(12347)
+		expect(record.log_index).toBe(12)
+		expect(record.transaction_index).toBe(21)
+		rawData = JSON.parse(record.raw_data)
+		expect(rawData.id).toBe('dummy-event-id3')
+		expect(rawData.blockNumber).toBe(12347)
+		expect(rawData.logIndex).toBe(12)
+		expect(rawData.transactionIndex).toBe(21)
 	})
 	afterAll(async () => {
 		await con.quit()

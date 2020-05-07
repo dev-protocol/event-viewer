@@ -6,10 +6,7 @@ import {
 } from '../../../../common/db/event'
 import { LockupLockedup } from '../../../../entities/lockup-lockedup'
 import { getDbConnection } from './../../../lib/db'
-import {
-	saveLockupLockupedTestdata,
-	clearLockupLockupedTestdata,
-} from './../../../lib/test-data'
+import { saveLockupLockupedTestdata, clearData } from './../../../lib/test-data'
 
 describe('EventTableAccessor', () => {
 	let con: DbConnection
@@ -22,7 +19,7 @@ describe('EventTableAccessor', () => {
 		done()
 	})
 	it('can get the maximum block_number that exists in the record.', async () => {
-		await clearLockupLockupedTestdata(con.connection)
+		await clearData(con.connection, LockupLockedup)
 		const event = new EventTableAccessor(con.connection, LockupLockedup)
 		let nomber = await event.getMaxBlockNumber()
 		expect(nomber).toBe(0)
@@ -56,7 +53,7 @@ describe('getMaxBlockNumber', () => {
 		expect(blockNUmber).toBe(32000)
 	})
 	it('If the record exists, get 0.', async () => {
-		await clearLockupLockupedTestdata(con.connection)
+		await clearData(con.connection, LockupLockedup)
 		const blockNUmber = await getMaxBlockNumber(con.connection, LockupLockedup)
 		expect(blockNUmber).toBe(0)
 	})

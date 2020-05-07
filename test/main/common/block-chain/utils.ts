@@ -2,8 +2,7 @@ import { DbConnection } from '../../../../common/db/common'
 import { getDbConnection } from '../../../lib/db'
 import {
 	saveGroupContractInfoTestdata,
-	clearGroupContractInfoTestdata,
-	clearContractInfoTestdata,
+	clearData,
 	saveContractInfoTestdata,
 	updateGroupContractInfoTestdata,
 } from '../../../lib/test-data'
@@ -13,6 +12,8 @@ import {
 	getPolicyInstance,
 	getAuthenticationIdByMetrics,
 } from '../../../../common/block-chain/utils'
+import { ContractInfo } from '../../../../entities/contract-info'
+import { GroupContractInfo } from '../../../../entities/group-contract-info'
 
 describe('getApprovalBlockNumber', () => {
 	class Web3GetBlockNumberMock {
@@ -82,7 +83,7 @@ describe('getPropertyByMetrics', () => {
 		expect(result).toBe('0x54E575848E4b62a1a3aaBd09380f73Fc2d6758CA')
 	})
 	it('If the contract information does not exist, an error is returned.', async () => {
-		await clearGroupContractInfoTestdata(con.connection)
+		await clearData(con.connection, GroupContractInfo)
 		const web3 = new Web3PropertyCallMock('hoge')
 		const promise = getPropertyByMetrics(
 			con.connection,
@@ -214,7 +215,7 @@ describe('getPolicyInstance', () => {
 		done()
 	})
 	it('If the information of AddressConfig does not exist, an error occurs.', async () => {
-		await clearContractInfoTestdata(con.connection)
+		await clearData(con.connection, ContractInfo)
 		const web3 = new Web3Mock('hoge')
 		const promise = getPolicyInstance(con.connection, web3)
 		await expect(promise).rejects.toThrowError(
@@ -223,7 +224,7 @@ describe('getPolicyInstance', () => {
 	})
 	it('If the information of Policy does not exist, an error occurs.', async () => {
 		await saveContractInfoTestdata(con.connection)
-		await clearGroupContractInfoTestdata(con.connection)
+		await clearData(con.connection, GroupContractInfo)
 		const web3 = new Web3Mock('hoge')
 		const promise = getPolicyInstance(con.connection, web3)
 		await expect(promise).rejects.toThrowError(

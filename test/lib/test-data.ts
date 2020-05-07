@@ -1,4 +1,4 @@
-import { EntityManager, Connection } from 'typeorm'
+import { ObjectType, EntityManager, Connection } from 'typeorm'
 import { Transaction } from '../../common/db/common'
 import { LockupLockedup } from '../../entities/lockup-lockedup'
 import { ContractInfo } from '../../entities/contract-info'
@@ -9,7 +9,7 @@ export async function saveLockupLockupedTestdata(
 	con: Connection,
 	executeCommit = true
 ): Promise<void> {
-	await clearLockupLockupedTestdata(con)
+	await clearData(con, LockupLockedup)
 	const transaction = new Transaction(con)
 	await transaction.start()
 	const lockupLockedup = new LockupLockedup()
@@ -52,18 +52,20 @@ export async function saveLockupLockupedTestdata(
 	await transaction.finish()
 }
 
-export async function clearLockupLockupedTestdata(
-	con: Connection
+export async function clearData<Entity>(
+	con: Connection,
+	entityClass: ObjectType<Entity>
 ): Promise<void> {
 	const manager = new EntityManager(con)
-	await manager.clear(LockupLockedup)
+	await manager.clear(entityClass)
 }
 
-export async function getLockupLockupedTestdataCount(
-	con: Connection
+export async function getCount<Entity>(
+	con: Connection,
+	entityClass: ObjectType<Entity>
 ): Promise<number> {
 	const manager = new EntityManager(con)
-	const number = await manager.count(LockupLockedup)
+	const number = await manager.count(entityClass)
 	return number
 }
 
@@ -98,21 +100,20 @@ export async function saveContractInfoTestdata(con: Connection): Promise<void> {
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
 	await transaction.save(contractInfo)
 
+	contractInfo.name = 'Allocator'
+	contractInfo.address = '0x152437abababac'
+	contractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
+	await transaction.save(contractInfo)
+
 	await transaction.commit()
 	await transaction.finish()
-}
-
-export async function clearContractInfoTestdata(
-	con: Connection
-): Promise<void> {
-	const manager = new EntityManager(con)
-	await manager.clear(ContractInfo)
 }
 
 export async function saveGroupContractInfoTestdata(
 	con: Connection
 ): Promise<void> {
-	await clearGroupContractInfoTestdata(con)
+	await clearData(con, GroupContractInfo)
 	const transaction = new Transaction(con)
 	await transaction.start()
 	const groupContractInfo = new GroupContractInfo()
@@ -159,13 +160,6 @@ export async function updateGroupContractInfoTestdata(
 	await transaction.save(groupContractInfo)
 
 	await transaction.commit()
-}
-
-export async function clearGroupContractInfoTestdata(
-	con: Connection
-): Promise<void> {
-	const manager = new EntityManager(con)
-	await manager.clear(GroupContractInfo)
 }
 
 export async function saveLegacyGroupContractInfoTestdata(
