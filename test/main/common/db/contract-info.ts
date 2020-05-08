@@ -23,11 +23,11 @@ describe('getContractInfo', () => {
 	})
 	it('If the target record exists, the contract meta-information of the corresponding contract can be retrieved.', async () => {
 		await saveContractInfoTestdata(con.connection)
-		const record = await getContractInfo(con.connection, 'dummy-name-2')
+		const record = await getContractInfo(con.connection, 'AddressConfig')
 		const recordMap = new Map(Object.entries(record))
-		expect(recordMap.get('contract_info_address')).toBe('0x152437cdcdcd')
+		expect(recordMap.get('contract_info_address')).toBe('0x152437ababab')
 		expect(recordMap.get('contract_info_abi')).toBe(
-			'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
+			'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
 		)
 	})
 	it('If the target record does not exist, the contract meta information of the corresponding contract cannot be retrieved.', async () => {

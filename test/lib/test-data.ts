@@ -82,20 +82,8 @@ export async function saveContractInfoTestdata(con: Connection): Promise<void> {
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
 	await transaction.save(contractInfo)
 
-	contractInfo.name = 'dummy-name-2'
-	contractInfo.address = '0x152437cdcdcd'
-	contractInfo.abi =
-		'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
-	await transaction.save(contractInfo)
-
-	contractInfo.name = 'dummy-name-3'
-	contractInfo.address = '0x152437efefef'
-	contractInfo.abi =
-		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
-	await transaction.save(contractInfo)
-
 	contractInfo.name = 'Lockup'
-	contractInfo.address = '0x152437abababab'
+	contractInfo.address = '0x152437ababababa'
 	contractInfo.abi =
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
 	await transaction.save(contractInfo)
@@ -107,7 +95,13 @@ export async function saveContractInfoTestdata(con: Connection): Promise<void> {
 	await transaction.save(contractInfo)
 
 	contractInfo.name = 'MarketFactory'
-	contractInfo.address = '0x152437abababac'
+	contractInfo.address = '0x152437abababacd'
+	contractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
+	await transaction.save(contractInfo)
+
+	contractInfo.name = 'MetricsFactory'
+	contractInfo.address = '0x152437abababacde'
 	contractInfo.abi =
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "uint"}]}]'
 	await transaction.save(contractInfo)
