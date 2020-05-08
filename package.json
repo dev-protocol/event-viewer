@@ -47,7 +47,7 @@
 		"axios": "0.19.2",
 		"bignumber.js": "9.0.0",
 		"discord-webhook-ts": "3.0.3",
-		"pg": "8.0.3",
+		"pg": "8.1.0",
 		"reflect-metadata": "0.1.13",
 		"typeorm": "0.2.24",
 		"url-join": "4.0.1",
