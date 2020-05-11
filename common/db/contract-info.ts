@@ -6,24 +6,22 @@ import { LegacyGroupContractInfo } from '../../entities/legacy-group-contract-in
 export async function getContractInfo(
 	connection: Connection,
 	batchName: string
-): Promise<object> {
-	const record = await connection
-		.getRepository(ContractInfo)
-		.createQueryBuilder('contract_info')
-		.where('contract_info.name = :name', { name: batchName })
-		.getRawOne()
+): Promise<ContractInfo> {
+	const repository = connection.getRepository(ContractInfo)
+	const record = await repository.findOne({
+		name: batchName,
+	})
 	return record
 }
 
 export async function getGroupContractInfo(
 	connection: Connection,
 	contractName: string
-): Promise<object> {
-	const record = await connection
-		.getRepository(GroupContractInfo)
-		.createQueryBuilder('group_contract_info')
-		.where('group_contract_info.name = :name', { name: contractName })
-		.getRawOne()
+): Promise<GroupContractInfo> {
+	const repository = connection.getRepository(GroupContractInfo)
+	const record = await repository.findOne({
+		name: contractName,
+	})
 	return record
 }
 
@@ -31,14 +29,11 @@ export async function getLegacyGroupContractInfo(
 	connection: Connection,
 	contractName: string,
 	contractAddress: string
-): Promise<object> {
-	const record = await connection
-		.getRepository(LegacyGroupContractInfo)
-		.createQueryBuilder('legacy_group_contract_info')
-		.where(
-			'legacy_group_contract_info.name = :name AND legacy_group_contract_info.address = :address',
-			{ name: contractName, address: contractAddress }
-		)
-		.getRawOne()
+): Promise<LegacyGroupContractInfo> {
+	const repository = connection.getRepository(LegacyGroupContractInfo)
+	const record = await repository.findOne({
+		name: contractName,
+		address: contractAddress,
+	})
 	return record
 }

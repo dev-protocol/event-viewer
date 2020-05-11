@@ -20,10 +20,8 @@ export async function getPropertyByMetrics(
 		throw new Error('metrics info is not found')
 	}
 
-	const recordMap = new Map(Object.entries(metricsInfo))
-
 	const metricsInstance = await new web3.eth.Contract(
-		JSON.parse(recordMap.get('group_contract_info_abi')),
+		JSON.parse(metricsInfo.abi),
 		metricsAddress
 	)
 	const propertyAddress = await metricsInstance.methods.property().call()
@@ -78,10 +76,9 @@ export async function getPolicyInstance(
 		throw new Error('AddressConfig contract info is not found.')
 	}
 
-	const recordMap = new Map(Object.entries(info))
 	const addressConfigInstance = await new web3.eth.Contract(
-		JSON.parse(recordMap.get('contract_info_abi')),
-		recordMap.get('contract_info_address')
+		JSON.parse(info.abi),
+		info.address
 	)
 	const policyAddress = await addressConfigInstance.methods.policy().call()
 	const iPolicyAbi = await getGroupContractAbi(
@@ -118,21 +115,19 @@ async function getGroupContractAbi(
 	legacyName: string,
 	groupName: string
 ): Promise<string> {
-	let contractInfo = await getLegacyGroupContractInfo(
+	const contractInfo = await getLegacyGroupContractInfo(
 		con,
 		legacyName,
 		contractAddress
 	)
 	if (typeof contractInfo !== 'undefined') {
-		const recordMap = new Map(Object.entries(contractInfo))
-		return recordMap.get('legacy_group_contract_info_abi')
+		return contractInfo.abi
 	}
 
-	contractInfo = await getGroupContractInfo(con, groupName)
-	if (typeof contractInfo === 'undefined') {
+	const groupContractInfo = await getGroupContractInfo(con, groupName)
+	if (typeof groupContractInfo === 'undefined') {
 		throw new Error('target contract info is not found.')
 	}
 
-	const recordMap = new Map(Object.entries(contractInfo))
-	return recordMap.get('group_contract_info_abi')
+	return groupContractInfo.abi
 }
