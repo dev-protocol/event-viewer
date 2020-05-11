@@ -33,6 +33,19 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 		}
 	}
 
+	private async hasRecord(
+		con: Connection,
+		prpertyAddress: string,
+		metricsAddress: string
+	): Promise<boolean> {
+		const repository = con.getRepository(PropertyAuthentication)
+		const record = await repository.findOne({
+			property: prpertyAddress,
+			metrics: metricsAddress,
+		})
+		return typeof record !== 'undefined'
+	}
+
 	private async createPropertyAuthenticationRecord(
 		con: Connection
 	): Promise<void> {
@@ -60,11 +73,19 @@ class PropertyAuthenticationCreator extends TimerBatchBase {
 			for (let record of targetRecords) {
 				const insertRecord = new PropertyAuthentication()
 				insertRecord.block_number = record.block_number
-				insertRecord.property = await getPropertyByMetrics(
+				const propertyAddress = await getPropertyByMetrics(
 					con,
 					web3,
 					record.metrics
 				)
+
+				if (await this.hasRecord(con, propertyAddress, record.metrics)) {
+					throw new Error(
+						`property authentication data is already exists property:${propertyAddress} metrics:${record.metrics}`
+					)
+				}
+
+				insertRecord.property = propertyAddress
 				insertRecord.market = record.from_address
 				insertRecord.metrics = record.metrics
 				insertRecord.authentication_id = await getAuthenticationIdByMetrics(
