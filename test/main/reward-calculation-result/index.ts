@@ -120,7 +120,7 @@ async function saveManyAllocatorAllocationResultTestData(con: Connection) {
 	const record = new AllocatorAllocationResult()
 	for (let i = 0; i < 120; i++) {
 		record.event_id = `dummy-event-id${i}`
-		record.block_number = 30000
+		record.block_number = 30000 + i
 		record.log_index = 2
 		record.transaction_index = 3
 		record.metrics = 'dummy-metrics-address1'
