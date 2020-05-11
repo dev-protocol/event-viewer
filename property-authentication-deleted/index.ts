@@ -31,17 +31,14 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 
 	private async movePropertyAuthenticationRecord(
 		con: Connection
-	): Promise<any[]> {
+	): Promise<void> {
 		const destroyRecords = await this.getEvents(con)
 		if (destroyRecords.length === 0) {
 			this.logging.infolog('no target record')
-			return []
+			return
 		}
 
-		const web3 = new Web3(
-			new Web3.providers.HttpProvider(process.env.WEB3_URL!)
-		)
-		const relationData = await this.getPropertyInfo(con, web3, destroyRecords)
+		const relationData = await this.getPropertyInfo(con, destroyRecords)
 		const transaction = new Transaction(con)
 		try {
 			await transaction.start()
@@ -88,7 +85,7 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 			.getOne()
 		if (typeof record === 'undefined') {
 			throw new Error(
-				`property_authintication record is not found.  property:${property} metrics:${metrics}`
+				`property_authintication record is not found.  property:${property} metrics:${metrics}.`
 			)
 		}
 
@@ -110,10 +107,12 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 
 	private async getPropertyInfo(
 		con: Connection,
-		web3: any,
 		destroyRecords: MetricsFactoryDestroy[]
 	): Promise<any[]> {
 		const relationData = []
+		const web3 = new Web3(
+			new Web3.providers.HttpProvider(process.env.WEB3_URL!)
+		)
 		for (const record of destroyRecords) {
 			// eslint-disable-next-line no-await-in-loop
 			const propertyAddress = await getPropertyByMetrics(
