@@ -6,6 +6,8 @@ import { EventTableAccessor } from './db/event'
 import { getContractInfo } from './db/contract-info'
 import { Event } from './block-chain/event'
 import { getApprovalBlockNumber } from './block-chain/utils'
+import { ContractInfo } from '../entities/contract-info'
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Web3 = require('web3')
 
@@ -81,12 +83,10 @@ export abstract class EventSaver extends TimerBatchBase {
 		)
 		const approvalBlockNumber = await getApprovalBlockNumber(web3)
 		const event = new Event(web3)
-		this.logging.infolog(
-			'target contract address:' + contractInfo.get('contract_info_address')
-		)
+		this.logging.infolog(`target contract address:${contractInfo.address}`)
 		await event.generateContract(
-			JSON.parse(contractInfo.get('contract_info_abi')),
-			contractInfo.get('contract_info_address')
+			JSON.parse(contractInfo.abi),
+			contractInfo.address
 		)
 		const events = await event.getEvent(
 			this.getEventName(),
@@ -96,12 +96,12 @@ export abstract class EventSaver extends TimerBatchBase {
 		return events
 	}
 
-	private async _getContractInfo(): Promise<Map<string, string>> {
+	private async _getContractInfo(): Promise<ContractInfo> {
 		const info = await getContractInfo(
 			this._db.connection,
 			this.getContractName()
 		)
-		return new Map(Object.entries(info))
+		return info
 	}
 
 	abstract getModelObject<Entity>(): ObjectType<Entity>

@@ -24,9 +24,8 @@ describe('getContractInfo', () => {
 	it('If the target record exists, the contract meta-information of the corresponding contract can be retrieved.', async () => {
 		await saveContractInfoTestdata(con.connection)
 		const record = await getContractInfo(con.connection, 'AddressConfig')
-		const recordMap = new Map(Object.entries(record))
-		expect(recordMap.get('contract_info_address')).toBe('0x152437ababab')
-		expect(recordMap.get('contract_info_abi')).toBe(
+		expect(record.address).toBe('0x152437ababab')
+		expect(record.abi).toBe(
 			'[{"inputs": [{"internalType": "address","name": "_config","type": "string"}]}]'
 		)
 	})
@@ -50,8 +49,7 @@ describe('getGroupContractInfo', () => {
 	it('If the target record exists, the group contract meta-information of the corresponding contract can be retrieved.', async () => {
 		await saveGroupContractInfoTestdata(con.connection)
 		const record = await getGroupContractInfo(con.connection, 'dummy-name-2')
-		const recordMap = new Map(Object.entries(record))
-		expect(recordMap.get('group_contract_info_abi')).toBe(
+		expect(record.abi).toBe(
 			'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
 		)
 	})
@@ -78,11 +76,8 @@ describe('getLegacyGroupContractInfo', () => {
 			'dummy-name-2',
 			'0x152437cdcdcd'
 		)
-		const recordMap = new Map(Object.entries(record))
-		expect(recordMap.get('legacy_group_contract_info_address')).toBe(
-			'0x152437cdcdcd'
-		)
-		expect(recordMap.get('legacy_group_contract_info_abi')).toBe(
+		expect(record.address).toBe('0x152437cdcdcd')
+		expect(record.abi).toBe(
 			'[{"inputs": [{"internalType": "address","name": "_config","type": "address"}]}]'
 		)
 	})

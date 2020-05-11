@@ -72,20 +72,17 @@ class PropertyAuthenticationDeleter extends TimerBatchBase {
 
 	private async getPropertyAuthenticationRecord(
 		con: Connection,
-		property: string,
-		metrics: string
+		property_: string,
+		metrics_: string
 	): Promise<PropertyAuthentication> {
-		const record = await con
-			.getRepository(PropertyAuthentication)
-			.createQueryBuilder('tmp')
-			.where('tmp.property = :_property AND tmp.metrics = :_metrics', {
-				_property: property,
-				_metrics: metrics,
-			})
-			.getOne()
+		const repository = con.getRepository(PropertyAuthentication)
+		const record = await repository.findOne({
+			property: property_,
+			metrics: metrics_,
+		})
 		if (typeof record === 'undefined') {
 			throw new Error(
-				`property_authintication record is not found.  property:${property} metrics:${metrics}.`
+				`property_authintication record is not found.  property:${property_} metrics:${metrics_}.`
 			)
 		}
 
