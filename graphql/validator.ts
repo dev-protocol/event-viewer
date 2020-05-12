@@ -65,7 +65,7 @@ class JsonValidator implements Validator {
 			return
 		}
 
-		throw new ValidateError(415, 'content-type is application/json only')
+		throw new ValidateError(415, 'content-type is application/json only.')
 	}
 }
 
@@ -75,7 +75,7 @@ class QueryValidator implements Validator {
 			return
 		}
 
-		throw new ValidateError(400, 'query only')
+		throw new ValidateError(400, 'query only.')
 	}
 }
 
@@ -85,6 +85,6 @@ class SchemaQueryValidator implements Validator {
 			return
 		}
 
-		throw new ValidateError(400, 'query error')
+		throw new ValidateError(400, 'query error.')
 	}
 }

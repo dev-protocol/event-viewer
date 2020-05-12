@@ -33,7 +33,7 @@ describe('RequestValidatorBuilder', () => {
 			}
 
 			expect(t).toThrowError(
-				new ValidateError(415, 'content-type is application/json only')
+				new ValidateError(415, 'content-type is application/json only.')
 			)
 		})
 	})
@@ -53,7 +53,7 @@ describe('RequestValidatorBuilder', () => {
 				validator.execute()
 			}
 
-			expect(t).toThrowError(new ValidateError(415, 'query only'))
+			expect(t).toThrowError(new ValidateError(415, 'query only.'))
 		})
 	})
 	describe('SchemaQueryValidator', () => {
@@ -82,7 +82,7 @@ describe('RequestValidatorBuilder', () => {
 				validator.execute()
 			}
 
-			expect(t).toThrowError(new ValidateError(400, 'query error'))
+			expect(t).toThrowError(new ValidateError(400, 'query error.'))
 		})
 	})
 })

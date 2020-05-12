@@ -40,7 +40,7 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 				body_ = err.message
 			} else {
 				status_ = 400
-				body_ = 'unknown error'
+				body_ = 'unknown error.'
 			}
 		}
 
@@ -72,7 +72,7 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 		}
 
 		if (res.status !== 200 || typeof res.data.errors !== 'undefined') {
-			throw new PostError(400, 'unknown error')
+			throw new PostError(400, 'unknown error.')
 		}
 
 		return res
