@@ -4,14 +4,15 @@ export function getHttpRequestMock(
 	headersArg: {
 		[key: string]: string
 	},
-	bodyArg: any
+	bodyArg: any,
+	params = {}
 ): HttpRequest {
 	const mockHttpReq: HttpRequest = {
 		method: 'POST',
 		url: 'https://dummy-domein',
 		headers: headersArg,
 		query: {},
-		params: {},
+		params: params,
 		body: bodyArg,
 		rawBody: undefined,
 	}
