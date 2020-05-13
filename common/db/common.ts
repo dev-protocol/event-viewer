@@ -23,12 +23,17 @@ export class DbConnection {
 	}
 
 	private _getConfig(): any {
+		let entities = 'entities/*.ts'
+		if (typeof process.env.ENTITIES !== 'undefined') {
+			entities = process.env.ENTITIES
+		}
+
 		return {
 			name: this._batchName,
 			type: 'postgres',
 			synchronize: false,
 			logging: false,
-			entities: ['dist/entities/*.js', 'entities/*.ts'],
+			entities: [entities],
 			host: process.env.DB_HOST!,
 			port: process.env.DB_PORT!,
 			username: process.env.DB_USERNAME!,

@@ -94,6 +94,23 @@ export async function getPolicyInstance(
 	return policyInstance
 }
 
+export async function getPropertyInstance(
+	con: Connection,
+	web3: any,
+	propertyAddress: string
+): Promise<any> {
+	const groupContractInfo = await getGroupContractInfo(con, 'Property')
+	if (typeof groupContractInfo === 'undefined') {
+		throw new Error('Property contract info is not found.')
+	}
+
+	const propertyInstance = await new web3.eth.Contract(
+		JSON.parse(groupContractInfo.abi),
+		propertyAddress
+	)
+	return propertyInstance
+}
+
 function hasFunction(abi: string, funcName: string): boolean {
 	const abiObject = JSON.parse(abi)
 	for (let abiOneObject of abiObject) {
