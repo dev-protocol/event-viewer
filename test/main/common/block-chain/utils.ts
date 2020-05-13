@@ -11,6 +11,7 @@ import {
 	getPropertyByMetrics,
 	getPolicyInstance,
 	getAuthenticationIdByMetrics,
+	getPropertyInstance,
 } from '../../../../common/block-chain/utils'
 import { ContractInfo } from '../../../../entities/contract-info'
 import { GroupContractInfo } from '../../../../entities/group-contract-info'
@@ -239,5 +240,59 @@ describe('getPolicyInstance', () => {
 		expect(policyInstance.address).toBe(
 			'0x54E575848E4b62a1a3aaBd09380f73Fc2d6758CA'
 		)
+	})
+})
+
+describe('getPropertyInstance', () => {
+	class Web3Mock {
+		eth: any
+		constructor(_: any) {
+			this.eth = {
+				Contract: class Contract {
+					_abi: any
+					_address: string
+					methods: any
+					constructor(abi: any, address: string) {
+						this._abi = abi
+						this._address = address
+					}
+
+					get address(): string {
+						return this._address
+					}
+				},
+			}
+		}
+	}
+	let con: DbConnection
+	beforeAll(async (done) => {
+		con = await getDbConnection()
+		done()
+	})
+	afterAll(async (done) => {
+		await con.quit()
+		done()
+	})
+	it('If the information of property does not exist, an error occurs.', async () => {
+		await clearData(con.connection, GroupContractInfo)
+		const web3 = new Web3Mock('hoge')
+		const promise = getPropertyInstance(
+			con.connection,
+			web3,
+			'dummy-property-address'
+		)
+		await expect(promise).rejects.toThrowError(
+			new Error('Property contract info is not found.')
+		)
+	})
+	it('If the information of property exist, return. PropertyInstance returns', async () => {
+		await saveGroupContractInfoTestdata(con.connection)
+		const web3 = new Web3Mock('hoge')
+		const propertyInstance = await getPropertyInstance(
+			con.connection,
+			web3,
+			'dummy-property-address'
+		)
+		expect(propertyInstance.address).toBe('dummy-property-address')
 	})
 })

@@ -155,6 +155,11 @@ export async function saveGroupContractInfoTestdata(
 		'[{"inputs": [{"internalType": "address","name": "_config","type": "byte32"}]}]'
 	await transaction.save(groupContractInfo)
 
+	groupContractInfo.name = 'Property'
+	groupContractInfo.abi =
+		'[{"inputs": [{"internalType": "address","name": "_config","type": "byte32"}]}]'
+	await transaction.save(groupContractInfo)
+
 	await transaction.commit()
 	await transaction.finish()
 }
