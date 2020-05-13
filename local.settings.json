@@ -15,6 +15,7 @@
 		"DISCORD_WEBHOOK_URL_ERROR": "",
 		"HASERA_REQUEST_DESTINATION": "",
 		"HASERA_ROLE": "",
-		"HASURA_SECRET": ""
+		"HASURA_SECRET": "",
+		"ENTITIES": "dist/entities/*.js"
 	}
 }
