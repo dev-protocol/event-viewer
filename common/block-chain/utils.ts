@@ -84,7 +84,7 @@ export async function getPolicyInstance(
 	const iPolicyAbi = await getGroupContractAbi(
 		con,
 		policyAddress,
-		'Policy',
+		'Property',
 		'IPolicy'
 	)
 	const policyInstance = await new web3.eth.Contract(
@@ -92,6 +92,23 @@ export async function getPolicyInstance(
 		policyAddress
 	)
 	return policyInstance
+}
+
+export async function getPropertyInstance(
+	con: Connection,
+	web3: any,
+	propertyAddress: string
+): Promise<any> {
+	const groupContractInfo = await getGroupContractInfo(con, 'Property')
+	if (typeof groupContractInfo === 'undefined') {
+		throw new Error('target contract info is not found.')
+	}
+
+	const propertyInstance = await new web3.eth.Contract(
+		JSON.parse(groupContractInfo.abi),
+		propertyAddress
+	)
+	return propertyInstance
 }
 
 function hasFunction(abi: string, funcName: string): boolean {
