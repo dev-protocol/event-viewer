@@ -4,7 +4,7 @@ import { Entity, PrimaryColumn, Column, BaseEntity } from 'typeorm'
 @Entity()
 export class RewardCalculationResult extends BaseEntity {
 	@PrimaryColumn()
-	public alocator_allocation_result_event_id!: string
+	public event_id!: string
 
 	@Column()
 	public block_number!: number
