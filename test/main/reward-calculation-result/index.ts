@@ -69,9 +69,9 @@ describe('timerTrigger', () => {
 		expect(count).toBe(1)
 		const repository = con.connection.getRepository(RewardCalculationResult)
 		const record = await repository.findOne({
-			alocator_allocation_result_event_id: 'dummy-event-id1',
+			event_id: 'dummy-event-id1',
 		})
-		expect(record.alocator_allocation_result_event_id).toBe('dummy-event-id1')
+		expect(record.event_id).toBe('dummy-event-id1')
 		expect(record.block_number).toBe(30000)
 		expect(record.metrics).toBe('dummy-metrics-address1')
 		expect(Number(record.lockup)).toBe(10)

@@ -60,7 +60,7 @@ class RewardCalculationer extends TimerBatchBase {
 
 			for (let record of targetRecords) {
 				const insertRecord = new RewardCalculationResult()
-				insertRecord.alocator_allocation_result_event_id = record.event_id
+				insertRecord.event_id = record.event_id
 				insertRecord.block_number = record.block_number
 				insertRecord.metrics = record.metrics
 				insertRecord.lockup = record.lockup_value
