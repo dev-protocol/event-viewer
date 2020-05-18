@@ -81,7 +81,7 @@ class QueryValidator implements Validator {
 
 class SchemaQueryValidator implements Validator {
 	public execute(req: HttpRequest): void {
-		if (req.body.query.startsWith('query IntrospectionQuery')) {
+		if (req.body.query.trim().startsWith('query IntrospectionQuery')) {
 			return
 		}
 

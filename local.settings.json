@@ -17,5 +17,8 @@
 		"HASERA_ROLE": "",
 		"HASURA_SECRET": "",
 		"ENTITIES": "dist/entities/*.js"
+	},
+	"Host": {
+		"CORS": "*"
 	}
 }
