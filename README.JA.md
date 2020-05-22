@@ -1,6 +1,6 @@
 # 概要
 
-event-saver で取得したDev ProtocolのイベントデータをGraphQLで取得する。Azure Functions で動作する。
+event-saver で取得した Dev Protocol のイベントデータを GraphQL で取得する。Azure Functions で動作する。
 
 # ローカル開発セットアップ
 
@@ -12,7 +12,6 @@ Azure Functions をローカルで動作させるために、下記コマンド�
 brew tap azure/functions
 brew install azure-functions-core-tools@3
 ```
-
 
 ## 環境変数
 
