@@ -19,7 +19,4 @@ jobs:
       - name: npm install and test
         run: |
           npm ci
-          cd local_test/db
-          docker-compose up -d
-          cd ../..
           npm test
