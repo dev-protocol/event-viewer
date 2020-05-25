@@ -3,7 +3,6 @@ import axios from 'axios'
 import { AxiosResponse } from 'axios'
 import url from 'url'
 import urljoin from 'url-join'
-import { EventSaverLogging } from '../common/notifications'
 import { isNotEmpty } from '../common/utils'
 import { RequestValidatorBuilder, ValidateError } from './validator'
 
@@ -22,10 +21,6 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 	}
 
 	public async execute(): Promise<any> {
-		const logging = new EventSaverLogging(
-			this._context.log,
-			this._getFuncName()
-		)
 		let status_ = 200
 		let body_ = {}
 		try {
@@ -34,7 +29,6 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 			body_ = res.data
 		} catch (err) {
 			this._context.log.error(err.stack)
-			await logging.error(err.message)
 			if (err instanceof ValidateError || err instanceof PostError) {
 				status_ = err.status
 				body_ = err.message
@@ -97,7 +91,7 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 	}
 
 	abstract addValidator(validatorBuilder: RequestValidatorBuilder): void
-	abstract getPostHeader(): object
+	abstract getPostHeader(): Record<string, unknown>
 }
 
 class EventApiExecuter extends HasuraApiExecuter {
@@ -106,7 +100,7 @@ class EventApiExecuter extends HasuraApiExecuter {
 		validatorBuilder.addQueryValidator()
 	}
 
-	getPostHeader(): object {
+	getPostHeader(): Record<string, unknown> {
 		return {
 			'content-type': 'application/json',
 			'x-hasura-role': process.env.HASERA_ROLE,
@@ -122,7 +116,7 @@ class SchemaApiExecuter extends HasuraApiExecuter {
 		validatorBuilder.addSchemaQueryValidator()
 	}
 
-	getPostHeader(): object {
+	getPostHeader(): Record<string, unknown> {
 		return {
 			...this._req.headers,
 			...{

@@ -6,7 +6,6 @@ import httpTrigger from '../../../graphql/index'
 
 const context = getContextMock()
 
-jest.mock('../../../common/notifications')
 jest.mock('axios')
 
 describe('apiExecuterFactory', () => {
