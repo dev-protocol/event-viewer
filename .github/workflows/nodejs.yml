@@ -32,7 +32,7 @@ jobs:
 
   deploy:
     needs: build
-    if: ${{ github.event_name != 'pull_request' && contains(github.ref, 'master') }}
+    # if: ${{ github.event_name != 'pull_request' && contains(github.ref, 'master') }}
 
     runs-on: ubuntu-latest
 
