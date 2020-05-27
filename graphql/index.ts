@@ -7,7 +7,7 @@ const httpTrigger: AzureFunction = async function (
 ): Promise<void> {
 	const apiExecuter = apiExecuterFactory(context, req)
 	const res = await apiExecuter.execute()
-
+	console.log(1)
 	context.res = {
 		status: res.status,
 		body: res.body,
