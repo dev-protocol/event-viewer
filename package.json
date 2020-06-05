@@ -56,7 +56,7 @@
 		"azurite": "3.7.0",
 		"eslint": "7.1.0",
 		"eslint-config-prettier": "6.11.0",
-		"eslint-config-xo": "0.29.1",
+		"eslint-config-xo": "0.30.0",
 		"eslint-config-xo-typescript": "0.31.0",
 		"eslint-plugin-jest": "23.13.2",
 		"eslint-plugin-prettier": "3.1.3",
@@ -65,7 +65,7 @@
 		"npm-run-all": "4.1.5",
 		"prettier": "2.0.5",
 		"ts-jest": "26.1.0",
-		"typescript": "3.9.3"
+		"typescript": "3.9.5"
 	},
 	"repository": {
 		"type": "git",
