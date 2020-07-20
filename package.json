@@ -56,7 +56,7 @@
 		"azurite": "3.7.0",
 		"eslint": "7.3.0",
 		"eslint-config-prettier": "6.11.0",
-		"eslint-config-xo": "0.31.0",
+		"eslint-config-xo": "0.32.1",
 		"eslint-config-xo-typescript": "0.31.0",
 		"eslint-plugin-jest": "23.16.0",
 		"eslint-plugin-prettier": "3.1.4",
