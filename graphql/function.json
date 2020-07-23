@@ -2,7 +2,7 @@
 	"scriptFile": "../dist/graphql/index.js",
 	"bindings": [
 		{
-			"authLevel": "function",
+			"authLevel": "anonymous",
 			"type": "httpTrigger",
 			"direction": "in",
 			"name": "req",
