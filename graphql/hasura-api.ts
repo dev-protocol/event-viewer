@@ -29,6 +29,7 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 				this._req.params.version,
 				this._req.params.language
 			)
+
 			const res = await post(url, this._req.body, this.getPostHeader())
 			body_ = res.data
 		} catch (err) {

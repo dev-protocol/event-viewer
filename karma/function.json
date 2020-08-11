@@ -6,8 +6,8 @@
 			"type": "httpTrigger",
 			"direction": "in",
 			"name": "req",
-			"methods": ["post"],
-			"route": "{version}/karma"
+			"methods": ["get"],
+			"route": "{version}/karma/{accountAddress}"
 		},
 		{
 			"type": "http",
