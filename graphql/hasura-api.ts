@@ -1,9 +1,8 @@
 import { Context, HttpRequest } from '@azure/functions'
-import axios from 'axios'
-import { AxiosResponse } from 'axios'
 import url from 'url'
 import urljoin from 'url-join'
-import { isNotEmpty } from '../common/utils'
+import { post, hasuraDataHeader } from '../common/utils'
+import { PostError } from '../common/error'
 import { RequestValidatorBuilder, ValidateError } from './validator'
 
 interface ApiExecuter {
@@ -25,7 +24,13 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 		let body_ = {}
 		try {
 			this._validate()
-			const res = await this._post()
+			const url = urljoin(
+				process.env.HASERA_REQUEST_DESTINATION!,
+				this._req.params.version,
+				this._req.params.language
+			)
+
+			const res = await post(url, this._req.body, this.getPostHeader())
 			body_ = res.data
 		} catch (err) {
 			this._context.log.error(err.stack)
@@ -41,53 +46,10 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 		return { status: status_, body: body_ }
 	}
 
-	private async _post(): Promise<AxiosResponse> {
-		let res: AxiosResponse
-		try {
-			res = await axios.post(
-				urljoin(
-					process.env.HASERA_REQUEST_DESTINATION!,
-					this._req.params.version,
-					this._req.params.language
-				),
-				{
-					...this._req.body,
-				},
-				{
-					headers: this.getPostHeader(),
-					transformResponse: (res) => {
-						return res
-					},
-					responseType: 'json',
-				}
-			)
-		} catch (e) {
-			throw new PostError(e.response.status, e.response.statusText)
-		}
-
-		if (res.status !== 200 || typeof res.data.errors !== 'undefined') {
-			throw new PostError(400, 'unknown error.')
-		}
-
-		return res
-	}
-
 	private _validate(): void {
 		const validatorBuilder = new RequestValidatorBuilder(this._req)
 		this.addValidator(validatorBuilder)
 		validatorBuilder.build().execute()
-	}
-
-	private _getFuncName(): string {
-		if (isNotEmpty(this._context.executionContext.functionName)) {
-			return this._context.executionContext.functionName
-		}
-
-		if (isNotEmpty(this._context.bindingData.sys.methodName)) {
-			return this._context.bindingData.sys.methodName
-		}
-
-		return 'hasura http func'
 	}
 
 	abstract addValidator(validatorBuilder: RequestValidatorBuilder): void
@@ -101,11 +63,7 @@ class EventApiExecuter extends HasuraApiExecuter {
 	}
 
 	getPostHeader(): Record<string, unknown> {
-		return {
-			'content-type': 'application/json',
-			'x-hasura-role': process.env.HASERA_ROLE,
-			'x-hasura-admin-secret': process.env.HASURA_SECRET!,
-		}
+		return hasuraDataHeader()
 	}
 }
 
@@ -124,18 +82,6 @@ class SchemaApiExecuter extends HasuraApiExecuter {
 				'x-hasura-admin-secret': process.env.HASURA_SECRET!,
 			},
 		}
-	}
-}
-
-class PostError extends Error {
-	_status: number
-	constructor(status: number, m: string) {
-		super(m)
-		this._status = status
-	}
-
-	get status(): number {
-		return this._status
 	}
 }
 

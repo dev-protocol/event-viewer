@@ -48,7 +48,10 @@ npm start
 今すぐテスト実行したいときは下記コマンドを実行するといい
 
 ```
-curl -X POST -H "Content-Type: application/json" --data '{ "query": "{ allocator_before_allocation { blocks mint token_value market_value assets total_assets} }" }' http://localhost:7071/events/v1/graphql
+curl -X POST -H "Content-Type: application/json" --data '{ "query": "{ account_lockup_sum_values { account_address sum_values} }" }' http://localhost:7071/v1/graphql
+
+curl -X GET -H "Content-Type: application/json" http://localhost:7071/v1/karma/0x0f60D5036D0306B0aB20027fB4BFdb10183366ca
+
 ```
 
 # 新規関数を追加する場合
