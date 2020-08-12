@@ -24,7 +24,7 @@ export class PropertyBalanceDataStore {
 			}
 		  }`
 		const data = await postHasura(this._req, query)
-		for (let record of data) {
+		for (let record of data.property_balance) {
 			this._myPropertyBalance.push(
 				new PropertyBalance(record.property_address, record.balance)
 			)

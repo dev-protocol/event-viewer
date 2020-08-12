@@ -16,9 +16,10 @@ const httpTrigger: AzureFunction = async function (
 	const result = new BigNumber(myStaking.stakingValue)
 		.plus(await getMyPropertyStaking(req))
 		.plus(await getPropertyStaking(req))
+		.div(new BigNumber(1000000000000000000))
 	context.res = {
 		status: 200,
-		body: { karma: result.toFixed },
+		body: { karma: Number(result.toFixed(0)) },
 		headers: {
 			'Cache-Control': 'no-store',
 		},
@@ -28,16 +29,17 @@ const httpTrigger: AzureFunction = async function (
 async function getPropertyStaking(req: HttpRequest): Promise<BigNumber> {
 	const propertyBalance = new PropertyBalanceDataStore(req)
 	await propertyBalance.prepare()
+	const propertyAddresses = propertyBalance.getPropertyAddresses()
 	const propertyInfo = new PropertyDataStore(req)
-	await propertyInfo.prepare(propertyBalance.getPropertyAddresses())
+	await propertyInfo.prepare(propertyAddresses)
 	const propertyLockup = new PropertyLockupDataStore(req)
-	await propertyLockup.prepare(propertyBalance.getPropertyAddresses())
+	await propertyLockup.prepare(propertyAddresses)
 	let sum = new BigNumber(0)
-	for (let property of propertyBalance.getPropertyAddresses()) {
+	for (let property of propertyAddresses) {
 		const balance = new BigNumber(propertyBalance.getBlance(property))
 		const totalSupply = propertyInfo.getTotalSupply(property)
 		const lockupSumValues = new BigNumber(propertyLockup.getSumValues(property))
-		sum.plus(lockupSumValues.div(totalSupply).times(balance))
+		sum = sum.plus(lockupSumValues.div(totalSupply).times(balance))
 	}
 
 	return sum
@@ -46,21 +48,20 @@ async function getPropertyStaking(req: HttpRequest): Promise<BigNumber> {
 async function getMyPropertyStaking(req: HttpRequest): Promise<BigNumber> {
 	const myPrperty = new MyPropertyDataStore(req)
 	await myPrperty.prepare()
+	const propertyAddresses = myPrperty.getPropertyAddresses()
 	const propertyBalance = new MyPropertyBalanceDataStore(req)
-	console.log(myPrperty.getPropertyAddresses())
-	await propertyBalance.prepare(myPrperty.getPropertyAddresses())
+	await propertyBalance.prepare(propertyAddresses)
 	const propertyLockup = new PropertyLockupDataStore(req)
-	await propertyLockup.prepare(myPrperty.getPropertyAddresses())
+	await propertyLockup.prepare(propertyAddresses)
 
 	let sum = new BigNumber(0)
-	for (let property of myPrperty.getPropertyAddresses()) {
+	for (let property of propertyAddresses) {
 		const totalSupply = new BigNumber(myPrperty.getTotalSupply(property))
-
 		const balance = new BigNumber(
 			propertyBalance.getBlance(property, totalSupply.toNumber())
 		)
 		const lockupSumValues = new BigNumber(propertyLockup.getSumValues(property))
-		sum.plus(lockupSumValues.div(totalSupply).times(balance))
+		sum = sum.plus(lockupSumValues.div(totalSupply).times(balance))
 	}
 
 	return sum

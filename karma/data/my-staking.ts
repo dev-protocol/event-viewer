@@ -22,7 +22,10 @@ export class MyStakingDataStore {
 			}
 		  }`
 		const data = await postHasura(this._req, query)
-		this._stakingValue = data.length === 0 ? 0 : data[0].sum_values
+		this._stakingValue =
+			data.account_lockup_sum_values.length === 0
+				? 0
+				: data.account_lockup_sum_values[0].sum_values
 	}
 
 	get stakingValue(): number {

@@ -25,9 +25,9 @@ export class PropertyLockupDataStore {
 			}
 		  }`
 		const data = await postHasura(this._req, query)
-		for (let record of data) {
+		for (let record of data.property_lockup_sum_values) {
 			this._myPropertyLockupSumValues.push(
-				new PropertyLockupSumValues(record.account_address, record.sum_values)
+				new PropertyLockupSumValues(record.property_address, record.sum_values)
 			)
 		}
 	}

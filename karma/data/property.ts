@@ -14,9 +14,9 @@ export class PropertyDataStore {
 		const query = `{
 			property_meta(
 				where: {
-					property: : {
+					property: {
 						_in: ${JSON.stringify(addresses)}
-					},
+					}
 				}
 				)
 			{
@@ -25,7 +25,7 @@ export class PropertyDataStore {
 			}
 		  }`
 		const data = await postHasura(this._req, query)
-		for (let record of data) {
+		for (let record of data.property_meta) {
 			this._myProperty.push(
 				new PropertyMeta(record.property, record.total_supply)
 			)

@@ -20,13 +20,12 @@ export class MyPropertyDataStore {
 				}
 				)
 			{
-				property
-				total_supply
+			  property
+			  total_supply
 			}
 		  }`
 		const data = await postHasura(this._req, query)
-		console.log(data)
-		for (let record of data) {
+		for (let record of data.property_meta) {
 			this._myProperty.push(
 				new PropertyMeta(record.property, record.total_supply)
 			)
@@ -45,11 +44,9 @@ export class MyPropertyDataStore {
 	}
 
 	getPropertyAddresses(): string[] {
-		// Console.log(this._myProperty)
 		const tmp = this._myProperty.map((propertyMeta) => {
 			return propertyMeta.property
 		})
-		// Console.log(tmp)
 		return tmp
 	}
 }

@@ -18,5 +18,10 @@ export async function postHasura(
 		query: query,
 	}
 	const res = await post(hasuraUrl(req), body, hasuraDataHeader())
-	return res.data
+	const data = JSON.parse(res.data)
+	if (data.errors) {
+		throw new Error(data.errors[0].message)
+	}
+
+	return data.data
 }
