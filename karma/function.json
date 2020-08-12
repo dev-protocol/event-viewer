@@ -7,7 +7,7 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["get"],
-			"route": "{version}/karma/{accountAddress}"
+			"route": "{version}/karma/{address}"
 		},
 		{
 			"type": "http",

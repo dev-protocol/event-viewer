@@ -1,12 +1,12 @@
-import { HttpRequest } from '@azure/functions'
+import { KarmaParams } from '../params'
 import { postHasura } from '../utils'
 import { PropertyBalance } from './data'
 
 export class MyPropertyBalanceDataStore {
-	private readonly _req: HttpRequest
+	private readonly _params: KarmaParams
 	private readonly _myPropertyBalance: PropertyBalance[]
-	constructor(req: HttpRequest) {
-		this._req = req
+	constructor(params: KarmaParams) {
+		this._params = params
 		this._myPropertyBalance = []
 	}
 
@@ -17,7 +17,7 @@ export class MyPropertyBalanceDataStore {
 					property_address: {
 						_in: ${JSON.stringify(addresses)}
 					},
-					account_address: {_eq: "${this._req.params.accountAddress}"},
+					account_address: {_eq: "${this._params.address}"},
 					is_author: {_eq: true}
 				}
 				)
@@ -26,7 +26,7 @@ export class MyPropertyBalanceDataStore {
 				balance
 			}
 		  }`
-		const data = await postHasura(this._req, query)
+		const data = await postHasura(this._params.version, query)
 		for (let record of data.property_balance) {
 			this._myPropertyBalance.push(
 				new PropertyBalance(record.property_address, record.balance)

@@ -6,16 +6,19 @@ import { MyPropertyBalanceDataStore } from './data/my-property-balance'
 import { PropertyBalanceDataStore } from './data/property-balance'
 import { PropertyLockupDataStore } from './data/property-lockup'
 import { PropertyDataStore } from './data/property'
+import { KarmaParams } from './params'
 
 const httpTrigger: AzureFunction = async function (
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
-	const myStaking = new MyStakingDataStore(req)
+	const params = new KarmaParams(req)
+	await params.analysisRequest()
+	const myStaking = new MyStakingDataStore(params)
 	await myStaking.prepare()
 	const result = new BigNumber(myStaking.stakingValue)
-		.plus(await getMyPropertyStaking(req))
-		.plus(await getPropertyStaking(req))
+		.plus(await getMyPropertyStaking(params))
+		.plus(await getPropertyStaking(params))
 		.div(new BigNumber(1000000000000000000))
 	context.res = {
 		status: 200,
@@ -26,13 +29,13 @@ const httpTrigger: AzureFunction = async function (
 	}
 }
 
-async function getPropertyStaking(req: HttpRequest): Promise<BigNumber> {
-	const propertyBalance = new PropertyBalanceDataStore(req)
+async function getPropertyStaking(params: KarmaParams): Promise<BigNumber> {
+	const propertyBalance = new PropertyBalanceDataStore(params)
 	await propertyBalance.prepare()
 	const propertyAddresses = propertyBalance.getPropertyAddresses()
-	const propertyInfo = new PropertyDataStore(req)
+	const propertyInfo = new PropertyDataStore(params)
 	await propertyInfo.prepare(propertyAddresses)
-	const propertyLockup = new PropertyLockupDataStore(req)
+	const propertyLockup = new PropertyLockupDataStore(params)
 	await propertyLockup.prepare(propertyAddresses)
 	let sum = new BigNumber(0)
 	for (let property of propertyAddresses) {
@@ -45,13 +48,13 @@ async function getPropertyStaking(req: HttpRequest): Promise<BigNumber> {
 	return sum
 }
 
-async function getMyPropertyStaking(req: HttpRequest): Promise<BigNumber> {
-	const myPrperty = new MyPropertyDataStore(req)
+async function getMyPropertyStaking(params: KarmaParams): Promise<BigNumber> {
+	const myPrperty = new MyPropertyDataStore(params)
 	await myPrperty.prepare()
 	const propertyAddresses = myPrperty.getPropertyAddresses()
-	const propertyBalance = new MyPropertyBalanceDataStore(req)
+	const propertyBalance = new MyPropertyBalanceDataStore(params)
 	await propertyBalance.prepare(propertyAddresses)
-	const propertyLockup = new PropertyLockupDataStore(req)
+	const propertyLockup = new PropertyLockupDataStore(params)
 	await propertyLockup.prepare(propertyAddresses)
 
 	let sum = new BigNumber(0)
