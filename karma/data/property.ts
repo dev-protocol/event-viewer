@@ -1,12 +1,12 @@
-import { HttpRequest } from '@azure/functions'
 import { postHasura } from '../utils'
 import { PropertyMeta } from './data'
+import { KarmaParams } from '../params'
 
 export class PropertyDataStore {
-	private readonly _req: HttpRequest
+	private readonly _params: KarmaParams
 	private readonly _myProperty: PropertyMeta[]
-	constructor(req: HttpRequest) {
-		this._req = req
+	constructor(params: KarmaParams) {
+		this._params = params
 		this._myProperty = []
 	}
 
@@ -24,7 +24,7 @@ export class PropertyDataStore {
 				total_supply
 			}
 		  }`
-		const data = await postHasura(this._req, query)
+		const data = await postHasura(this._params.version, query)
 		for (let record of data.property_meta) {
 			this._myProperty.push(
 				new PropertyMeta(record.property, record.total_supply)

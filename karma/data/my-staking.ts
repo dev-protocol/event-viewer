@@ -1,11 +1,11 @@
-import { HttpRequest } from '@azure/functions'
 import { postHasura } from '../utils'
+import { KarmaParams } from '../params'
 
 export class MyStakingDataStore {
-	private readonly _req: HttpRequest
+	private readonly _params: KarmaParams
 	private _stakingValue: number
-	constructor(req: HttpRequest) {
-		this._req = req
+	constructor(params: KarmaParams) {
+		this._params = params
 	}
 
 	async prepare(): Promise<void> {
@@ -13,7 +13,7 @@ export class MyStakingDataStore {
 			account_lockup_sum_values(
 				where: {
 					account_address: {
-						_eq: "${this._req.params.accountAddress}"
+						_eq: "${this._params.address}"
 					}
 				}
 				)
@@ -21,7 +21,7 @@ export class MyStakingDataStore {
 			  sum_values
 			}
 		  }`
-		const data = await postHasura(this._req, query)
+		const data = await postHasura(this._params.version, query)
 		this._stakingValue =
 			data.account_lockup_sum_values.length === 0
 				? 0
