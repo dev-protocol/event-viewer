@@ -6,14 +6,15 @@ import { MyPropertyBalanceDataStore } from './data/my-property-balance'
 import { PropertyBalanceDataStore } from './data/property-balance'
 import { PropertyLockupDataStore } from './data/property-lockup'
 import { PropertyDataStore } from './data/property'
-import { KarmaParams } from './params'
+import { ApiParams } from './params'
+import { getPropertyMetaInfo } from './utils'
 
 const httpTrigger: AzureFunction = async function (
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
-	const params = new KarmaParams(req)
-	await params.analysisRequest()
+	const params = new ApiParams(req)
+	const propertyMeta = await getPropertyMetaInfo(params.version, params.address)
 	const myStaking = new MyStakingDataStore(params)
 	await myStaking.prepare()
 	const result = new BigNumber(myStaking.stakingValue)
@@ -22,14 +23,25 @@ const httpTrigger: AzureFunction = async function (
 		.div(new BigNumber(1000000000000000000))
 	context.res = {
 		status: 200,
-		body: { karma: Number(result.toFixed(0)) },
+		body: {
+			name: propertyMeta.name,
+			symbol: propertyMeta.symbol,
+			author: {
+				address: propertyMeta.author,
+				karma: Number(result.toFixed(0)),
+			},
+			block_number: propertyMeta.block_number,
+			sender: propertyMeta.sender,
+			total_supply: propertyMeta.total_supply,
+			property: propertyMeta.property,
+		},
 		headers: {
 			'Cache-Control': 'no-store',
 		},
 	}
 }
 
-async function getPropertyStaking(params: KarmaParams): Promise<BigNumber> {
+async function getPropertyStaking(params: ApiParams): Promise<BigNumber> {
 	const propertyBalance = new PropertyBalanceDataStore(params)
 	await propertyBalance.prepare()
 	const propertyAddresses = propertyBalance.getPropertyAddresses()
@@ -48,7 +60,7 @@ async function getPropertyStaking(params: KarmaParams): Promise<BigNumber> {
 	return sum
 }
 
-async function getMyPropertyStaking(params: KarmaParams): Promise<BigNumber> {
+async function getMyPropertyStaking(params: ApiParams): Promise<BigNumber> {
 	const myPrperty = new MyPropertyDataStore(params)
 	await myPrperty.prepare()
 	const propertyAddresses = myPrperty.getPropertyAddresses()

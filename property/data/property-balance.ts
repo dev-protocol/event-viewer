@@ -1,24 +1,21 @@
-import { KarmaParams } from '../params'
+import { ApiParams } from '../params'
 import { postHasura } from '../utils'
 import { PropertyBalance } from './data'
 
-export class MyPropertyBalanceDataStore {
-	private readonly _params: KarmaParams
+export class PropertyBalanceDataStore {
+	private readonly _params: ApiParams
 	private readonly _myPropertyBalance: PropertyBalance[]
-	constructor(params: KarmaParams) {
+	constructor(params: ApiParams) {
 		this._params = params
 		this._myPropertyBalance = []
 	}
 
-	async prepare(addresses: string[]): Promise<void> {
+	async prepare(): Promise<void> {
 		const query = `{
 			property_balance(
 				where: {
-					property_address: {
-						_in: ${JSON.stringify(addresses)}
-					},
 					account_address: {_eq: "${this._params.address}"},
-					is_author: {_eq: true}
+					is_author: {_eq: false}
 				}
 				)
 			{
@@ -34,7 +31,13 @@ export class MyPropertyBalanceDataStore {
 		}
 	}
 
-	getBlance(property: string, totalSupply: number): number {
+	getPropertyAddresses(): string[] {
+		return this._myPropertyBalance.map((propertyMeta) => {
+			return propertyMeta.property
+		})
+	}
+
+	getBlance(property: string): number {
 		const tmp = this._myPropertyBalance.filter((propertyBalance) => {
 			return propertyBalance.property === property
 		})
@@ -42,6 +45,6 @@ export class MyPropertyBalanceDataStore {
 			throw new Error('illigal data')
 		}
 
-		return tmp.length === 0 ? totalSupply : tmp[0].balance
+		return tmp[0].balance
 	}
 }

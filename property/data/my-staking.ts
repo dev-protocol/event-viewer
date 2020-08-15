@@ -1,10 +1,10 @@
 import { postHasura } from '../utils'
-import { KarmaParams } from '../params'
+import { ApiParams } from '../params'
 
 export class MyStakingDataStore {
-	private readonly _params: KarmaParams
+	private readonly _params: ApiParams
 	private _stakingValue: number
-	constructor(params: KarmaParams) {
+	constructor(params: ApiParams) {
 		this._params = params
 	}
 

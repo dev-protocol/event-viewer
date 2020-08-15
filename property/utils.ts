@@ -17,3 +17,33 @@ export async function postHasura(version: string, query: string): Promise<any> {
 
 	return data.data
 }
+
+export async function getPropertyMetaInfo(
+	version: string,
+	address: string
+): Promise<any> {
+	const query = `{
+		property_meta(
+			where: {
+				property: {
+					_eq: "${address}"
+				}
+			}
+			)
+		{
+			name
+			symbol
+			author
+			block_number
+			property
+			sender
+			total_supply
+		}
+	  }`
+	const data = await postHasura(version, query)
+	if (data.property_meta.length === 0) {
+		throw new Error('address is not property')
+	}
+
+	return data.property_meta[0]
+}

@@ -1,11 +1,11 @@
 import { postHasura } from '../utils'
 import { PropertyMeta } from './data'
-import { KarmaParams } from '../params'
+import { ApiParams } from '../params'
 
 export class PropertyDataStore {
-	private readonly _params: KarmaParams
+	private readonly _params: ApiParams
 	private readonly _myProperty: PropertyMeta[]
-	constructor(params: KarmaParams) {
+	constructor(params: ApiParams) {
 		this._params = params
 		this._myProperty = []
 	}

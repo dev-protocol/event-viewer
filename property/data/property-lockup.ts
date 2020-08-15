@@ -1,11 +1,11 @@
-import { KarmaParams } from '../params'
+import { ApiParams } from '../params'
 import { postHasura } from '../utils'
 import { PropertyLockupSumValues } from './data'
 
 export class PropertyLockupDataStore {
-	private readonly _params: KarmaParams
+	private readonly _params: ApiParams
 	private readonly _myPropertyLockupSumValues: PropertyLockupSumValues[]
-	constructor(params: KarmaParams) {
+	constructor(params: ApiParams) {
 		this._params = params
 		this._myPropertyLockupSumValues = []
 	}
