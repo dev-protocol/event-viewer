@@ -1,21 +1,18 @@
 import { postHasura } from '../utils'
 import { PropertyMeta } from './data'
-import { ApiParams } from '../params'
 
 export class MyPropertyDataStore {
-	private readonly _params: ApiParams
 	private readonly _myProperty: PropertyMeta[]
-	constructor(params: ApiParams) {
-		this._params = params
+	constructor() {
 		this._myProperty = []
 	}
 
-	async prepare(): Promise<void> {
+	async prepare(version: string, accountAddress: string): Promise<void> {
 		const query = `{
 			property_meta(
 				where: {
 					author: {
-						_eq: "${this._params.address}"
+						_eq: "${accountAddress}"
 					}
 				}
 				)
@@ -24,7 +21,7 @@ export class MyPropertyDataStore {
 			  total_supply
 			}
 		  }`
-		const data = await postHasura(this._params.version, query)
+		const data = await postHasura(version, query)
 		for (let record of data.property_meta) {
 			this._myProperty.push(
 				new PropertyMeta(record.property, record.total_supply)
