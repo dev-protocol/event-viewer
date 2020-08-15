@@ -1,23 +1,24 @@
-import { KarmaParams } from '../params'
 import { postHasura } from '../utils'
 import { PropertyBalance } from './data'
 
 export class MyPropertyBalanceDataStore {
-	private readonly _params: KarmaParams
 	private readonly _myPropertyBalance: PropertyBalance[]
-	constructor(params: KarmaParams) {
-		this._params = params
+	constructor() {
 		this._myPropertyBalance = []
 	}
 
-	async prepare(addresses: string[]): Promise<void> {
+	async prepare(
+		version: string,
+		accountAddress: string,
+		propertyAddresses: string[]
+	): Promise<void> {
 		const query = `{
 			property_balance(
 				where: {
 					property_address: {
-						_in: ${JSON.stringify(addresses)}
+						_in: ${JSON.stringify(propertyAddresses)}
 					},
-					account_address: {_eq: "${this._params.address}"},
+					account_address: {_eq: "${accountAddress}"},
 					is_author: {_eq: true}
 				}
 				)
@@ -26,7 +27,7 @@ export class MyPropertyBalanceDataStore {
 				balance
 			}
 		  }`
-		const data = await postHasura(this._params.version, query)
+		const data = await postHasura(version, query)
 		for (let record of data.property_balance) {
 			this._myPropertyBalance.push(
 				new PropertyBalance(record.property_address, record.balance)

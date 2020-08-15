@@ -1,30 +1,27 @@
 import { postHasura } from '../utils'
 import { PropertyMeta } from './data'
-import { KarmaParams } from '../params'
 
-export class MyPropertyDataStore {
-	private readonly _params: KarmaParams
+export class PropertyDataStore {
 	private readonly _myProperty: PropertyMeta[]
-	constructor(params: KarmaParams) {
-		this._params = params
+	constructor() {
 		this._myProperty = []
 	}
 
-	async prepare(): Promise<void> {
+	async prepare(version: string, addresses: string[]): Promise<void> {
 		const query = `{
 			property_meta(
 				where: {
-					author: {
-						_eq: "${this._params.address}"
+					property: {
+						_in: ${JSON.stringify(addresses)}
 					}
 				}
 				)
 			{
-			  property
-			  total_supply
+				property
+				total_supply
 			}
 		  }`
-		const data = await postHasura(this._params.version, query)
+		const data = await postHasura(version, query)
 		for (let record of data.property_meta) {
 			this._myProperty.push(
 				new PropertyMeta(record.property, record.total_supply)
@@ -41,12 +38,5 @@ export class MyPropertyDataStore {
 		}
 
 		return tmp[0].toralSupply
-	}
-
-	getPropertyAddresses(): string[] {
-		const tmp = this._myProperty.map((propertyMeta) => {
-			return propertyMeta.property
-		})
-		return tmp
 	}
 }

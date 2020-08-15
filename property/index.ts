@@ -6,37 +6,52 @@ import { MyPropertyBalanceDataStore } from './data/my-property-balance'
 import { PropertyBalanceDataStore } from './data/property-balance'
 import { PropertyLockupDataStore } from './data/property-lockup'
 import { PropertyDataStore } from './data/property'
-import { KarmaParams } from './params'
+import { ApiParams } from './params'
+import { getPropertyMetaInfo } from './utils'
 
 const httpTrigger: AzureFunction = async function (
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
-	const params = new KarmaParams(req)
-	await params.analysisRequest()
-	const myStaking = new MyStakingDataStore(params)
-	await myStaking.prepare()
+	const params = new ApiParams(req)
+	const propertyMeta = await getPropertyMetaInfo(params.version, params.address)
+	const myStaking = new MyStakingDataStore()
+	await myStaking.prepare(params.version, propertyMeta.author)
 	const result = new BigNumber(myStaking.stakingValue)
-		.plus(await getMyPropertyStaking(params))
-		.plus(await getPropertyStaking(params))
+		.plus(await getMyPropertyStaking(params.version, propertyMeta.author))
+		.plus(await getPropertyStaking(params.version, propertyMeta.author))
 		.div(new BigNumber(1000000000000000000))
 	context.res = {
 		status: 200,
-		body: { karma: Number(result.toFixed(0)) },
+		body: {
+			name: propertyMeta.name,
+			symbol: propertyMeta.symbol,
+			author: {
+				address: propertyMeta.author,
+				karma: Number(result.toFixed(0)),
+			},
+			block_number: propertyMeta.block_number,
+			sender: propertyMeta.sender,
+			total_supply: propertyMeta.total_supply,
+			property: propertyMeta.property,
+		},
 		headers: {
 			'Cache-Control': 'no-store',
 		},
 	}
 }
 
-async function getPropertyStaking(params: KarmaParams): Promise<BigNumber> {
-	const propertyBalance = new PropertyBalanceDataStore(params)
-	await propertyBalance.prepare()
+async function getPropertyStaking(
+	version: string,
+	address: string
+): Promise<BigNumber> {
+	const propertyBalance = new PropertyBalanceDataStore()
+	await propertyBalance.prepare(version, address)
 	const propertyAddresses = propertyBalance.getPropertyAddresses()
-	const propertyInfo = new PropertyDataStore(params)
-	await propertyInfo.prepare(propertyAddresses)
-	const propertyLockup = new PropertyLockupDataStore(params)
-	await propertyLockup.prepare(propertyAddresses)
+	const propertyInfo = new PropertyDataStore()
+	await propertyInfo.prepare(version, propertyAddresses)
+	const propertyLockup = new PropertyLockupDataStore()
+	await propertyLockup.prepare(version, propertyAddresses)
 	let sum = new BigNumber(0)
 	for (let property of propertyAddresses) {
 		const balance = new BigNumber(propertyBalance.getBlance(property))
@@ -48,14 +63,17 @@ async function getPropertyStaking(params: KarmaParams): Promise<BigNumber> {
 	return sum
 }
 
-async function getMyPropertyStaking(params: KarmaParams): Promise<BigNumber> {
-	const myPrperty = new MyPropertyDataStore(params)
-	await myPrperty.prepare()
+async function getMyPropertyStaking(
+	version: string,
+	address: string
+): Promise<BigNumber> {
+	const myPrperty = new MyPropertyDataStore()
+	await myPrperty.prepare(version, address)
 	const propertyAddresses = myPrperty.getPropertyAddresses()
-	const propertyBalance = new MyPropertyBalanceDataStore(params)
-	await propertyBalance.prepare(propertyAddresses)
-	const propertyLockup = new PropertyLockupDataStore(params)
-	await propertyLockup.prepare(propertyAddresses)
+	const propertyBalance = new MyPropertyBalanceDataStore()
+	await propertyBalance.prepare(version, address, propertyAddresses)
+	const propertyLockup = new PropertyLockupDataStore()
+	await propertyLockup.prepare(version, propertyAddresses)
 
 	let sum = new BigNumber(0)
 	for (let property of propertyAddresses) {

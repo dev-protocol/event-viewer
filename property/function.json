@@ -1,5 +1,5 @@
 {
-	"scriptFile": "../dist/karma/index.js",
+	"scriptFile": "../dist/property/index.js",
 	"bindings": [
 		{
 			"authLevel": "anonymous",
@@ -7,7 +7,7 @@
 			"direction": "in",
 			"name": "req",
 			"methods": ["get"],
-			"route": "{version}/karma/{address}"
+			"route": "{version}/property/{address}"
 		},
 		{
 			"type": "http",
