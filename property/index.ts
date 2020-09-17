@@ -1,13 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import BigNumber from 'bignumber.js'
-import { MyStakingDataStore } from './data/my-staking'
-import { MyPropertyDataStore } from './data/my-property'
-import { MyPropertyBalanceDataStore } from './data/my-property-balance'
-import { PropertyBalanceDataStore } from './data/property-balance'
-import { PropertyLockupDataStore } from './data/property-lockup'
-import { PropertyDataStore } from './data/property'
-import { ApiParams } from './params'
-import { getPropertyMetaInfo } from './utils'
+import { ApiParams } from '../common/params'
+import { getKarma } from './../common/karma/karma'
+import { postHasura } from '../common/utils'
 
 const httpTrigger: AzureFunction = async function (
 	context: Context,
@@ -15,12 +9,7 @@ const httpTrigger: AzureFunction = async function (
 ): Promise<void> {
 	const params = new ApiParams(req)
 	const propertyMeta = await getPropertyMetaInfo(params.version, params.address)
-	const myStaking = new MyStakingDataStore()
-	await myStaking.prepare(params.version, propertyMeta.author)
-	const result = new BigNumber(myStaking.stakingValue)
-		.plus(await getMyPropertyStaking(params.version, propertyMeta.author))
-		.plus(await getPropertyStaking(params.version, propertyMeta.author))
-		.div(new BigNumber(1000000000000000000))
+	const karma = await getKarma(params.version, propertyMeta.author)
 	context.res = {
 		status: 200,
 		body: {
@@ -28,7 +17,7 @@ const httpTrigger: AzureFunction = async function (
 			symbol: propertyMeta.symbol,
 			author: {
 				address: propertyMeta.author,
-				karma: Number(result.toFixed(0)),
+				karma: karma,
 			},
 			block_number: propertyMeta.block_number,
 			sender: propertyMeta.sender,
@@ -41,51 +30,34 @@ const httpTrigger: AzureFunction = async function (
 	}
 }
 
-async function getPropertyStaking(
+async function getPropertyMetaInfo(
 	version: string,
 	address: string
-): Promise<BigNumber> {
-	const propertyBalance = new PropertyBalanceDataStore()
-	await propertyBalance.prepare(version, address)
-	const propertyAddresses = propertyBalance.getPropertyAddresses()
-	const propertyInfo = new PropertyDataStore()
-	await propertyInfo.prepare(version, propertyAddresses)
-	const propertyLockup = new PropertyLockupDataStore()
-	await propertyLockup.prepare(version, propertyAddresses)
-	let sum = new BigNumber(0)
-	for (let property of propertyAddresses) {
-		const balance = new BigNumber(propertyBalance.getBlance(property))
-		const totalSupply = propertyInfo.getTotalSupply(property)
-		const lockupSumValues = new BigNumber(propertyLockup.getSumValues(property))
-		sum = sum.plus(lockupSumValues.div(totalSupply).times(balance))
+): Promise<any> {
+	const query = `{
+		property_meta(
+			where: {
+				property: {
+					_eq: "${address}"
+				}
+			}
+			)
+		{
+			name
+			symbol
+			author
+			block_number
+			property
+			sender
+			total_supply
+		}
+	  }`
+	const data = await postHasura(version, query)
+	if (data.property_meta.length === 0) {
+		throw new Error('address is not property')
 	}
 
-	return sum
-}
-
-async function getMyPropertyStaking(
-	version: string,
-	address: string
-): Promise<BigNumber> {
-	const myPrperty = new MyPropertyDataStore()
-	await myPrperty.prepare(version, address)
-	const propertyAddresses = myPrperty.getPropertyAddresses()
-	const propertyBalance = new MyPropertyBalanceDataStore()
-	await propertyBalance.prepare(version, address, propertyAddresses)
-	const propertyLockup = new PropertyLockupDataStore()
-	await propertyLockup.prepare(version, propertyAddresses)
-
-	let sum = new BigNumber(0)
-	for (let property of propertyAddresses) {
-		const totalSupply = new BigNumber(myPrperty.getTotalSupply(property))
-		const balance = new BigNumber(
-			propertyBalance.getBlance(property, totalSupply.toNumber())
-		)
-		const lockupSumValues = new BigNumber(propertyLockup.getSumValues(property))
-		sum = sum.plus(lockupSumValues.div(totalSupply).times(balance))
-	}
-
-	return sum
+	return data.property_meta[0]
 }
 
 export default httpTrigger

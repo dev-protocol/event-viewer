@@ -1,0 +1,18 @@
+{
+	"scriptFile": "../dist/author/index.js",
+	"bindings": [
+		{
+			"authLevel": "anonymous",
+			"type": "httpTrigger",
+			"direction": "in",
+			"name": "req",
+			"methods": ["get"],
+			"route": "{version}/author/{address}"
+		},
+		{
+			"type": "http",
+			"direction": "out",
+			"name": "res"
+		}
+	]
+}

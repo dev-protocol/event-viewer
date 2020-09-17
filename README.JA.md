@@ -52,6 +52,7 @@ curl -X POST -H "Content-Type: application/json" --data '{ "query": "{ account_l
 
 curl -X GET -H "Content-Type: application/json" http://localhost:7071/v1/property/0x0f60D5036D0306B0aB20027fB4BFdb10183366ca
 
+curl -X GET -H "Content-Type: application/json" http://localhost:7071/v1/author/0xA717AA5E8858cA5836Fef082E6B2965ba0dB615d
 ```
 
 # 新規関数を追加する場合
