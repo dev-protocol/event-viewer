@@ -43,7 +43,7 @@
 		}
 	},
 	"dependencies": {
-		"axios": "0.20.0",
+		"axios": "0.21.0",
 		"bignumber.js": "9.0.0",
 		"pg": "8.3.3",
 		"url-join": "4.0.1",
