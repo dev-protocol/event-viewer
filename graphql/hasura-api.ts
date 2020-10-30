@@ -32,8 +32,8 @@ abstract class HasuraApiExecuter implements ApiExecuter {
 
 			const res = await post(url, this._req.body, this.getPostHeader())
 			body_ = res.data
-		} catch (err) {
-			this._context.log.error(err.stack)
+		} catch (err: unknown) {
+			this._context.log.error((err as any).stack)
 			if (err instanceof ValidateError || err instanceof PostError) {
 				status_ = err.status
 				body_ = err.message

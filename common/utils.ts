@@ -1,5 +1,4 @@
-import { AxiosResponse } from 'axios'
-import axios from 'axios'
+import axios, { AxiosResponse, AxiosError } from 'axios'
 import { PostError } from './error'
 import urljoin from 'url-join'
 
@@ -39,8 +38,11 @@ export async function post(
 				responseType: 'json',
 			}
 		)
-	} catch (e) {
-		throw new PostError(e.response.status, e.response.statusText)
+	} catch (e: unknown) {
+		throw new PostError(
+			(e as AxiosError).response.status,
+			(e as AxiosError).response.statusText
+		)
 	}
 
 	if (res.status !== 200 || typeof res.data.errors !== 'undefined') {
