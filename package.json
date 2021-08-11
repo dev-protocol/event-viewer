@@ -51,7 +51,7 @@
 	},
 	"devDependencies": {
 		"@azure/functions": "1.2.3",
-		"@types/jest": "26.0.24",
+		"@types/jest": "27.0.0",
 		"@types/url-join": "4.0.1",
 		"@typescript-eslint/eslint-plugin": "4.29.1",
 		"@typescript-eslint/parser": "4.29.1",
