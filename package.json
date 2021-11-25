@@ -50,7 +50,7 @@
 		"web3": "1.6.1"
 	},
 	"devDependencies": {
-		"@azure/functions": "2.0.0",
+		"@azure/functions": "3.0.0",
 		"@types/jest": "27.0.2",
 		"@types/url-join": "4.0.1",
 		"@typescript-eslint/eslint-plugin": "5.4.0",
