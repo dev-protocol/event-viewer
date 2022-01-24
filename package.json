@@ -54,7 +54,7 @@
 		"@types/jest": "27.0.2",
 		"@types/url-join": "4.0.1",
 		"@typescript-eslint/eslint-plugin": "5.10.1",
-		"@typescript-eslint/parser": "5.10.0",
+		"@typescript-eslint/parser": "5.10.1",
 		"azure-function-context-mock": "0.0.7",
 		"azurite": "3.15.0",
 		"eslint": "8.7.0",
