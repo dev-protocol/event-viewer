@@ -61,7 +61,7 @@
 		"eslint-config-prettier": "8.5.0",
 		"eslint-config-xo": "0.41.0",
 		"eslint-config-xo-typescript": "0.52.0",
-		"eslint-plugin-jest": "26.8.0",
+		"eslint-plugin-jest": "26.8.1",
 		"eslint-plugin-prettier": "4.2.1",
 		"husky": "8.0.1",
 		"jest": "27.5.1",
