@@ -47,7 +47,7 @@
 		"bignumber.js": "9.1.0",
 		"pg": "8.8.0",
 		"url-join": "4.0.1",
-		"web3": "1.7.5"
+		"web3": "1.8.0"
 	},
 	"devDependencies": {
 		"@azure/functions": "3.0.0",
