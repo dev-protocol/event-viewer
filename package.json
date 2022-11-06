@@ -57,7 +57,7 @@
 		"@typescript-eslint/parser": "5.42.0",
 		"azure-function-context-mock": "0.0.7",
 		"azurite": "3.20.1",
-		"eslint": "8.26.0",
+		"eslint": "8.27.0",
 		"eslint-config-prettier": "8.5.0",
 		"eslint-config-xo": "0.42.0",
 		"eslint-config-xo-typescript": "0.53.0",
